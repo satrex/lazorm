@@ -8,11 +8,14 @@
     <owners>$author$</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">MIT</license>
-    <projectUrl>http://project_url_here_or_delete_this_line/</projectUrl>
+    <projectUrl>https://github.com/satrex/lazorm.git</projectUrl>
     <iconUrl>http://icon_url_here_or_delete_this_line/</iconUrl>
     <description>$description$</description>
     <releaseNotes>Initial Packaged</releaseNotes>
     <copyright>$copyright$</copyright>
     <tags></tags>
   </metadata>
+  <files>
+    <file src="LICENSE" target="" />
+  </files>
 </package>
