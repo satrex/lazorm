@@ -1,5 +1,5 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
+
 # Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lazorm", "Lazorm.csproj", "{20B646B3-4FAB-4517-8F4C-35DCF33906FF}"
 EndProject
