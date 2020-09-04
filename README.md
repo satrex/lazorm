@@ -31,14 +31,16 @@ Isn't it a open approach to give a try?
 # Installation 
 
 Global install tool by typing:
-```
+
+``` shell:Terminal
 dotnet tool install -g lazorm
 ```
 
 # Tutorial 
 
 You make a project by typing 
-```
+
+``` shell:Terminal
 dotnet new console -n LazormTest
 cd LazormTest
 ```
@@ -46,7 +48,7 @@ cd LazormTest
 
 Then create entity from database
 
-```
+``` shell:Terminal
 dotnet lazorm mssql "..." -out Entities
 ```
 
@@ -55,7 +57,7 @@ You will see entity files in Entities directory.
 
 In your program.cs file, you modify Main method
 
-```
+``` csharp:Program.cs
 var countries = Lazorm.Country.Get();
 foreach(var country in countries)
 {
@@ -70,7 +72,7 @@ You will see the name of countries there.
 Object.Get and Object.SaveChanges are essentials of this framework.
 NO MANAGERS! Because our entities can do everything by their own.
 
-> "Mother, don't change my clothes! I can do it with my own!"
+> "Mom, don't change my clothes! I can do it with my own!"
 
 # Database first oriented
 
