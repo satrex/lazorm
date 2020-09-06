@@ -31,7 +31,7 @@ namespace Lazorm
         {
             get {
                 if(_schema == null){
-                    var dbFind = new Regex("Database=(?<schema>.+?);", RegexOptions.IgnoreCase);
+                    var dbFind = new Regex("Database *= *(?<schema>.+?) *;", RegexOptions.IgnoreCase);
                     var match = dbFind.Match(this.ConnectionString);
                     _schema = match.Groups["schema"].Value;
                 }
@@ -91,7 +91,7 @@ WHERE `TABLE_SCHEMA`='{0}' ", this.Schema);
             var sql = string.Format(@"SELECT 
     COLUMN_NAME AS ColumnName,
     DATA_TYPE AS TypeName,
-    CASE WHEN COLUMN_KEY IS NOT NULL THEN 1 ELSE 0 END AS IsPrimaryKey,
+    CASE WHEN COLUMN_KEY = 'PRI' THEN 1 ELSE 0 END AS IsPrimaryKey,
     CASE WHEN NUMERIC_SCALE IS NOT NULL THEN NUMERIC_SCALE ELSE 0 END AS DecimalPlace,
     CASE WHEN IS_NULLABLE = 'YES' THEN 1 ELSE 0 END AS Nullable,
     CASE WHEN EXTRA = 'auto_increment' THEN 1 ELSE 0 END AS IsAutoNumber,
@@ -100,68 +100,7 @@ WHERE `TABLE_SCHEMA`='{0}' ", this.Schema);
 FROM `INFORMATION_SCHEMA`.`COLUMNS` 
 WHERE `TABLE_SCHEMA`='satrex_yingyang' 
     AND `TABLE_NAME`='{0}';", tableName);
-            var oldSql =
-            #region before 2005
- @"SELECT 
-    c.name AS ColumnName,
-    TYPE_NAME(c.xusertype) AS TypeName,
-    CASE WHEN ik.colid IS NOT NULL THEN 1 ELSE 0 END AS IsPrimaryKey,
-    CASE WHEN c.scale IS NOT NULL THEN c.scale ELSE 0 END AS DecimalPlace,
-    c.isnullable AS Nullable,
-    CASE WHEN c.autoval IS NOT NULL THEN 1 ELSE 0 END AS IsAutoNumber,
-    c.length AS Length,
-    p.value AS Remarks
-FROM 	sysobjects o
-JOIN 	syscolumns c ON c.id=o.id
-LEFT JOIN sysobjects pk ON 
-    pk.parent_obj=o.id and 
-    pk.xtype='PK'
-LEFT JOIN sysindexes ix ON 
-    ix.name=pk.name
-LEFT JOIN sysindexkeys ik ON 
-    ik.id=o.id and ik.indid=ix.indid and 
-    ik.colid=c.colid
-LEFT JOIN sysproperties p ON
-	c.id = p.id AND
-	c.colid = p.smallid AND
-	p.name = 'MS_Description'
-WHERE 
-    o.type='U' AND 
-    o.name = '" + tableName + @"'
-ORDER BY c.colorder";
-            #endregion
-            var newSql =
-            #region 2005 or newer
- string.Format(@"
-SELECT 
-    c.name AS ColumnName,
-    TYPE_NAME(c.xusertype) AS TypeName,
-    CASE WHEN ik.colid IS NOT NULL THEN 1 ELSE 0 END AS IsPrimaryKey,
-    CASE WHEN c.scale IS NOT NULL THEN c.scale ELSE 0 END AS DecimalPlace,
-    c.isnullable AS Nullable,
-    CASE WHEN c.autoval IS NOT NULL THEN 1 ELSE 0 END AS IsAutoNumber,
-    c.length AS Length,
-    p.value AS Remarks
-FROM 	sysobjects o
-JOIN 	syscolumns c ON c.id=o.id
-LEFT JOIN sysobjects pk ON 
-    pk.parent_obj=o.id and 
-    pk.xtype='PK'
-LEFT JOIN sysindexes ix ON 
-    ix.name=pk.name
-LEFT JOIN sysindexkeys ik ON 
-    ik.id=o.id and ik.indid=ix.indid and 
-    ik.colid=c.colid
-LEFT JOIN sys.extended_properties p ON
-	c.id = p.major_id AND
-	c.colid = p.minor_id AND
-	p.name = 'MS_Description'
-WHERE 
-    o.type='U' AND 
-    o.name = '{0}'
-ORDER BY c.colorder
-", tableName);
-            #endregion
+            
 
             return sql;
            }
