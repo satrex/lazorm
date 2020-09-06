@@ -35,9 +35,14 @@ namespace Lazorm
                 description: "出力先フォルダを指定します。",
                 optionType: CommandOptionType.MultipleValue);
 
-            var listOption = app.Option(
+            var settingsJsonOption = app.Option(
+                template: "-j|--json",
+                description: "appsetteings.jsonファイルを指定します。",
+                optionType: CommandOptionType.SingleValue);
+
+            var showTablesOption = app.Option(
                 template: "-l|--ls|--list",
-                description: "テーブル一覧を取得します。",
+                description: "テーブル一覧を表示します。",
                 optionType: CommandOptionType.NoValue);
 
             app.OnExecute(() =>
@@ -59,7 +64,7 @@ namespace Lazorm
 
                 Database db = Database.CreateInstance(dbKindArgument.Value, constrArgument.Value);
 
-                if(listOption.HasValue()){
+                if(showTablesOption.HasValue()){
                     Console.WriteLine("===  TABLE NAME  ===\n--------------------");
                     db.GetTableDefs().ForEach(t => 
                         Console.WriteLine("{0} ", t.Name)
@@ -83,7 +88,8 @@ namespace Lazorm
                     generator.Generate(t, outFolder);
                 });
 
-                JsonSettingWriter.SetAppSettingValue(key: keyName, constrArgument.Value, null);
+                JsonSettingWriter.SetAppSettingValue(keyName, constrArgument.Value,
+                 settingsJsonOption.Value());
                 return 0;
             });
 
