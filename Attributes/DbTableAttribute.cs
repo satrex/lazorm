@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 using System.Configuration;
 
 namespace Lazorm.Attributes
@@ -47,11 +48,38 @@ namespace Lazorm.Attributes
         /// <returns>データベースを返却します。</returns>
         public Database GetDatabase()
         {
-            ConnectionStringSettings settings = System.Configuration.ConfigurationManager.ConnectionStrings[this.ConnectionSettingKeyName];
-            if (settings == null)
+            var builder = new ConfigurationBuilder()
+               .SetBasePath(Environment.CurrentDirectory)
+               .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+              .AddJsonFile($"appsettings.development.json", optional: true)
+              .AddEnvironmentVariables();
+              
+            
+            var config = builder.Build();
+            var constr = config.GetConnectionString(this.ConnectionSettingKeyName);
+
+            //ConnectionStringSettings settings = System.Configuration.ConfigurationManager.ConnectionStrings[this.ConnectionSettingKeyName];
+            if (string.IsNullOrEmpty(constr))
                 throw new ApplicationException(@"構成ファイルに接続文字列の設定がされていないか、設定ファイルのキー名が間違っています。");
 
-            return Database.CreateInstance(this.DatabaseType, settings.ConnectionString);
+            return Database.CreateInstance(this.DatabaseType, constr);
         }
+
+        private static Database _database;
+        /// <summary>
+        /// Specifies Database Instance.
+        /// </summary>
+        public Database Database
+        {
+            get
+            {
+                if (_database == null)
+                {
+                    _database = this.GetDatabase();
+                }
+                return _database;
+            }
+        }
+
     }
 }

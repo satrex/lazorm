@@ -73,17 +73,21 @@ namespace Lazorm
                     outFolder = outFolderOption.Value();
                 }
 
-                // string server = builder.DataSource;
-                var generator = new DataEntityGenerator("DataCore", db, string.Format("{0}Key", db.Schema));
+                // TODO: Want to get default namespace from project file.
+                var keyName = string.Format("{0}Key", db.Schema);
+                var generator = new DataEntityGenerator("Lazorm", db, keyName);
                 var tableArgsTemp = tablesArgument.Value.Replace(",", " ");
                 var regex = new System.Text.RegularExpressions.Regex(" +").Replace(tableArgsTemp, " ");
                 var tableArgs = regex.Split(" ");
                 Array.ForEach(tableArgs, t => {
                     generator.Generate(t, outFolder);
                 });
+
+                JsonSettingWriter.SetAppSettingValue(key: keyName, constrArgument.Value, null);
                 return 0;
             });
 
+            // TODO: Want to write on project config file 
             app.Execute(args);
         }
     }
