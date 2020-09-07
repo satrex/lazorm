@@ -59,6 +59,8 @@ namespace Lazorm
             {"sqlServer", DatabaseType.SqlServer},
             {"sqlserver", DatabaseType.SqlServer},
             {"mssql", DatabaseType.SqlServer},
+            {"Mssql", DatabaseType.SqlServer},
+            {"MsSql", DatabaseType.SqlServer},
             {"Oracle", DatabaseType.Oracle},
             {"oracle", DatabaseType.Oracle},
             {"MySql", DatabaseType.MySql},
