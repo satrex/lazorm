@@ -82,3 +82,10 @@ Reason:
  It gets simpler with DB first approach - because no migration table polution nore annoying migration failure.
 
  
+ ---
+
+### Release Notes
+
+<dl>
+<dt>0.1.16</dt><dd>Added functionality to write connection string into appsettings.json</dd>
+</dl>
