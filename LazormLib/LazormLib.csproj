@@ -1,11 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
+    <PackageId>LazormLib</PackageId>
+    <Version>0.2.2</Version>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Description>Lazorm compile / runtime library.</Description>
     <RootNamespace>Lazorm</RootNamespace>
-    <ReleaseVersion>0.2.2</ReleaseVersion>
-    <PackOnBuild>true</PackOnBuild>
     <Authors>Satrex</Authors>
     <Copyright>Satrex</Copyright>
     <NeutralLanguage>en</NeutralLanguage>
@@ -15,6 +14,11 @@
     <Summary>Compile / Runtime Library for Lazorm.</Summary>
     <Title>LazormLib</Title>
     <PackageVersion>0.2.2</PackageVersion>
+    <PackageOutputPath>./nupkg</PackageOutputPath>
+    <PackageLicenseFile>./LICENSE</PackageLicenseFile>
+    <PackOnBuild>true</PackOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <ReleaseVersion>0.2.2</ReleaseVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.0.21" />
@@ -25,7 +29,5 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.7" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.7" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="nupkg\" />
-  </ItemGroup>
+
 </Project>

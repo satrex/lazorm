@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package >
   <metadata>
-    <id>$id$</id>
+    <id>LazormLib</id>
     <version>$version$</version>
     <title>$title$</title>
     <authors>$author$</authors>
@@ -12,11 +12,9 @@
     <description>$description$</description>
     <releaseNotes>Initial Packaged</releaseNotes>
     <copyright>$copyright$</copyright>
-    <tags></tags>
-    <PackageOutputPath>./nupkg</PackageOutputPath>
-    <PackageLicenseFile>./LICENSE</PackageLicenseFile>
+    <tags>ORMapper, Database, Entity</tags>
   </metadata>
   <files>
-    <file src="LICENSE" target="" />
+    <file src="LICENSE" target="LICENSE" />
   </files>
 </package>
