@@ -15,7 +15,8 @@ So we made a new simple framework named lazorm.
 lazorm provides a command line tool which create class files  
 with full of table columns as properties.
 
-2. Rich functions
+2. Rich functions on coding
+
 They also have full of crud functions as default.
 So all you have to do is call Get method and you will have your data brought.
 You can also specify your sql to get/modify your data.
@@ -87,5 +88,6 @@ Reason:
 ### Release Notes
 
 <dl>
+<dt>0.1.18</dt><dd>Added function to create new folder when -o option is specified</dd>
 <dt>0.1.16</dt><dd>Added functionality to write connection string into appsettings.json</dd>
 </dl>

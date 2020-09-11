@@ -155,7 +155,7 @@ ORDER BY c.colorder
 
         }
 
-        internal override Type GetProgramType(ColumnDef column)
+        public override Type GetProgramType(ColumnDef column)
         {
             switch (column.TypeName)
             {

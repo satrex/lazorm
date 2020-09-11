@@ -147,16 +147,21 @@ namespace Lazorm
 
         #region コード生成
         /// <summary>
-        /// CodeDomつかって書き直した
+        /// Generates an entity class file
         /// </summary>
-        /// <param name="tableName">テーブル名を指定します。</param>
-        /// <param name="outDirectory">出力先のフォルダを指定します。</param>
+        /// <param name="tableName">specitying target table name</param>
+        /// <param name="outDirectory">specifying output directory</param>
         public void Generate(string tableName, string outDirectory)
         {
             string filePath = Path.Combine(outDirectory, string.Format("{0}.cs", tableName));
+
+            // Delete file if exists
+            if(File.Exists(filePath)){ File.Delete(filePath);}
+
             var table = this.Tables.Find(table => table.Name == tableName);
             if(table == null ) throw new NullReferenceException(string.Format("table {0} is null", tableName));
-            //ネームスペースの作成
+
+            // Write down namespaces
             var namespaceDef = new CodeNamespace(this.NameSpace);
             namespaceDef.Imports.Add(new CodeNamespaceImport("System"));
             namespaceDef.Imports.Add(new CodeNamespaceImport("System.Collections.Generic"));
@@ -165,7 +170,7 @@ namespace Lazorm
             namespaceDef.Imports.Add(new CodeNamespaceImport("Lazorm"));
             namespaceDef.Imports.Add(new CodeNamespaceImport("Lazorm.Attributes"));
 
-            //クラスの追加
+            // Generate target class
             namespaceDef.Types.Add(this.GenerateClass(table));
 
             var compileUnit = new CodeCompileUnit();
@@ -178,6 +183,8 @@ namespace Lazorm
             using(StreamWriter writer = new StreamWriter(filePath)){
                 provider.GenerateCodeFromCompileUnit(compileUnit, writer, options);
             }
+
+            Console.WriteLine("Entity file generated: {0}", filePath);
         }
 
         private CodeTypeDeclaration GenerateClass(TableDef table)

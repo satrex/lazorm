@@ -4,12 +4,12 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <PackageId>Lazorm</PackageId>
-    <PackageVersion>0.1.7</PackageVersion>
+    <PackageVersion>0.2.2</PackageVersion>
     <Authors>Satrex</Authors>
     <Copyright>Satrex</Copyright>
     <NeutralLanguage>en</NeutralLanguage>
     <Owners>Satrex</Owners>
-    <PackageReleaseNotes>Added function to copy appsettings.json template file to target directory</PackageReleaseNotes>
+    <PackageReleaseNotes>Convert tables arg to option(if not specified, generates all tables in scheme)</PackageReleaseNotes>
     <Summary>This project provides an OR mapper with class file generation.</Summary>
     <Title>Lazorm - easy OR mapper for database first approach</Title>
     <Description>An objeft-oriented easy-to use OR mapper.</Description>
@@ -21,6 +21,7 @@
     <PackOnBuild>true</PackOnBuild>
     <PackageProjectUrl>https://github.com/satrex/lazorm</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <ReleaseVersion>0.2.2</ReleaseVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -48,5 +49,9 @@
     <Content Include="appsettings.json.template">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LazormLib\LazormLib.csproj" />
   </ItemGroup>
 </Project>

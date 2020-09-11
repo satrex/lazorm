@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Description>Lazorm compile / runtime library.</Description>
+    <RootNamespace>Lazorm</RootNamespace>
+    <ReleaseVersion>0.2.2</ReleaseVersion>
+    <PackOnBuild>true</PackOnBuild>
+    <Authors>Satrex</Authors>
+    <Copyright>Satrex</Copyright>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Owners>Satrex</Owners>
+    <PackageProjectUrl>https://github.com/satrex/lazorm</PackageProjectUrl>
+    <PackageReleaseNotes>Divided into library - because it needs a nuget pkg and dependencies on compiling.</PackageReleaseNotes>
+    <Summary>Compile / Runtime Library for Lazorm.</Summary>
+    <Title>LazormLib</Title>
+    <PackageVersion>0.2.2</PackageVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="8.0.21" />
+    <PackageReference Include="System.Data.OracleClient" Version="1.0.8" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+    <None Include="LICENSE" Pack="true" Visible="false" PackagePath="" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.7" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.7" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.7" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="nupkg\" />
+  </ItemGroup>
+</Project>

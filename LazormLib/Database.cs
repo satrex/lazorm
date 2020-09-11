@@ -184,7 +184,7 @@ namespace Lazorm
         internal abstract IDbDataParameter CreateDataParameter(string parameterName, object value, string typeName);
         internal abstract string GetTableListSql();
         internal abstract string GetColumnListSql(string tableName);
-        internal abstract Type GetProgramType(ColumnDef column);
+        public abstract Type GetProgramType(ColumnDef column);
 
         /// <summary>
         /// SqlServerなら@+項目名、Oracleなら:+項目名が返る

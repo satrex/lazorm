@@ -105,7 +105,7 @@ WHERE `TABLE_SCHEMA`='satrex_yingyang'
             return sql;
            }
 
-        internal override Type GetProgramType(ColumnDef column)
+        public override Type GetProgramType(ColumnDef column)
         {
             switch (column.TypeName)
             {

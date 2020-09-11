@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/satrex/lazorm.git</projectUrl>
+    <iconUrl></iconUrl>
+    <description>$description$</description>
+    <releaseNotes>Initial Packaged</releaseNotes>
+    <copyright>$copyright$</copyright>
+    <tags></tags>
+  </metadata>
+  <files>
+    <file src="LICENSE" target="" />
+  </files>
+</package>
