@@ -2,7 +2,8 @@
 LAZy people's OR Mapper
 
 brief demo
-<iframe width="560" height="315" src="https://www.youtube.com/embed/qZ1XBQqL2YE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![Watch the video]("https://drive.google.com/uc?export=view&id=1zsjNaIgThMUlLn4e9KepyfUCuJLya0Uo")]
+("https://www.youtube.com/embed/qZ1XBQqL2YE")
 
 ## What is lazorm?
 
