@@ -1,9 +1,9 @@
 # lazorm
 LAZy people's OR Mapper
 
-brief demo
-[![Watch the video]("https://drive.google.com/uc?export=view&id=1zsjNaIgThMUlLn4e9KepyfUCuJLya0Uo")]
-("https://www.youtube.com/embed/qZ1XBQqL2YE")
+## brief demo
+
+[![Watch the video](https://img.youtube.com/vi/qZ1XBQqL2YE/hqdefault.jpg)](https://www.youtube.com/watch?v=qZ1XBQqL2YE)
 
 ## What is lazorm?
 
