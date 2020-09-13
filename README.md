@@ -1,6 +1,9 @@
 # lazorm
 LAZy people's OR Mapper
 
+brief demo
+<iframe width="560" height="315" src="https://www.youtube.com/embed/qZ1XBQqL2YE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 ## What is lazorm?
 
 There is a big framework of OR mapper in .Net ecosystem - Entity Framework.
@@ -116,6 +119,7 @@ Reason:
 ### Release Notes
 
 <dl>
+<dt>0.2.3</dt><dd>Bug fixed.</dd>
 <dt>0.2.2</dt><dd>Changed tables arg into option (if not specified, then create all tables out of schema)</dd>
 <dt>0.1.18</dt><dd>Added function to create new folder when -o option is specified</dd>
 <dt>0.1.16</dt><dd>Added functionality to write connection string into appsettings.json</dd>

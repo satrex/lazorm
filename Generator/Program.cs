@@ -133,33 +133,13 @@ namespace Lazorm
                 JsonSettingWriter.SetAppSettingValue(keyName, constrArgument.Value,
                  settingsJsonOption.Value());
 
-                CopySourceFiles(outFolder: outFolder);
+                Console.WriteLine("Successfully generated entity files into {0}", outFolder);
+                Console.WriteLine("run `dotnet add package lazormlib` to get entities working.");
+
                 return 0;
             });
 
             app.Execute(args);
-        }
-
-        private static void CopySourceFiles(string outFolder)
-        {
-            var exeDirectory = Directory.GetParent(Assembly.GetExecutingAssembly().Location);
-            foreach(var file in Directory.GetFiles(exeDirectory.ToString(), "*.cs"))
-            {
-                var outFile = Path.Combine(outFolder, Path.GetFileName(file));
-                File.Copy(file, outFile, true);
-            }
-
-            const string attributes = "Attributes";
-            var attriburesDir = Path.Combine(outFolder, attributes );
-            if (!Directory.Exists(attriburesDir))
-                Directory.CreateDirectory(attriburesDir);
-
-            foreach(var file in Directory.GetFiles(Path.Combine(exeDirectory.ToString(), attributes)))
-            {
-                var outFile = Path.Combine(outFolder, attributes, Path.GetFileName(file));
-                File.Copy(file, outFile, true);
-            }
-
         }
     }
 }

@@ -18,7 +18,7 @@
     <PackageLicenseFile>./LICENSE</PackageLicenseFile>
     <PackOnBuild>true</PackOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <ReleaseVersion>0.2.2</ReleaseVersion>
+    <ReleaseVersion>0.2.3</ReleaseVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.0.21" />
