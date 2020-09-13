@@ -1,16 +1,13 @@
 # lazorm
 LAZy people's OR Mapper
 
-## brief demo
-
-[![Watch the video](https://img.youtube.com/vi/qZ1XBQqL2YE/hqdefault.jpg)](https://www.youtube.com/watch?v=qZ1XBQqL2YE)
-
 ## What is lazorm?
 
-There is a big framework of OR mapper in .Net ecosystem - Entity Framework.
-We strongly respect it but we often feel it's just a little bit complicated.
+Lazorm is a super simple OR mapper library for .Net Core.
 
-So we made a new simple framework named lazorm.
+## one minute demo(youtube link)
+
+[![Watch the video](https://img.youtube.com/vi/qZ1XBQqL2YE/hqdefault.jpg)](https://www.youtube.com/watch?v=qZ1XBQqL2YE)
 
 ## Key functions 
 
@@ -35,7 +32,7 @@ Isn't it a open approach to give a try?
 
 ## Installation 
 
-### ** Inportant ** 
+### ** Important ** 
 
 lazorm has two part of library: 
 
@@ -88,10 +85,13 @@ dotnet add package lazorm
 That's it!
 You will see entity files in Entities directory.
 
+Don't forget to install package lazormlib. Because entity files do need it to work with.
+
 In your program.cs file, you modify Main method
 
 ``` csharp:Program.cs
-var countries = Lazorm.Country.Get();
+// entitiy class name is for example.
+var countries = Lazorm.Country.Get(ID: 1);
 foreach(var country in countries)
 {
     Console.WriteLine("Name: {0}", country.Name);
