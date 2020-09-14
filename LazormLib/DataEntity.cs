@@ -113,24 +113,10 @@ namespace Lazorm
         /// <typeparam name="U">エンティティの型を指定します。</typeparam>
         /// <param name="sql">エンティティを取得するSQL文を指定します。</param>
         /// <returns>取得したエンティティを返却します。</returns>
-        public static List<U> ExecuteQuery<U>(string sql) where U : DataEntity<U>, INotifyPropertyChanged, new()
+        public static IEnumerable<U> ExecuteQuery<U>(string sql) where U : DataEntity<U>, INotifyPropertyChanged, new()
         {
             var db = GetDatabase();
             return db.ExecuteQuery<U>(sql);
-        }
-
-        /// <summary>
-        /// SQLの結果からエンティティを返す。
-        /// SQLの列名と属性に指定されているNameが同じ場合、プロパティに値が入ります。
-        /// </summary>
-        /// <param name="whereExpression">Where句を指定します(WHEREキーワードは暗黙的に設定されます)。</param>
-        /// <returns>エンティティのリストを返却します。</returns>
-        public static List<T> GetWhere(string whereExpression) 
-        {
-            var table = (DbTableAttribute) Attribute.GetCustomAttribute( typeof(T), typeof(DbTableAttribute));
-            var sql = string.Format("SELECT * FROM {0} WHERE {1};", table.Name, whereExpression);
-            var db = GetDatabase();
-            return db.ExecuteQuery<T>(sql);
         }
 
         /// <summary>
@@ -139,22 +125,21 @@ namespace Lazorm
         /// <param name="whereExpression">SQLのWhere句を指定します。</param>
         /// <param name="args">Where句をstring.Formatする際のパラメータを指定します。</param>
         /// <returns>型パラメータで指定したエンティティのリストを返却します。</returns>
-        public static List<T> GetWhere(string whereExpression, params object[] args)
+        public static IEnumerable<T> GetWhere(string whereExpression, params object[] args)
         {
             var query = string.Format(whereExpression, args);
             return GetWhere(query);
-        } 
+        }
 
         /// <summary>
-        /// SQLの結果からエンティティを取得します。
-        /// SQLの列名と属性に指定されているNameが同じ場合、プロパティに値が入ります。
-        /// /// </summary>
-        /// <param name="sql">SQL文を指定します。</param>
-        /// <returns>エンティティのリストを返却します。</returns>
-        public static List<T> GetBySql(string sql) 
+        /// Gets multiple entities with condition
+        /// </summary>
+        /// <param name="predicate">specifies condition (if not specified, then get all rows)</param>
+        /// <returns>entities</returns>
+        public static IEnumerable<T> Get(Func<T, bool> predicate)
         {
             var db = GetDatabase();
-            return db.ExecuteQuery<T>(sql);
+            return  db.SelectMany<T>(predicate);
         }
 
         /// <summary>
@@ -164,18 +149,17 @@ namespace Lazorm
         /// <param name="sql">SQL文を指定します。</param>
         /// <param name="args">SQLをstring.Formatする際のパラメータを指定します。</param>
         /// <returns></returns>
-        public static List<T> GetBySql(string sql, params object[] args)
+        public static IEnumerable<T> GetBySql(string sql, params object[] args)
         {
             var query = string.Format(sql, args);
             return GetBySql(query);
-
         }
 
         /// <summary>
         /// テーブルのデータを全行取得します。
         /// </summary>
         /// <returns>テーブル全行ぶんのエンティティリストを返却します。</returns>
-        public static List<T> GetAll()
+        public static IEnumerable<T> GetAll()
         {
             Database db = GetDatabase();
             return db.SelectAll<T>();
@@ -243,7 +227,7 @@ namespace Lazorm
         /// 1つのエンティティを単純にUPSERTする
         /// オーバーライド可能なStoreと区別するため追加した
         /// </summary>
-        public void StoreSimple()
+        public void StoreSimply()
         {
             GetDatabase().Merge<T>(this);
         }

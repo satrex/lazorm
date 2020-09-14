@@ -4,12 +4,14 @@ using System.Data;
 using System.Diagnostics;
 using System.Data.Common;
 using System.Reflection;
+using System.Linq;
 using System.Data.SqlClient;
 using Lazorm.Attributes;
 
 namespace Lazorm
 {
     /// <summary>
+    /// specifies kind of database product.
     /// データベースの製品を表します。
     /// </summary>
     public enum DatabaseType
@@ -29,25 +31,29 @@ namespace Lazorm
     }
     
     /// <summary>
+    /// Abstrace class for manipulating database. 
+    /// Implementation of each product is written in child classes.
     /// データベースを表します。
     /// </summary>
     public abstract class Database
     {
         /// <summary>
+        /// A traceSource.
         /// トレースソース
         /// </summary>
         public static TraceSource ts = new TraceSource("Lazorm");
 
         /// <summary>
-        /// データベーススキーマ名を取得または設定します。
+        /// Gets or Sets database schema name.
+        /// データベーススキーマ名を取得します。
         /// </summary>
-        /// <value>データベーススキーマ名</value>
         public virtual string Schema {get; set;}
 
         /// <summary>
+        /// A constructor
         /// コンストラクタ
         /// </summary>
-        /// <param name="connectionString">接続文字列を指定します。</param>
+        /// <param name="connectionString">connectionString for target database 接続文字列を指定します。</param>
         public Database(string connectionString)
         {
             this.ConnectionString = connectionString;
@@ -69,10 +75,11 @@ namespace Lazorm
         };
 
         /// <summary>
+        /// Gets Database type enum by name string.
         /// 文字列を元に、データベースタイプ列挙体を取得します。
         /// </summary>
-        /// <param name="typeName">データベースタイプを表す文字列を指定します。</param>
-        /// <returns>データベースタイプ列挙体</returns>
+        /// <param name="typeName">a string that specifies type of database. データベースタイプを表す文字列を指定します。</param>
+        /// <returns>DatabaseType Enum データベースタイプ列挙体</returns>
         public static DatabaseType GetDatabaseType(string typeName) 
         {
 
@@ -139,7 +146,7 @@ namespace Lazorm
         /// <param name="val">IDataRecordから取得された値</param>
         /// <param name="type">変換先の型</param>
         /// <returns>変換されたオブジェクト型の値</returns>
-        internal static object Cast(object val, Type type)
+        public static object Cast(object val, Type type)
         {
             if (val == null || val == DBNull.Value)
                 return null;
@@ -198,10 +205,17 @@ namespace Lazorm
         /// </summary>
         /// <typeparam name="T">指定するテーブルのエンティティを指定します。</typeparam>
         /// <returns>エンティティのリストを返却します。</returns>
-        public List<T> SelectAll<T>() where T : DataEntity<T>, new()
+        public IEnumerable<T> SelectAll<T>() where T : DataEntity<T>, new()
         {
             DbTableAttribute table = DataEntity<T>.GetTableAttribute();
             return this.ExecuteQuery<T>("SELECT * FROM " + table.Name);
+        }
+
+         public IEnumerable<T> SelectMany<T>(Func<T, bool> predicate) where T : DataEntity<T>, new()
+        {
+            DbTableAttribute table = DataEntity<T>.GetTableAttribute();
+
+            return this.ExecuteQuery<T>("SELECT * FROM " + table.Name).Where(predicate);
         }
                 
         /// <summary>
@@ -268,7 +282,7 @@ namespace Lazorm
         /// <typeparam name="T"></typeparam>
         /// <param name="sql"></param>
         /// <returns></returns>
-        public List<T> ExecuteQuery<T>(string sql) where T : DataEntity<T>, new()
+        public IEnumerable<T> ExecuteQuery<T>(string sql, Func<T, bool> predicate = null) where T : DataEntity<T>, new()
         {
             using (IDbConnection connection = this.CreateConnection())
             {
@@ -278,17 +292,29 @@ namespace Lazorm
                     command.CommandTimeout = this.CommandTimeout;
                     command.CommandText = sql;
                     ts.TraceInformation(sql);
+
                     using (IDataReader reader = command.ExecuteReader(CommandBehavior.SingleResult))
                     {
-                        List<T> list = new List<T>();
-
-                        while (reader.Read())
+                        if(predicate == null)
                         {
-                            list.Add(this.CreateInstance<T>(reader));
+                            while (reader.Read())
+                            {
+                                yield return this.CreateInstance<T>(reader);
+                            }
                         }
+                        else
+                        {
+                            while (reader.Read())
+                            {
+                                var instance = this.CreateInstance<T>(reader);
+                                if(predicate(instance))
+                                {
+                                    yield return instance;
+                                }
+                            }
 
-                        return list;
-                    }
+                        }
+                   }
                 }
             }
         }
@@ -744,6 +770,15 @@ namespace Lazorm
             }
 
             return columns;
+        }
+
+        /// <summary>
+        /// specifies a sql to get foreign keys of schema.
+        /// </summary>
+        /// <returns>sql string if implemented. Else returns string.empty</returns>
+        public virtual string GetForeignKeySql()
+        {
+            return string.Empty;
         }
     }
 }

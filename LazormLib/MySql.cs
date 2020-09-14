@@ -56,6 +56,23 @@ namespace Lazorm
             return new MySqlConnection(this.ConnectionString);
         }
 
+        public override string GetForeignKeySql()
+        {
+            var sql = string.Format( @"
+            SELECT 
+            TABLE_SCHEMA as SchemaName, 
+            TABLE_NAME as TableName, 
+            COLUMN_NAME as ColumnName, 
+            REFERENCED_TABLE_NAME as ReferencedTableName, 
+            REFERENCED_COLUMN_NAME as ReferencedColumnName
+            FROM information_schema.KEY_COLUMN_USAGE
+            WHERE TABLE_SCHEMA = '{0}' 
+            AND REFERENCED_TABLE_NAME IS NOT NULL  
+            ", this.Schema);
+
+            return sql;
+        }
+
         private string dbVersion;
         /// <summary>
         /// データベースのバージョンを取得します。
@@ -98,8 +115,8 @@ WHERE `TABLE_SCHEMA`='{0}' ", this.Schema);
     LEAST(IFNULL(CHARACTER_MAXIMUM_LENGTH, 0), 	2147483647) AS Length,
     '' AS Remarks
 FROM `INFORMATION_SCHEMA`.`COLUMNS` 
-WHERE `TABLE_SCHEMA`='satrex_yingyang' 
-    AND `TABLE_NAME`='{0}';", tableName);
+WHERE `TABLE_SCHEMA`='{0}' 
+    AND `TABLE_NAME`='{1}';", this.Schema, tableName);
             
 
             return sql;

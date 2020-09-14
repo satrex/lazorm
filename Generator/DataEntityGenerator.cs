@@ -132,17 +132,63 @@ namespace Lazorm
             return new Pluralize.NET.Pluralizer().Singularize(tableName);
         }
 
+        private string GetFieldName(string propertyName)
+        {
+            return "_" + propertyName;
+        }
+
         private string GetFieldName(ColumnDef column)
         {
             return "_" + column.Name;
         }
                 
-        private string GetPropertyName(TableDef table, ColumnDef column)
+        private string GetPropertyName(string tableName, string columnName)
         {
-            if (table.Name == column.Name)
-                return column.Name + "1";
+            if (tableName == columnName)
+                return columnName + "1";
 
-            return column.Name;
+            return columnName;
+        }
+    
+        private List<ForeignKey> foreignKeys = new List<ForeignKey>();
+
+        /// <summary>
+        /// Gets all foreign keys of database schema
+        /// </summary>
+        /// <value>List of foreign keys obhect.</value>
+        public List<ForeignKey> ForeignKeys { 
+            get
+            {
+                if (this.foreignKeys.Count == 0)
+                {
+                    CollectForeignKeys();
+                }
+                return foreignKeys;
+            }
+        }
+
+        /// <summary>
+        /// Collects foreign keys of this schema from database.
+        /// </summary>
+       public void CollectForeignKeys()
+        {
+            var db = this.db;
+            var foreignKeySql = this.db.GetForeignKeySql();
+            if(string.IsNullOrEmpty( foreignKeySql)) return;
+            using (var reader = this.db.ExecuteReader(foreignKeySql))
+            {
+                while (reader.Read())
+                {
+                    ForeignKey fk = new ForeignKey();
+
+                    fk.TableName = (string)Database.Cast(reader["TableName"], typeof(string));
+                    fk.ColumnName = (string)Database.Cast(reader["ColumnName"], typeof(string));
+                    fk.ReferencedTableName = (string)Database.Cast(reader["ReferencedTableName"], typeof(string));
+                    fk.ReferencedColumnName = (string)Database.Cast(reader["ReferencedColumnName"], typeof(string));
+                    
+                    this.foreignKeys.Add(fk);
+               }
+            }
         }
 
         #region コード生成
@@ -170,13 +216,17 @@ namespace Lazorm
                 namespaceDef.Imports.Add(new CodeNamespaceImport("System.Runtime.Serialization"));
             namespaceDef.Imports.Add(new CodeNamespaceImport("Lazorm"));
             namespaceDef.Imports.Add(new CodeNamespaceImport("Lazorm.Attributes"));
-            namespaceDef.Imports.Add(new CodeNamespaceImport(string.Format( "{0} = {1}", tableName, className)));
 
             // Generate target class
             namespaceDef.Types.Add(this.GenerateClass(table));
+            if(table.Name != className)
+            {
+                namespaceDef.Types.Add(this.GenerateClass(table, true));
+            }
 
             var compileUnit = new CodeCompileUnit();
             compileUnit.Namespaces.Add(namespaceDef);
+            
             var options = new CodeGeneratorOptions();
             options.BracingStyle = "C";
 
@@ -189,9 +239,11 @@ namespace Lazorm
             Console.WriteLine("Entity file generated: {0}", filePath);
         }
 
-        private CodeTypeDeclaration GenerateClass(TableDef table)
+        private CodeTypeDeclaration GenerateClass(TableDef table, bool isPrural = false)
         {
-            var cls = new CodeTypeDeclaration(this.GetClassName(table.Name));
+            var singular = this.GetClassName(table.Name);
+            var cls = isPrural ? 
+                 new CodeTypeDeclaration(table.Name) : new CodeTypeDeclaration(singular);
 
             //クラスの属性作成
             cls.CustomAttributes.Add(new CodeAttributeDeclaration("Serializable"));
@@ -204,9 +256,10 @@ namespace Lazorm
             attribute.Arguments.Add(new CodeAttributeArgument("ConnectionSettingKeyName", new CodePrimitiveExpression(this.ConnectionSettingKeyName)));
             cls.CustomAttributes.Add(attribute);
 
-            cls.BaseTypes.Add("DataEntity<" + this.GetClassName(table.Name) + ">");
+            cls.BaseTypes.Add("DataEntity<" + singular + ">");
             cls.IsPartial = true;
             cls.IsClass = true;
+
             foreach (ColumnDef column in table.Columns)
             {
                 cls.Members.Add(this.GenerateField(column));
@@ -218,7 +271,100 @@ namespace Lazorm
                 cls.Members.Add(this.GenerateGetMethod(table));
             }
 
+            // Get Foreign Keys
+            var parentForeignKeys = this.ForeignKeys.FindAll(f => f.TableName == table.Name);
+            foreach(var parentForeignKey in parentForeignKeys)
+            {
+                var parentClassName = this.GetClassName(parentForeignKey.ReferencedTableName);
+                if(AlreadyAdded(cls.Members, parentClassName))
+                { continue;}
+                cls.Members.Add(this.GenerateParentField(parentClassName));
+                cls.Members.Add(this.GenerateParentProperty(parentClassName));
+            }
+
+            var childrenForeignKeys =this.ForeignKeys.FindAll(f => f.ReferencedTableName == table.Name); 
+            foreach(var childrenForeignKey in childrenForeignKeys)
+            {
+                if(AlreadyAdded(cls.Members, childrenForeignKey.TableName))
+                { continue;}
+
+                cls.Members.Add(this.GenerateChildrenField(childrenForeignKey.TableName));
+                cls.Members.Add(this.GenerateChildrenProperty(childrenForeignKey.TableName));
+            }
+
             return cls;
+        }
+
+        private bool AlreadyAdded(CodeTypeMemberCollection collection, string name)
+        {
+            foreach(CodeTypeMember type in collection)
+            {
+                if(type.Name == name){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
+        private CodeTypeMember GenerateChildrenField(string childTableName)
+        {
+            var childClassName = this.GetClassName(childTableName);
+             var field = new CodeMemberField();
+            if (this.UseWCF)
+                field.CustomAttributes.Add(new CodeAttributeDeclaration("DataMember"));
+            field.Name = this.GetFieldName(childTableName);
+            field.Type = GetGenericListType(childTableName);
+            field.Attributes = MemberAttributes.Private;
+            
+            return field;
+        }
+
+        private CodeTypeReference GetGenericListType(string typeName)
+        {
+            var listType = new CodeTypeReference(typeof(List<>));
+            listType.TypeArguments.Add(typeName);
+            return listType;
+        }
+
+        private CodeTypeMember GenerateChildrenProperty(string childTableName)
+        {
+            var childClassName = this.GetClassName(childTableName);
+             var property = new CodeMemberProperty();
+            if (this.UseWCF)
+                property.CustomAttributes.Add(new CodeAttributeDeclaration("DataMember"));
+            property.Name = childTableName;
+            property.Type = GetGenericListType(childClassName);
+            property.Attributes = MemberAttributes.Public;
+             property.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), this.GetFieldName(childTableName))));
+            property.SetStatements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), this.GetFieldName(childTableName)), new CodePropertySetValueReferenceExpression()));
+           
+            return property;
+        }
+
+        private CodeTypeMember GenerateParentField(string className)
+        {
+            var field = new CodeMemberField();
+            if (this.UseWCF)
+                field.CustomAttributes.Add(new CodeAttributeDeclaration("DataMember"));
+            field.Name = GetFieldName(className);
+            field.Type = new CodeTypeReference(className);
+            field.Attributes = MemberAttributes.Private;
+            
+            return field;
+        }
+        private CodeTypeMember GenerateParentProperty(string className)
+        {
+            var property = new CodeMemberProperty();
+            if (this.UseWCF)
+                property.CustomAttributes.Add(new CodeAttributeDeclaration("DataMember"));
+            property.Name = className;
+            property.Type = new CodeTypeReference(className);
+            property.Attributes = MemberAttributes.Public;
+             property.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), this.GetFieldName(className))));
+            property.SetStatements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), this.GetFieldName(className)), new CodePropertySetValueReferenceExpression()));
+           
+            return property;
         }
 
         private CodeMemberField GenerateField(ColumnDef column)
@@ -248,16 +394,28 @@ namespace Lazorm
             attribute.Arguments.Add(new CodeAttributeArgument("Length", new CodePrimitiveExpression(column.Length)));
             if(!string.IsNullOrEmpty(column.Remarks))
                 attribute.Arguments.Add(new CodeAttributeArgument("Remarks", new CodePrimitiveExpression(column.Remarks)));
-            
+
             var property = new CodeMemberProperty();
             if (this.UseWCF)
                 property.CustomAttributes.Add(new CodeAttributeDeclaration("DataMember"));
             property.CustomAttributes.Add(attribute);
-            property.Name = this.GetPropertyName(table, column);
+            property.Name = this.GetPropertyName(table.Name, column.Name);
             property.Type = new CodeTypeReference(this.db.GetProgramType(column));
             property.Attributes = MemberAttributes.Public;
             property.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), this.GetFieldName(column))));
             property.SetStatements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), this.GetFieldName(column)), new CodePropertySetValueReferenceExpression()));
+
+            var parentForeignKeys = this.ForeignKeys.FindAll(f => f.TableName == table.Name && f.ColumnName == column.Name);
+
+            foreach(var fk in parentForeignKeys)
+            {
+                var fkAttribute = new CodeAttributeDeclaration("ForeignKey");
+                fkAttribute.Arguments.Add(new CodeAttributeArgument("ReferencedTableName", new CodePrimitiveExpression(fk.ReferencedTableName)));
+                fkAttribute.Arguments.Add(new CodeAttributeArgument("ReferencedColumnName", new CodePrimitiveExpression(fk.ReferencedColumnName)));
+                property.CustomAttributes.Add(fkAttribute);
+
+            }
+
             return property;
         }
 
@@ -284,7 +442,7 @@ namespace Lazorm
                 if (!column.IsPrimaryKey)
                     continue;
                 CodeAssignStatement assign = new CodeAssignStatement();
-                assign.Left = new CodePropertyReferenceExpression(new CodeVariableReferenceExpression("entity"), this.GetPropertyName(table, column));
+                assign.Left = new CodePropertyReferenceExpression(new CodeVariableReferenceExpression("entity"), this.GetPropertyName(table.Name, column.Name));
                 assign.Right = new CodeVariableReferenceExpression(this.GetFieldName(column));
                 method.Statements.Add(assign);
             }
