@@ -153,7 +153,8 @@ namespace Lazorm
         /// <param name="outDirectory">specifying output directory</param>
         public void Generate(string tableName, string outDirectory)
         {
-            string filePath = Path.Combine(outDirectory, string.Format("{0}.cs", tableName));
+            string className = this.GetClassName(tableName);
+            string filePath = Path.Combine(outDirectory, string.Format("{0}.cs", className));
 
             // Delete file if exists
             if(File.Exists(filePath)){ File.Delete(filePath);}
@@ -169,6 +170,7 @@ namespace Lazorm
                 namespaceDef.Imports.Add(new CodeNamespaceImport("System.Runtime.Serialization"));
             namespaceDef.Imports.Add(new CodeNamespaceImport("Lazorm"));
             namespaceDef.Imports.Add(new CodeNamespaceImport("Lazorm.Attributes"));
+            namespaceDef.Imports.Add(new CodeNamespaceImport(string.Format( "{0} = {1}", tableName, className)));
 
             // Generate target class
             namespaceDef.Types.Add(this.GenerateClass(table));
