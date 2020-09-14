@@ -185,6 +185,7 @@ PublishScripts/
 
 # NuGet Packages
 *.nupkg
+nupkg/
 # The packages folder can be ignored because of Package Restore
 **/[Pp]ackages/*
 # except build/, which is used as an MSBuild target.
@@ -431,3 +432,8 @@ $RECYCLE.BIN/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+LazormTest/LazormTest.code-workspace
+LazormTest/LazormTest.csproj
+LazormTest/UnitTest1.cs
+LazormTest/.vscode/launch.json
+LazormTest/.vscode/tasks.json
