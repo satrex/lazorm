@@ -7,7 +7,20 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Lazorm.csproj",
+                "${workspaceFolder}/Generator/LazormGenerator.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile",
+            "dependsOn": ["build lib"]
+        }, 
+        {
+            "label": "build lib",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/LazormLib/LazormLib.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
