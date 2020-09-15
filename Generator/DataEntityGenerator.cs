@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
@@ -6,6 +6,7 @@ using System.Linq;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using Microsoft.CSharp;
+using System.Threading.Tasks;
 
 namespace Lazorm
 {   
@@ -221,7 +222,7 @@ namespace Lazorm
             namespaceDef.Types.Add(this.GenerateClass(table));
             if(table.Name != className)
             {
-                namespaceDef.Types.Add(this.GenerateClass(table, true));
+                namespaceDef.Types.Add(this.GenerateAliasClass(table));
             }
 
             var compileUnit = new CodeCompileUnit();
@@ -238,12 +239,24 @@ namespace Lazorm
 
             Console.WriteLine("Entity file generated: {0}", filePath);
         }
-
-        private CodeTypeDeclaration GenerateClass(TableDef table, bool isPrural = false)
+        private CodeTypeDeclaration GenerateAliasClass(TableDef table)
         {
             var singular = this.GetClassName(table.Name);
-            var cls = isPrural ? 
-                 new CodeTypeDeclaration(table.Name) : new CodeTypeDeclaration(singular);
+            var cls = new CodeTypeDeclaration(table.Name);
+            cls.IsPartial = true;
+            cls.IsClass = true;
+            if(table.Columns.Exists(p => p.IsPrimaryKey))
+            {
+                cls.Members.Add(this.GenerateGetMethodAlias(table));
+                cls.Members.Add(this.GenerateGetAsyncMethodAlias(table));
+            }
+            return cls;
+        }
+
+        private CodeTypeDeclaration GenerateClass(TableDef table)
+        {
+            var singular = this.GetClassName(table.Name);
+            var cls = new CodeTypeDeclaration(singular);
 
             //クラスの属性作成
             cls.CustomAttributes.Add(new CodeAttributeDeclaration("Serializable"));
@@ -269,6 +282,7 @@ namespace Lazorm
             if(table.Columns.Exists(p => p.IsPrimaryKey))
             {
                 cls.Members.Add(this.GenerateGetMethod(table));
+                cls.Members.Add(this.GenerateGetAsyncMethod(table));
             }
 
             // Get Foreign Keys
@@ -419,11 +433,14 @@ namespace Lazorm
             return property;
         }
 
-        private CodeMemberMethod GenerateGetMethod(TableDef table)
+        private CodeMemberMethod GenerateGetMethod(TableDef table, bool isAsync = false)
         {
+            var className = this.GetClassName(table.Name);
             var method = new CodeMemberMethod();
-            method.Name = "Get";
-            method.ReturnType = new CodeTypeReference(this.GetClassName(table.Name));
+            method.Name = isAsync? "GetAsync" : "Get";
+            var taskType = new CodeTypeReference(typeof(Task<>));
+            taskType.TypeArguments.Add(className);
+            method.ReturnType = isAsync? taskType : new CodeTypeReference(className);
             method.Attributes = MemberAttributes.Public | MemberAttributes.Static;
             foreach (var column in table.Columns)
             {
@@ -459,6 +476,110 @@ namespace Lazorm
 
             return method;
         }
+
+        private CodeMemberMethod GenerateGetAsyncMethod(TableDef table)
+        {
+            var className = this.GetClassName(table.Name);
+            var method = new CodeMemberMethod();
+            method.Name = "GetAsync";
+            var taskType = new CodeTypeReference(typeof(Task<>));
+            taskType.TypeArguments.Add(className);
+            method.ReturnType = taskType;
+            method.Attributes = MemberAttributes.Public | MemberAttributes.Static;
+            var parameters = new List<CodeVariableReferenceExpression>();
+            foreach (var column in table.Columns)
+            {
+                if (!column.IsPrimaryKey)
+                    continue;
+                method.Parameters.Add(new CodeParameterDeclarationExpression(this.db.GetProgramType(column), this.GetFieldName(column)));
+                parameters.Add(new CodeVariableReferenceExpression(this.GetFieldName(column)));
+            }
+
+            var callGetMethod = new CodeMethodInvokeExpression(
+                        new CodeTypeReferenceExpression("() => " + className),
+                        "Get", 
+                        parameters.ToArray() 
+                    );
+
+            // var delegateRun = new CodeMethodReferenceExpression()
+            //     callGetMethod
+            // );
+
+            method.Statements.Add(
+                new CodeMethodReturnStatement(
+                    new CodeCastExpression(taskType,
+                        new CodeMethodInvokeExpression(
+                            new CodeTypeReferenceExpression(typeof(Task)),
+                            "Run", 
+                            callGetMethod
+                        )
+                    )
+                )
+            );
+            return method;
+        }
+
+        private CodeMemberMethod GenerateGetMethodAlias(TableDef table)
+        {
+            var className = this.GetClassName(table.Name);
+            var method = new CodeMemberMethod();
+            method.Name = "Get";
+            var taskType = new CodeTypeReference(typeof(Task<>));
+            taskType.TypeArguments.Add(className);
+            method.ReturnType = new CodeTypeReference(className);
+            method.Attributes = MemberAttributes.Public | MemberAttributes.Static;
+            var parameters = new List<CodeVariableReferenceExpression>();
+            foreach (var column in table.Columns)
+            {
+                if (!column.IsPrimaryKey)
+                    continue;
+                method.Parameters.Add(new CodeParameterDeclarationExpression(this.db.GetProgramType(column), this.GetFieldName(column)));
+                parameters.Add(new CodeVariableReferenceExpression(this.GetFieldName(column)));
+            }
+
+            method.Statements.Add(
+                new CodeMethodReturnStatement(
+                    new CodeMethodInvokeExpression(
+                        new CodeTypeReferenceExpression(className),
+                        "Get", 
+                        parameters.ToArray() 
+                    )
+                )
+            );
+
+            return method;
+        }
+        private CodeMemberMethod GenerateGetAsyncMethodAlias(TableDef table)
+        {
+            var className = this.GetClassName(table.Name);
+            var method = new CodeMemberMethod();
+            method.Name = "GetAsync";
+            var taskType = new CodeTypeReference(typeof(Task<>));
+            taskType.TypeArguments.Add(className);
+            method.ReturnType = taskType;
+            method.Attributes = MemberAttributes.Public | MemberAttributes.Static;
+            var parameters = new List<CodeVariableReferenceExpression>();
+            foreach (var column in table.Columns)
+            {
+                if (!column.IsPrimaryKey)
+                    continue;
+                method.Parameters.Add(new CodeParameterDeclarationExpression(this.db.GetProgramType(column), this.GetFieldName(column)));
+                parameters.Add(new CodeVariableReferenceExpression(this.GetFieldName(column)));
+            }
+
+            method.Statements.Add(
+                new CodeMethodReturnStatement(
+                    new CodeMethodInvokeExpression(
+                        new CodeTypeReferenceExpression(className),
+                        "GetAsync", 
+                        parameters.ToArray() 
+                    )
+                )
+            );
+
+            return method;
+        }
+ 
         #endregion
 
         #region 旧コード生成コード
