@@ -138,7 +138,7 @@ namespace Lazorm
         /// <param name="whereExpression">SQLのWhere句を指定します。</param>
         /// <param name="args">Where句をstring.Formatする際のパラメータを指定します。</param>
         /// <returns>型パラメータで指定したエンティティのリストを返却します。</returns>
-        public static IEnumerable<T> GetWhere(string whereExpression, params object[] args)
+        public static IEnumerable<T> GetWhere(string whereExpression, object[] args)
         {
             var query = string.Format(whereExpression, args);
             return GetWhere(query);
@@ -174,7 +174,7 @@ namespace Lazorm
         /// <param name="sql">SQL文を指定します。</param>
         /// <param name="args">SQLをstring.Formatする際のパラメータを指定します。</param>
         /// <returns></returns>
-        public static IEnumerable<T> GetBySql(string sql, params object[] args)
+        public static IEnumerable<T> GetBySql(string sql, object[] args)
         {
             var query = string.Format(sql, args);
             return GetBySql(query);
