@@ -20,7 +20,7 @@ Global
 		{CB313252-A99B-4225-BA8D-B808D41636E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		description = Bug fixed
-		version = 0.4.3
+		description = Simplified alias class members
+		version = 0.4.11
 	EndGlobalSection
 EndGlobal

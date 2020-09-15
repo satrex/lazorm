@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
@@ -328,7 +328,7 @@ namespace Lazorm
             if (this.UseWCF)
                 field.CustomAttributes.Add(new CodeAttributeDeclaration("DataMember"));
             field.Name = this.GetFieldName(childTableName);
-            field.Type = GetGenericListType(childTableName);
+            field.Type = GetGenericListType(childClassName);
             field.Attributes = MemberAttributes.Private;
             
             return field;
