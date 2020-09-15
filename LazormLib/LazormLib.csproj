@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>LazormLib</PackageId>
-    <Version>0.3.0</Version>
+    <Version>0.4.10</Version>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Description>Lazorm compile / runtime library.</Description>
     <RootNamespace>Lazorm</RootNamespace>
@@ -16,8 +16,8 @@
     <PackageOutputPath>./nupkg</PackageOutputPath>
     <PackageLicenseFile>./LICENSE</PackageLicenseFile>
     <PackOnBuild>true</PackOnBuild>
-    <ReleaseVersion>0.4.2</ReleaseVersion>
-    <PackageVersion>0.4.2</PackageVersion>
+    <ReleaseVersion>0.4.10</ReleaseVersion>
+    <PackageVersion>0.4.10</PackageVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.0.21" />

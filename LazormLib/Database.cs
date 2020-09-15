@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Linq;
 using System.Data.SqlClient;
 using Lazorm.Attributes;
+using System.Threading.Tasks;
 
 namespace Lazorm
 {
@@ -318,7 +319,6 @@ namespace Lazorm
                 }
             }
         }
-
         /// <summary>
         /// sqlを発行する
         /// 戻りの値がNullまたはDBNull.Valueの場合nullを返す。
@@ -372,6 +372,13 @@ namespace Lazorm
             this.ExecuteNonQuery(sql, new List<IDbDataParameter>());
         }
 
+        public Task ExecuteNonQueryAsync(string sql)
+        {
+            return Task.Run(() => {
+                ExecuteNonQuery(sql);
+            });
+        }
+
         /// <summary>
         /// 更新系SQL発行用
         /// </summary>
@@ -395,6 +402,13 @@ namespace Lazorm
                     command.ExecuteNonQuery();
                 }
             }
+        }
+
+        public Task ExecuteNonQueryAsync(string sql, List<IDbDataParameter> parameters)
+        {
+            return Task.Run(() => {
+                ExecuteNonQuery(sql, parameters);
+            });
         }
 
         /// <summary>
@@ -457,6 +471,14 @@ namespace Lazorm
                 }
             }
         }
+        public Task<T> SelectAsync<T>(DataEntity<T> dataEntity) where T : DataEntity<T>, new()
+        {
+            return (Task<T>)Task.Run(() =>
+            {
+                Select<T>(dataEntity);
+            });
+        }
+
 
         /// <summary>
         /// オートナンバーIDを取得するためのSQL文を取得します。

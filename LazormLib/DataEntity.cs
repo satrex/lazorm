@@ -6,6 +6,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Lazorm.Attributes;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace Lazorm
 {
@@ -118,7 +119,19 @@ namespace Lazorm
             var db = GetDatabase();
             return db.ExecuteQuery<U>(sql);
         }
-
+       /// <summary>
+        /// SQLの結果からエンティティを返す。
+        /// SQLの列名と属性に指定されているNameが同じ場合、プロパティに値が入ります。
+        /// </summary>
+        /// <param name="whereExpression">Where句を指定します(WHEREキーワードは暗黙的に設定されます)。</param>
+        /// <returns>エンティティのリストを返却します。</returns>
+        public static IEnumerable<T> GetWhere(string whereExpression) 
+        {
+            var table = (DbTableAttribute) Attribute.GetCustomAttribute( typeof(T), typeof(DbTableAttribute));
+            var sql = string.Format("SELECT * FROM {0} WHERE {1};", table.Name, whereExpression);
+            var db = GetDatabase();
+            return db.ExecuteQuery<T>(sql);
+        }
         /// <summary>
         /// 型パラメータで指定したエンティティを、Where句を指定して取得します。
         /// </summary>
@@ -140,6 +153,18 @@ namespace Lazorm
         {
             var db = GetDatabase();
             return  db.SelectMany<T>(predicate);
+        }
+
+        /// <summary>
+        /// SQLの結果からエンティティを取得します。
+        /// SQLの列名と属性に指定されているNameが同じ場合、プロパティに値が入ります。
+        /// /// </summary>
+        /// <param name="sql">SQL文を指定します。</param>
+        /// <returns>エンティティのリストを返却します。</returns>
+        public static IEnumerable<T> GetBySql(string sql) 
+        {
+            var db = GetDatabase();
+            return db.ExecuteQuery<T>(sql);
         }
 
         /// <summary>
@@ -178,6 +203,12 @@ namespace Lazorm
             this.Fill(dataEntity);
             return true;
         }
+
+        public virtual Task<bool> FillAsync()
+        {
+            return Task.Run(() => Fill());
+        }
+        
 
         /// <summary>
         /// sourceに与えられたエンティティのプロパティを
