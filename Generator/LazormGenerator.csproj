@@ -10,7 +10,7 @@
     <Owners>Satrex</Owners>
     <Summary>This project provides an OR mapper with class file generation.</Summary>
     <Title>Lazorm - easy OR mapper for database first approach</Title>
-    <Description>An object-oriented easy-to use OR mapper.</Description>
+    <Description>zero configuration OR mapper.</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>dotnet-lazorm</ToolCommandName>
@@ -19,9 +19,9 @@
     <PackOnBuild>true</PackOnBuild>
     <PackageProjectUrl>https://github.com/satrex/lazorm</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <ReleaseVersion>0.4.12</ReleaseVersion>
-    <PackageVersion>0.4.12</PackageVersion>
-    <PackageReleaseNotes>Simplified alias class members</PackageReleaseNotes>
+    <ReleaseVersion>0.5.0</ReleaseVersion>
+    <PackageVersion>0.5.0</PackageVersion>
+    <PackageReleaseNotes>Added lazy instanciation to parent/children Properties.</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

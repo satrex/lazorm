@@ -212,10 +212,11 @@ namespace Lazorm
             // Write down namespaces
             var namespaceDef = new CodeNamespace(this.NameSpace);
             namespaceDef.Imports.Add(new CodeNamespaceImport("System"));
-            namespaceDef.Imports.Add(new CodeNamespaceImport("System.Collections.Generic"));
+            namespaceDef.Imports.Add(new CodeNamespaceImport("System.Linq"));
+            // namespaceDef.Imports.Add(new CodeNamespaceImport("System.Collections.Generic"));
             if (this.UseWCF)
                 namespaceDef.Imports.Add(new CodeNamespaceImport("System.Runtime.Serialization"));
-            namespaceDef.Imports.Add(new CodeNamespaceImport("Lazorm"));
+            // namespaceDef.Imports.Add(new CodeNamespaceImport("Lazorm"));
             namespaceDef.Imports.Add(new CodeNamespaceImport("Lazorm.Attributes"));
 
             // Generate target class
@@ -293,7 +294,7 @@ namespace Lazorm
                 if(AlreadyAdded(cls.Members, parentClassName))
                 { continue;}
                 cls.Members.Add(this.GenerateParentField(parentClassName));
-                cls.Members.Add(this.GenerateParentProperty(parentClassName));
+                cls.Members.Add(this.GenerateParentProperty(parentClassName, parentForeignKey));
             }
 
             var childrenForeignKeys =this.ForeignKeys.FindAll(f => f.ReferencedTableName == table.Name); 
@@ -303,7 +304,7 @@ namespace Lazorm
                 { continue;}
 
                 cls.Members.Add(this.GenerateChildrenField(childrenForeignKey.TableName));
-                cls.Members.Add(this.GenerateChildrenProperty(childrenForeignKey.TableName));
+                cls.Members.Add(this.GenerateChildrenProperty(childrenForeignKey.TableName, childrenForeignKey));
             }
 
             return cls;
@@ -341,16 +342,65 @@ namespace Lazorm
             return listType;
         }
 
-        private CodeTypeMember GenerateChildrenProperty(string childTableName)
+        private CodeTypeMember GenerateChildrenProperty(string childTableName, ForeignKey childrenForeignKey)
         {
             var childClassName = this.GetClassName(childTableName);
-             var property = new CodeMemberProperty();
+            var fieldName = GetFieldName(childTableName);
+            var property = new CodeMemberProperty();
             if (this.UseWCF)
                 property.CustomAttributes.Add(new CodeAttributeDeclaration("DataMember"));
             property.Name = childTableName;
             property.Type = GetGenericListType(childClassName);
             property.Attributes = MemberAttributes.Public;
-             property.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), this.GetFieldName(childTableName))));
+
+
+            // lazy instanciation
+            CodeStatementCollection getStatement = new CodeStatementCollection();
+            // if(this._DrugFormulaDetails == null
+            var bunki = new CodeConditionStatement();
+            bunki.Condition = new CodeBinaryOperatorExpression(
+                new CodeVariableReferenceExpression(fieldName),
+                CodeBinaryOperatorType.IdentityEquality,
+                new CodePrimitiveExpression(null) 
+            );
+            // this._Parent = 
+            // Parent.GetWhere("Id = {0}", this.ParentId).FirstOrDefault();
+            var whereString = (childrenForeignKey.ColumnName + " = '{0}'" ); 
+            CodeMethodInvokeExpression getInvoke = 
+            new CodeMethodInvokeExpression(
+                new CodeTypeReferenceExpression(childClassName),
+                "GetWhere",
+                new CodePrimitiveExpression(whereString),
+                new CodePropertyReferenceExpression(
+                    new CodeThisReferenceExpression(),
+                    childrenForeignKey.ReferencedColumnName
+                )
+            );
+
+            var toList =
+                new CodeMethodInvokeExpression(
+                    getInvoke,
+                    "ToList"
+                );
+
+            bunki.TrueStatements.Add(
+                new CodeAssignStatement(
+                    new CodeFieldReferenceExpression(new CodeThisReferenceExpression(),
+                     fieldName),
+                    toList
+                )
+            );
+
+            getStatement.Add(bunki );
+
+            // return this._DrugFormulaDetails
+            getStatement.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fieldName)));
+
+
+            property.GetStatements.AddRange(getStatement);
+ 
+
+            //  property.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fieldName)));
             property.SetStatements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), this.GetFieldName(childTableName)), new CodePropertySetValueReferenceExpression()));
            
             return property;
@@ -367,16 +417,62 @@ namespace Lazorm
             
             return field;
         }
-        private CodeTypeMember GenerateParentProperty(string className)
+        private CodeTypeMember GenerateParentProperty(string className, ForeignKey parentForeignKey)
         {
+            var fieldName = this.GetFieldName(className);
             var property = new CodeMemberProperty();
             if (this.UseWCF)
                 property.CustomAttributes.Add(new CodeAttributeDeclaration("DataMember"));
             property.Name = className;
             property.Type = new CodeTypeReference(className);
             property.Attributes = MemberAttributes.Public;
-             property.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), this.GetFieldName(className))));
-            property.SetStatements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), this.GetFieldName(className)), new CodePropertySetValueReferenceExpression()));
+
+            // lazy instanciation
+            CodeStatementCollection getStatement = new CodeStatementCollection();
+            // if(this._DrugFormulaDetails == null
+            var bunki = new CodeConditionStatement();
+            bunki.Condition = new CodeBinaryOperatorExpression(
+                new CodeVariableReferenceExpression(fieldName),
+                CodeBinaryOperatorType.IdentityEquality,
+                new CodePrimitiveExpression(null) 
+            );
+            // this._Parent = 
+            // Parent.GetWhere("Id = {0}", this.ParentId).FirstOrDefault();
+            var whereString = (parentForeignKey.ReferencedColumnName + " = '{0}'" ); 
+            CodeMethodInvokeExpression getInvoke = 
+            new CodeMethodInvokeExpression(
+                new CodeTypeReferenceExpression(className),
+                "GetWhere",
+                new CodePrimitiveExpression(whereString),
+                new CodePropertyReferenceExpression(
+                    new CodeThisReferenceExpression(),
+                    parentForeignKey.ColumnName
+                )
+            );
+
+            var selectFirst =
+                new CodeMethodInvokeExpression(
+                    getInvoke,
+                    "FirstOrDefault"
+                );
+
+            bunki.TrueStatements.Add(
+                new CodeAssignStatement(
+                    new CodeFieldReferenceExpression(new CodeThisReferenceExpression(),
+                     fieldName),
+                    selectFirst
+                )
+            );
+
+            getStatement.Add(bunki );
+
+            // return this._DrugFormulaDetails
+            getStatement.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fieldName)));
+
+
+            property.GetStatements.AddRange(getStatement);
+            // property.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fieldName)));
+            property.SetStatements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fieldName), new CodePropertySetValueReferenceExpression()));
            
             return property;
         }
