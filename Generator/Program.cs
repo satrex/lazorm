@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.CommandLineUtils;
@@ -10,7 +11,17 @@ namespace Lazorm
     {
         static void Main(string[] args)
         {
-            Array.ForEach(args, a => Console.WriteLine(a)); 
+            Assembly thisAssem = typeof(Program).Assembly;
+            AssemblyName thisAssemName = thisAssem.GetName();
+            Version ver = thisAssemName.Version;
+
+            Console.WriteLine("Lazorm (c)satrex");
+            Console.WriteLine("assembly {1} version {0}", ver, thisAssemName.Name);
+            Console.WriteLine();
+
+            Array.ForEach(args, a => Debug.WriteLine(a)); 
+            Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
+            Trace.AutoFlush = true;
             var app = new CommandLineApplication(throwOnUnexpectedArg: true);
 
             app.Name = nameof(Lazorm);

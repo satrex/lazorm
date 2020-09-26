@@ -19,8 +19,9 @@
     <PackOnBuild>true</PackOnBuild>
     <PackageProjectUrl>https://github.com/satrex/lazorm</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <ReleaseVersion>0.5.0</ReleaseVersion>
-    <PackageVersion>0.5.0</PackageVersion>
+    <Version>0.5.1</Version>
+    <ReleaseVersion>0.5.1</ReleaseVersion>
+    <PackageVersion>0.5.1</PackageVersion>
     <PackageReleaseNotes>Added lazy instanciation to parent/children Properties.</PackageReleaseNotes>
   </PropertyGroup>
 

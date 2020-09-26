@@ -554,12 +554,6 @@ namespace Lazorm
             //オートナンバー取得用、自動INCREMENT列がある場合に値が返る
             //SqlServerのみ対応した。OracleSEQUENCEはだれかやってもらいたい
             sql += this.AutoNumberGetSql;
-            if (this is SqlServer)
-                sql += "; SELECT SCOPE_IDENTITY();";
-            else if(this is MySqlDb)
-                sql += "; SELECT LAST_INSERT_ID();";
-            else
-                throw new ApplicationException("SqlServer, MySql以外のオートナンバーには現状対応しておりません。");
 
             object id = this.ExecuteScalar(sql, parameters);
 
@@ -671,6 +665,9 @@ namespace Lazorm
                 //なんかオーバーライドするよりもここで書いたほうがいいようなきがしました。
                 if (this is Oracle)
                     return "TO_DATE('" + time.ToString("yyyy/MM/dd HH:mm:ss") + "','yyyy/mm/dd hh24:mi:ss')";
+                if (this is MySqlDb)
+                    return "'" + time.ToString("yyyy/MM/dd HH:mm:ss") + "'";
+
                 return "'" + val.ToString() + "'";
             }
 
