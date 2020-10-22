@@ -98,7 +98,8 @@ namespace Lazorm
 
         internal override string GetTableListSql()
         {
-            return string.Format(@"SELECT TABLE_NAME as TableName	
+            return string.Format(@"SELECT TABLE_NAME as TableName,
+TABLE_COMMENT as Remarks
 FROM `INFORMATION_SCHEMA`.`TABLES` 
 WHERE `TABLE_SCHEMA`='{0}' ", this.Schema);
         }
@@ -113,7 +114,7 @@ WHERE `TABLE_SCHEMA`='{0}' ", this.Schema);
     CASE WHEN IS_NULLABLE = 'YES' THEN 1 ELSE 0 END AS Nullable,
     CASE WHEN EXTRA = 'auto_increment' THEN 1 ELSE 0 END AS IsAutoNumber,
     LEAST(IFNULL(CHARACTER_MAXIMUM_LENGTH, 0), 	2147483647) AS Length,
-    '' AS Remarks
+    COLUMN_COMMENT AS Remarks
 FROM `INFORMATION_SCHEMA`.`COLUMNS` 
 WHERE `TABLE_SCHEMA`='{0}' 
     AND `TABLE_NAME`='{1}';", this.Schema, tableName);

@@ -218,6 +218,7 @@ namespace Lazorm
                 namespaceDef.Imports.Add(new CodeNamespaceImport("System.Runtime.Serialization"));
             // namespaceDef.Imports.Add(new CodeNamespaceImport("Lazorm"));
             namespaceDef.Imports.Add(new CodeNamespaceImport("Lazorm.Attributes"));
+            namespaceDef.Imports.Add(new CodeNamespaceImport("System.ComponentModel.DataAnnotations"));
 
             // Generate target class
             namespaceDef.Types.Add(this.GenerateClass(table));
@@ -266,6 +267,7 @@ namespace Lazorm
 
             var attribute = new CodeAttributeDeclaration("DbTable");
             attribute.Arguments.Add(new CodeAttributeArgument("Name", new CodePrimitiveExpression(table.Name)));
+            attribute.Arguments.Add(new CodeAttributeArgument("Remarks", new CodePrimitiveExpression(table.Remarks)));
             attribute.Arguments.Add(new CodeAttributeArgument("DatabaseType", new CodeSnippetExpression("DatabaseType." + this.db.ToString())));
             attribute.Arguments.Add(new CodeAttributeArgument("ConnectionSettingKeyName", new CodePrimitiveExpression(this.ConnectionSettingKeyName)));
             cls.CustomAttributes.Add(attribute);
@@ -347,6 +349,15 @@ namespace Lazorm
             var childClassName = this.GetClassName(childTableName);
             var fieldName = GetFieldName(childTableName);
             var property = new CodeMemberProperty();
+
+            var attribute = new CodeAttributeDeclaration("Display");
+            var childTable =this.Tables.Find(t => t.Name == childTableName);
+            if (childTable != null && !string.IsNullOrEmpty(childTable.Remarks))
+            {
+                attribute.Arguments.Add(new CodeAttributeArgument("Name", new CodePrimitiveExpression(childTable.Remarks)));
+                property.CustomAttributes.Add(attribute);
+            }
+
             if (this.UseWCF)
                 property.CustomAttributes.Add(new CodeAttributeDeclaration("DataMember"));
             property.Name = childTableName;
@@ -423,6 +434,14 @@ namespace Lazorm
             var property = new CodeMemberProperty();
             if (this.UseWCF)
                 property.CustomAttributes.Add(new CodeAttributeDeclaration("DataMember"));
+
+            var attribute = new CodeAttributeDeclaration("Display");
+            var parentTable =this.Tables.Find(t => t.Name == parentForeignKey.ReferencedTableName);
+            if (parentTable != null && !string.IsNullOrEmpty(parentTable.Remarks))
+            {
+                attribute.Arguments.Add(new CodeAttributeArgument("Name", new CodePrimitiveExpression(parentTable.Remarks)));
+                property.CustomAttributes.Add(attribute);
+            }
             property.Name = className;
             property.Type = new CodeTypeReference(className);
             property.Attributes = MemberAttributes.Public;
@@ -490,6 +509,7 @@ namespace Lazorm
 
         private CodeMemberProperty GenerateProperty(TableDef table, ColumnDef column)
         {
+            var property = new CodeMemberProperty();
             var attribute = new CodeAttributeDeclaration("DbColumn");
             attribute.Arguments.Add(new CodeAttributeArgument("Name", new CodePrimitiveExpression(column.Name)));
             attribute.Arguments.Add(new CodeAttributeArgument("TypeName", new CodePrimitiveExpression(column.TypeName)));
@@ -503,9 +523,13 @@ namespace Lazorm
                 attribute.Arguments.Add(new CodeAttributeArgument("DecimalPlace", new CodePrimitiveExpression(column.DecimalPlace)));
             attribute.Arguments.Add(new CodeAttributeArgument("Length", new CodePrimitiveExpression(column.Length)));
             if(!string.IsNullOrEmpty(column.Remarks))
+            {
                 attribute.Arguments.Add(new CodeAttributeArgument("Remarks", new CodePrimitiveExpression(column.Remarks)));
+                var displayAttribute = new CodeAttributeDeclaration("Display");
+                displayAttribute.Arguments.Add(new CodeAttributeArgument("Name", new CodePrimitiveExpression(column.Remarks)));
+                property.CustomAttributes.Add(displayAttribute);
+            }
 
-            var property = new CodeMemberProperty();
             if (this.UseWCF)
                 property.CustomAttributes.Add(new CodeAttributeDeclaration("DataMember"));
             property.CustomAttributes.Add(attribute);

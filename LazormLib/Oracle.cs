@@ -56,7 +56,7 @@ namespace Lazorm
 
         internal override string GetTableListSql()
         {
-            return "select table_name as TableName from user_tables";
+            return "select table_name as TableName, '' as Remarks from user_tables";
         }
 
         internal override string GetColumnListSql(string tableName)

@@ -742,6 +742,7 @@ namespace Lazorm
                         {
                             TableDef table = new TableDef();
                             table.Name = (string)Cast(tableReader["TableName"], typeof(string));
+                            table.Remarks = (string)Cast(tableReader["Remarks"], typeof(string));
                             var columnDefs = this.GetColumnDefs(table.Name);
                             table.Columns.AddRange(columnDefs);
                             tables.Add(table);

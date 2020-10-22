@@ -15,6 +15,8 @@ namespace Lazorm.Attributes
         private string connectionSettingKeyName;
         private string tableName = string.Empty;
 
+        private string remarks;
+
         /// <summary>
         /// データベースがSQLServerであるか、Oracleであるかを取得または設定します。
         /// </summary>
@@ -40,6 +42,15 @@ namespace Lazorm.Attributes
         {
             get { return this.tableName; }
             set { this.tableName = value; }
+        }
+
+        /// <summary>
+        /// テーブル備考を取得または設定します。
+        /// </summary>
+        public string Remarks 
+        {
+            get { return this.remarks; }
+            set { this.remarks = value; }
         }
 
         /// <summary>

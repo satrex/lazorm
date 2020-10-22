@@ -77,7 +77,10 @@ namespace Lazorm
 
         internal override string GetTableListSql()
         {
-            return @"SELECT name as TableName FROM sysobjects WHERE xtype = 'U' AND name <> 'dtproperties'";
+            // TODO: Logic to get remarks
+            return @"SELECT name as TableName ,
+            '' as Remarks
+            FROM sysobjects WHERE xtype = 'U' AND name <> 'dtproperties'";
         }
 
         internal override string GetColumnListSql(string tableName)
