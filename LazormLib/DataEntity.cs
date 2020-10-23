@@ -119,7 +119,10 @@ namespace Lazorm
             var db = GetDatabase();
             return db.ExecuteQuery<U>(sql);
         }
-       /// <summary>
+
+        public static async Task<IEnumerable<U>> ExecuteQueryAsync<U>(string sql) where U : DataEntity<U>, INotifyPropertyChanged, new() => await Task.Run(() => ExecuteQuery<U>(sql: sql));
+
+        /// <summary>
         /// SQLの結果からエンティティを返す。
         /// SQLの列名と属性に指定されているNameが同じ場合、プロパティに値が入ります。
         /// </summary>
@@ -132,6 +135,8 @@ namespace Lazorm
             var db = GetDatabase();
             return db.ExecuteQuery<T>(sql);
         }
+
+        public static async Task<IEnumerable<T>> GetWhereAsync(string whereExpression) => await Task.Run(() => GetWhere(whereExpression: whereExpression));
         /// <summary>
         /// 型パラメータで指定したエンティティを、Where句を指定して取得します。
         /// </summary>
@@ -143,6 +148,8 @@ namespace Lazorm
             var query = string.Format(whereExpression, args);
             return GetWhere(query);
         }
+        public static async Task<IEnumerable<T>> GetWhereAsync(string whereExpression, params object[] args)
+        => await Task.Run(() => GetWhere(whereExpression, args));
 
         /// <summary>
         /// Gets multiple entities with condition
@@ -154,6 +161,7 @@ namespace Lazorm
             var db = GetDatabase();
             return  db.SelectMany<T>(predicate);
         }
+        public static async Task<IEnumerable<T>> GetAsync(Func<T, bool> predicate) => await Task.Run(() => Get(predicate));
 
         /// <summary>
         /// SQLの結果からエンティティを取得します。
@@ -167,6 +175,8 @@ namespace Lazorm
             return db.ExecuteQuery<T>(sql);
         }
 
+        public static async Task<IEnumerable<T>> GetBySqlAsync(string sql) => await Task.Run(() => GetBySql(sql));
+
         /// <summary>
         /// SQLの結果からエンティティを取得します。
         /// SQLの列名と属性に指定されているNameが同じ場合、プロパティに値が入ります。
@@ -179,6 +189,7 @@ namespace Lazorm
             var query = string.Format(sql, args);
             return GetBySql(query);
         }
+        public static async Task<IEnumerable<T>> GetBySqlAsync(string sql, params object[] args) => await Task.Run(() => GetBySql(sql, args));
 
         /// <summary>
         /// テーブルのデータを全行取得します。
@@ -189,6 +200,8 @@ namespace Lazorm
             Database db = GetDatabase();
             return db.SelectAll<T>();
         }
+
+        public static async Task<IEnumerable<T>> GetAllAsync() => await Task.Run(() => GetAll());
 
         /// <summary>
         /// 主キー項目に値をいれてから呼べば
@@ -204,11 +217,7 @@ namespace Lazorm
             return true;
         }
 
-        public virtual Task<bool> FillAsync()
-        {
-            return Task.Run(() => Fill());
-        }
-        
+        public virtual async Task<bool> FillAsync() => await Task.Run(() => Fill());
 
         /// <summary>
         /// sourceに与えられたエンティティのプロパティを
@@ -233,7 +242,9 @@ namespace Lazorm
                 //}
             }
         }
-        
+
+        public async Task FillAsync(DataEntity<T> source) => await Task.Run(() => Fill(source));
+
         /// <summary>
         /// 主キー項目がおなじものを削除する
         /// 対象が無い場合は何もしない
@@ -242,6 +253,8 @@ namespace Lazorm
         {
             GetDatabase().Delete<T>(this);
         }
+
+        public virtual async Task DropAsync() => await Task.Run(() => Drop());
 
         /// <summary>
         /// 追加、更新のどちらかをおこなう
@@ -253,6 +266,8 @@ namespace Lazorm
             GetDatabase().Merge<T>(this);
         }
 
+        public virtual async Task StoreAsync() => await Task.Run(() => Store());
+
         /// <summary>
         /// オーバーライド不可メソッド
         /// 1つのエンティティを単純にUPSERTする
@@ -262,6 +277,8 @@ namespace Lazorm
         {
             GetDatabase().Merge<T>(this);
         }
+
+        public async Task StoreSimplyAsync() => await Task.Run(() => StoreSimply());
 
         /// <summary>
         /// 主キーが同じものがDBに存在するかどうか
@@ -325,6 +342,8 @@ namespace Lazorm
             return clone;
         }
 
+        public virtual async Task<T> CloneAsync() => await Task.Run(() => Clone());
+
         /// <summary>
         /// クラスをXml文字列化して返す
         /// </summary>
@@ -342,6 +361,8 @@ namespace Lazorm
                 }
             }
         }
+
+        public async Task<string> ToXmlAsync() => await Task.Run(() => ToXml());
 
         /// <summary>
         /// コマンドタイムアウトの秒数を取得または設定します。
