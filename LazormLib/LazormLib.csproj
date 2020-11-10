@@ -15,9 +15,9 @@
     <PackageOutputPath>./nupkg</PackageOutputPath>
     <PackageLicenseFile>./LICENSE</PackageLicenseFile>
     <PackOnBuild>true</PackOnBuild>
-    <Version>0.5.5</Version>
-    <ReleaseVersion>0.5.5</ReleaseVersion>
-    <PackageVersion>0.5.5</PackageVersion>
+    <Version>0.6.1</Version>
+    <ReleaseVersion>0.6.1</ReleaseVersion>
+    <PackageVersion>0.6.1</PackageVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.0.21" />

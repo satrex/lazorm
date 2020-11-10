@@ -249,36 +249,39 @@ namespace Lazorm
         /// 主キー項目がおなじものを削除する
         /// 対象が無い場合は何もしない
         /// </summary>
-        public virtual void Drop()
+        public virtual T Drop()
         {
             GetDatabase().Delete<T>(this);
+            return (T)this;
         }
 
-        public virtual async Task DropAsync() => await Task.Run(() => Drop());
+        public virtual async Task<T> DropAsync() => await Task.Run(() => Drop());
 
         /// <summary>
         /// 追加、更新のどちらかをおこなう
         /// 追加時に主キーがオートナンバーの場合、
         /// 新しい値を発行後にこのエンティティの主キーが更新される。
         /// </summary>
-        public virtual void Store()
+        public virtual T Store()
         {
             GetDatabase().Merge<T>(this);
+            return (T)this;
         }
 
-        public virtual async Task StoreAsync() => await Task.Run(() => Store());
+        public virtual async Task<T> StoreAsync() => await Task.Run(() => Store());
 
         /// <summary>
         /// オーバーライド不可メソッド
         /// 1つのエンティティを単純にUPSERTする
         /// オーバーライド可能なStoreと区別するため追加した
         /// </summary>
-        public void StoreSimply()
+        public T StoreSimply()
         {
             GetDatabase().Merge<T>(this);
+            return (T)this;
         }
 
-        public async Task StoreSimplyAsync() => await Task.Run(() => StoreSimply());
+        public async Task<T> StoreSimplyAsync() => await Task.Run(() => StoreSimply());
 
         /// <summary>
         /// 主キーが同じものがDBに存在するかどうか
