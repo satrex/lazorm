@@ -44,8 +44,15 @@ namespace Lazorm
 
         internal override DatabaseType Type
         {
-            get { return DatabaseType.SqlServer; }
+            get { return DatabaseType.MySql; }
         }
+
+        Dictionary<string, IDbConnection> connectionPool = new Dictionary<string, IDbConnection>();
+        Dictionary<string, IDbConnection> ConnectionPool
+        {
+            get { return connectionPool; }
+        }
+
 
         /// <summary>
         /// データベースへの接続を生成します。
@@ -54,7 +61,7 @@ namespace Lazorm
         public override IDbConnection CreateConnection()
         {
             return new MySqlConnection(this.ConnectionString);
-        }
+        } 
 
         public override string GetForeignKeySql()
         {

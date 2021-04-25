@@ -287,7 +287,9 @@ namespace Lazorm
         {
             using (IDbConnection connection = this.CreateConnection())
             {
-                connection.Open();
+                if(connection.State != ConnectionState.Open)
+                    connection.Open();
+
                 using (IDbCommand command = connection.CreateCommand())
                 {
                     command.CommandTimeout = this.CommandTimeout;
