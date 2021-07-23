@@ -562,10 +562,8 @@ namespace Lazorm
             taskType.TypeArguments.Add(className);
             method.ReturnType = isAsync? taskType : new CodeTypeReference(className);
             method.Attributes = MemberAttributes.Public | MemberAttributes.Static;
-            foreach (var column in table.Columns)
+            foreach (var column in table.Columns.Where(c => c.IsPrimaryKey))
             {
-                if (!column.IsPrimaryKey)
-                    continue;
                 method.Parameters.Add(new CodeParameterDeclarationExpression(this.db.GetProgramType(column), this.GetFieldName(column)));
             }
 
@@ -607,10 +605,8 @@ namespace Lazorm
             method.ReturnType = taskType;
             method.Attributes = MemberAttributes.Public | MemberAttributes.Static;
             var parameters = new List<CodeVariableReferenceExpression>();
-            foreach (var column in table.Columns)
+            foreach (var column in table.Columns.Where(c => c.IsPrimaryKey))
             {
-                if (!column.IsPrimaryKey)
-                    continue;
                 method.Parameters.Add(new CodeParameterDeclarationExpression(this.db.GetProgramType(column), this.GetFieldName(column)));
                 parameters.Add(new CodeVariableReferenceExpression(this.GetFieldName(column)));
             }
