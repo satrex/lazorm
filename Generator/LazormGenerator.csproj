@@ -20,7 +20,7 @@
     <PackageProjectUrl>https://github.com/satrex/lazorm</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Version>0.6.0</Version>
-    <ReleaseVersion>0.6.0</ReleaseVersion>
+    <ReleaseVersion>0.4.11</ReleaseVersion>
     <PackageVersion>0.6.0</PackageVersion>
     <PackageReleaseNotes>Integrated with lazorm fluxor generator. Also modified api.</PackageReleaseNotes>
   </PropertyGroup>
