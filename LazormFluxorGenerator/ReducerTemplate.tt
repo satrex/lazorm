@@ -1,0 +1,101 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+<#
+    string EntityClass = entityClassName;
+    string memberEntity = "_" + entityClassName.ToLower();
+    string localEntity = entityClassName.ToLower();
+    string currentEntities = "Current" + entityClassNamePlural;
+#>
+<#  
+//string[] cruds = new string[] {"Create", "Load", "Update", "Delete"};
+string stateClassName = entityClassNamePlural + "State";
+#>
+using System.Collections.Generic;
+using System.Linq;
+using Fluxor;
+using Lazorm;
+using Lazorm.Store.Features.<#= entityClassName #>UseCase.Actions.<#= crud #><#= entityClassName #>;
+using Lazorm.Store.States;
+
+namespace Lazorm.Store.Features.<#= entityClassName #>UseCase.Reducers
+{
+    #region Reducer
+    public static class <#= crud #><#= entityClassName #>ActionsReducer
+    {
+        [ReducerMethod]
+        public static <#= stateClassName #> Reduce<#= crud #><#= entityClassName #>Action(<#= stateClassName #> state, <#= crud #><#= entityClassName #>Action _)
+        => new <#= stateClassName #>(true, null, state.<#= currentEntities #>, state.CurrentEntity);
+
+        [ReducerMethod]
+        public static <#= stateClassName #> Reduce<#= crud #><#= entityClassName #>SuccessAction(<#= stateClassName #> state, <#= crud #><#= entityClassName #>SuccessAction action)
+        {
+<# if (crud == "Load" ) { #>
+            return new <#= stateClassName #>(false, null, state.<#= currentEntities #>, action.<#= entityClassName #>);
+<#
+    } /* end Load */
+    else if (crud == "Create") {
+#>
+            // Creates new <#= entityClassName #>
+            var currentEntities = state.<#= currentEntities #> is null ?
+                new List<<#= entityClassName #>>() :
+                state.<#= currentEntities #>.ToList();
+
+            // Add the newly created <#= entityClassName #> to our list and sort by ID
+            currentEntities.Add(action.<#= entityClassName #>);
+            currentEntities = currentEntities   
+                .OrderBy(t => t.Id)
+                .ToList();
+
+            return new <#= stateClassName #>(false, null, currentEntities, action.<#= entityClassName #>);   
+<#
+    }  /* end Create */
+    else if (crud == "Update" ) {
+#>
+             // If the current <#= entityClassName #> list is null, set the state with a new list containing the updated <#= entityClassName #>
+            if (state.<#= currentEntities #> is null)
+            {
+                return new <#= stateClassName #>(false, null, new List<<#= entityClassName #>>(), action.<#= entityClassName #>);   
+            }
+
+            // Rather than mutating in place, let's construct a new list and add our updated item
+            var updatedList = state.<#= currentEntities #>
+                .Where(t => t.Id != action.<#= entityClassName #>.Id)
+                .ToList();
+
+            // Add the todo and sort the list
+            updatedList.Add(action.<#= entityClassName #>);
+            updatedList = updatedList
+                .OrderBy(t => t.Id)
+                .ToList();
+           
+            return new <#= stateClassName #>(false, null, updatedList, action.<#= entityClassName #>)
+            ;
+<#
+    }  /* end Update */
+    else if (crud == "Delete" )  {
+#>
+            if(state.<#= currentEntities #> is null)
+            {
+                return new <#= stateClassName #>(false, null, null, state.CurrentEntity);
+            }
+
+            var updatedEntities = state.<#= currentEntities #>.Where(t => t.Id != action.<#= entityClassName #>.Id);
+
+            return new <#= stateClassName #>(false, null, updatedEntities, updatedEntities.Last());
+
+<# 
+ } /* end crudType */ 
+#>
+        }
+
+        [ReducerMethod]
+            public static <#= stateClassName #> Reduce<#= crud #><#= entityClassName #>FailureAction(<#= stateClassName #> state, <#= crud #><#= entityClassName #>FailureAction action)
+            => new <#= stateClassName #>(false, action.ErrorMessage, state.<#= currentEntities #>, state.CurrentEntity );    
+        
+    }
+}
+    #endregion Reducer

@@ -1,0 +1,36 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<# 
+    string[] entityClassNamees = new string[]{"Patient"}; 
+    string[] cruds = new string[] {"Create"}; 
+#>
+<#
+    string EntityClass = entityClassName;
+    string memberEntity = "_" + entityClassName.ToLower();
+    string localEntity = entityClassName.ToLower();
+#>
+<#  
+//string[] cruds = new string[] {"Create", "Load", "Update", "Delete"}; 
+string stateClassName = entityClassNamePlural + "State";
+#>
+using System.Collections.Generic;
+using System.Linq;
+using Fluxor;
+using Lazorm;
+using Lazorm.Store.Features;
+using Lazorm.Store.States;
+
+namespace Lazorm.Store.Features
+{
+    public class <#= entityClassNamePlural #>Feature : Feature<<#= stateClassName #>>
+    {
+        public override string GetName() => "<#= entityClassNamePlural #>";
+
+        protected override <#= stateClassName #> GetInitialState() =>
+            new <#= stateClassName #>(false, null, null, null);
+    }    
+}
+

@@ -1,0 +1,44 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+<#
+    string EntityClass = entityClassName;
+    string memberEntity = "_" + entityClassName.ToLower();
+    string localEntity = entityClassName.ToLower();
+    string currentEntities = "Current" + entityClassNamePlural;
+    string currentEntitiesLocal = "current" + entityClassNamePlural;
+    
+#>
+<#  
+//string[] cruds = new string[] {"Create", "Load", "Update", "Delete"};
+string stateClassName = entityClassNamePlural + "State";
+#>
+using System.Collections.Generic;
+using System.Linq;
+using Fluxor;
+using Lazorm;
+using Lazorm.Store.Features;
+using Lazorm.Store.States;
+
+namespace Lazorm.Store.States
+{
+    public class <#= stateClassName #> : RootState
+    {
+        public <#= stateClassName #>(bool isLoading, string? currentErrorMessage, IEnumerable<<#= entityClassName #>>?  <#= currentEntitiesLocal #>, <#= entityClassName #>? currentEntity) 
+            : base(isLoading, currentErrorMessage)
+        {
+            <#= currentEntities #> = <#= currentEntitiesLocal #>;
+            CurrentEntity = currentEntity;
+        }
+
+        public IEnumerable<<#= entityClassName #>>? <#= currentEntities #> { get; }
+
+        public <#= entityClassName #>? CurrentEntity { get; }
+    }    
+}
+
+
+

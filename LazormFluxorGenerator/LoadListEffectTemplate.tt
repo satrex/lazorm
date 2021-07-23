@@ -1,0 +1,75 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+<#  
+string[] cruds = new string[] {"Create"}; 
+string[] actionTypes = new string[] {"", "Success"};
+
+string EntityClass = entityClassName;
+string memberEntity = entityClassNamePlural;
+string localEntity = entityClassNamePlural.ToLower();
+
+   string actionClassName = crud + entityClassNamePlural + actionType + "Action"; 
+   string effectClassName = crud + entityClassNamePlural + actionType + "Effect"; 
+#>
+
+using System;
+using System.Threading.Tasks;
+using Fluxor;
+using Lazorm;
+using Lazorm.Store.Features.<#= entityClassName #>UseCase.Actions.<#= crud #><#= entityClassNamePlural #>;
+using Microsoft.Extensions.Logging;
+
+namespace Lazorm.Store.Features.<#= entityClassNamePlural #>.Effects
+{ 
+    public partial class <#= effectClassName #>: Effect<<#= actionClassName #>>
+    {
+        private readonly ILogger<<#= effectClassName #>> _logger;
+
+        public <#= effectClassName #>(ILogger<<#= effectClassName #>> logger) =>
+            _logger = logger;
+
+<# if (actionType == "") { #>
+        protected override async Task HandleAsync(<#= actionClassName #> action, IDispatcher dispatcher)
+        {
+            try
+            {
+                _logger.LogInformation($"Loading <#= entityClassNamePlural #> ...");
+                var <#= entityClassNamePlural #>Response = await <#= entityClassName #>.GetAllAsync();
+
+                _logger.LogInformation($"<#= entityClassNamePlural #> loaded successfully!");
+                dispatcher.Dispatch(new Load<#= entityClassNamePlural #>SuccessAction(<#= entityClassNamePlural #>Response));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error loading <#= entityClassNamePlural #>, reason: {e.Message}");
+                dispatcher.Dispatch(new Load<#= entityClassNamePlural #>FailureAction(e.Message));
+            }                
+        }
+ <# 
+    } else { 
+ #>
+        // TODO: If you need some effect, you create partial class of this,
+        // and write HandleAsync override methods like below.
+        // Don't write here because auto-generated files change will be rewritten.
+                    
+        protected override async Task HandleAsync(<#= actionClassName #> action, IDispatcher dispatcher)
+        {
+        
+            try
+            {
+                // Write code here
+                await Task.Run(() => {});
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"{0} raised on <#= actionClassName #>, reason: {e.Message}", e.GetType().Name);
+            }   
+        }
+                
+<# } /* end if */ #> 
+    }
+}

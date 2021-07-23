@@ -1,0 +1,161 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Summary>This project provides functionality for generating class for Fluxor from entity file.</Summary>
+    <Title>Lazorm Fluxor - store files generator for fluxor</Title>
+    <Description>zero configuration Fluxor store file generator</Description>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <PackageId>LazormFluxor</PackageId>
+    <Authors>Satrex</Authors>
+    <Copyright>Copyright (c)2021 Satrex</Copyright>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Owners>Satrex</Owners>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>fluxor-generate</ToolCommandName>
+    <PackageOutputPath>./nupkg</PackageOutputPath>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackOnBuild>true</PackOnBuild>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/satrex/LazormFluxor</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/satrex/LazormFluxor</RepositoryUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Version>0.0.3</Version>
+    <PackageReleaseNotes>Config Error Fixed</PackageReleaseNotes>
+    <ReleaseVersion>0.4.11</ReleaseVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="EffectTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>EffectTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="FeatureTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>FeatureTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="ReducerTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ReducerTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="ActionTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ActionTemplate.cs</LastGenOutput>
+      
+    </None>
+    <None Update="EffectTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>EffectTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="FeatureTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>FeatureTemplate.cs</LastGenOutput>
+      
+    </None>
+    <None Update="ReducerTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ReducerTemplate.cs</LastGenOutput>
+      
+    </None>
+    <None Update="RootState.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>RootState.cs</LastGenOutput>
+    </None>
+    <None Update="StateTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>StateTemplate.cs</LastGenOutput>
+      
+    </None>
+    <None Update="EffectTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>EffectTemplate.cs</LastGenOutput>
+      
+    </None>
+    <None Update="FailureActionTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>FailureActionTemplate.cs</LastGenOutput>
+      
+    </None>
+    <None Update="RootStateTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>RootStateTemplate.cs</LastGenOutput>
+      
+    </None>
+    <None Update="LoadListActionTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>LoadListActionTemplate.cs</LastGenOutput>
+      
+    </None>
+    <None Update="LoadLIstEffectTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>LoadListEffectTemplate.cs</LastGenOutput>
+      
+    </None>
+    <None Update="LoadListEffectTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>LoadListEffectTemplate.cs</LastGenOutput>
+      
+    </None>
+    <None Update="ListLoadReducerTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>LoadListReducerTemplate.cs</LastGenOutput>
+      
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Pluralize.NET" Version="1.0.2" />
+    <PackageReference Include="System.CodeDom" Version="4.7.0" />
+    <PackageReference Include="ConsoleAppFramework" Version="3.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="RootState.cs">
+      <DependentUpon>RootStateTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="FailureActionTemplate.cs">
+      <DependentUpon>FailureActionTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="StateTemplate.cs">
+      <DependentUpon>StateTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="RootStateTemplate.cs">
+      <DependentUpon>RootStateTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ActionTemplate.cs">
+      <DependentUpon>ActionTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="FeatureTemplate.cs">
+      <DependentUpon>FeatureTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="LoadListActionTemplate.cs">
+      <DependentUpon>LoadListActionTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="LoadLIstEffectTemplate.cs">
+      <DependentUpon>LoadLIstEffectTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="EffectTemplate.cs">
+      <DependentUpon>EffectTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="LoadListEffectTemplate.cs">
+      <DependentUpon>LoadListEffectTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ListLoadReducerTemplate.cs">
+      <DependentUpon>ListLoadReducerTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="LoadListReducerTemplate.cs">
+      <DependentUpon>LoadListReducerTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ReducerTemplate.cs">
+      <DependentUpon>ReducerTemplate.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="MSBuild" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+</Project>

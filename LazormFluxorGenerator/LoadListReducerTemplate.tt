@@ -1,0 +1,49 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+<#
+    string EntityClass = entityClassName;
+    string memberEntity = "_" + entityClassName.ToLower();
+    string localEntity = entityClassName.ToLower();
+    string currentEntities = "Current" + entityClassNamePlural;
+#>
+<#  
+//string[] cruds = new string[] {"Create", "Load", "Update", "Delete"};
+string stateClassName = entityClassNamePlural + "State";
+#>
+using System.Collections.Generic;
+using System.Linq;
+using Fluxor;
+using Lazorm;
+using Lazorm.Store.Features.<#= entityClassName #>UseCase.Actions.<#= crud #><#= entityClassNamePlural #>;
+using Lazorm.Store.States;
+
+namespace Lazorm.Store.Features.<#= entityClassName #>UseCase.Reducers
+{
+    #region Reducer
+    public static class <#= crud #><#= entityClassNamePlural #>ActionsReducer
+    {
+        [ReducerMethod]
+        public static <#= stateClassName #> Reduce<#= crud #><#= entityClassNamePlural #>Action(<#= stateClassName #> state, <#= crud #><#= entityClassNamePlural #>Action _)
+        => new <#= stateClassName #>(true, null, null, state.CurrentEntity);
+
+        [ReducerMethod]
+        public static <#= stateClassName #> Reduce<#= crud #><#= entityClassNamePlural #>SuccessAction(<#= stateClassName #> state, <#= crud #><#= entityClassNamePlural #>SuccessAction action)
+        {
+<# if (crud == "Load" ) { #>
+            return new <#= stateClassName #>(false, null, action.<#= entityClassNamePlural #>, state.CurrentEntity);
+<#
+    } /* end Load */
+#>
+        }
+
+        [ReducerMethod]
+            public static <#= stateClassName #> Reduce<#= crud #><#= entityClassNamePlural #>FailureAction(<#= stateClassName #> state, <#= crud #><#= entityClassNamePlural #>FailureAction action)
+            => new <#= stateClassName #>(false, action.ErrorMessage, null, state.CurrentEntity );    
+        
+    }
+    #endregion Reducer
+}
