@@ -19,10 +19,11 @@
     <PackOnBuild>true</PackOnBuild>
     <PackageProjectUrl>https://github.com/satrex/lazorm</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>0.6.0</Version>
-    <ReleaseVersion>0.4.11</ReleaseVersion>
-    <PackageVersion>0.6.0</PackageVersion>
+    <Version>0.6.1</Version>
+    <ReleaseVersion>0.6.1</ReleaseVersion>
+    <PackageVersion>0.6.1</PackageVersion>
     <PackageReleaseNotes>Integrated with lazorm fluxor generator. Also modified api.</PackageReleaseNotes>
+    <SynchReleaseVersion>false</SynchReleaseVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -63,4 +64,13 @@
     <Folder Include="nupkg\" />
     <Folder Include="Properties\" />
   </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <StandardHeader IncludeInNewFiles="True" Text="${FileNameWithoutExtension} - ${CopyrightHolder} ${Date}" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

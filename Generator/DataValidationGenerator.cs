@@ -224,7 +224,8 @@ namespace Lazorm
                 cls.Members.Add(this.GenerateField(column));
                 cls.Members.Add(this.GenerateProperty(table, column));
             }
-            cls.Members.Add( GenerateConstructor(table));
+            cls.Members.Add( GenerateDefaultConstructor());
+            cls.Members.Add( GenerateConstructorByEntity(table));
             cls.Members.Add( GenerateToEntityMethod(table));
             return cls;
         }
@@ -288,7 +289,7 @@ namespace Lazorm
             method.Name = $"To{className}";
 
             method.ReturnType =  new CodeTypeReference(className);
-            method.Attributes = MemberAttributes.Public | MemberAttributes.Static;
+            method.Attributes = MemberAttributes.Public;
 
             //ClassName entity = new ClassName()　みたいなコードをつくる
             method.Statements.Add(new CodeVariableDeclarationStatement(
@@ -308,15 +309,23 @@ namespace Lazorm
 
             return method;
         }
-        private CodeMemberMethod GenerateConstructor(TableDef table)
+
+        private CodeMemberMethod GenerateDefaultConstructor()
+        {
+            var defaultCtor = new CodeConstructor();
+            defaultCtor.Attributes = MemberAttributes.Public;
+            return defaultCtor;
+        }
+
+        private CodeMemberMethod GenerateConstructorByEntity(TableDef table)
         {
             string modelClassName = this.GetModelClassName(table.Name);
-            string className = $"{this.GetModelClassName(table.Name)}Validation";
-            var method = new CodeConstructor();
             
-            method.Attributes = MemberAttributes.Public | MemberAttributes.Static;
+            var ctorFromEntity = new CodeConstructor();
+
+            ctorFromEntity.Attributes = MemberAttributes.Public;
             var constArg = new CodeParameterDeclarationExpression(new CodeTypeReference(modelClassName), "entity"); 
-            method.Parameters.Add(constArg );
+            ctorFromEntity.Parameters.Add(constArg );
 
             //entity.Id = _Id みたいなコードを主キーすべてに対してつくる
             foreach (var column in table.Columns)
@@ -325,10 +334,10 @@ namespace Lazorm
                 assign.Left = new CodeVariableReferenceExpression(this.GetFieldName(column));
                 assign.Right = new CodePropertyReferenceExpression(new CodeVariableReferenceExpression("entity"), this.GetPropertyName(table.Name, column.Name));
 
-                method.Statements.Add(assign);
+                ctorFromEntity.Statements.Add(assign);
             }
 
-            return method;
+            return ctorFromEntity;
         }
 
         #endregion
