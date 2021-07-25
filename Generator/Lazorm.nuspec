@@ -9,7 +9,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">MIT</license>
     <projectUrl>https://github.com/satrex/lazorm.git</projectUrl>
-    <iconUrl></iconUrl>
+    <iconUrl>https://github.com/satrex/lazorm/blob/19d4d02f8a321eef1328e705b98c971f7e7f3919/Documents/Images/lazorm-logo.png</iconUrl>
     <description>$description$</description>
     <releaseNotes>Initial Packaged</releaseNotes>
     <copyright>$copyright$</copyright>
