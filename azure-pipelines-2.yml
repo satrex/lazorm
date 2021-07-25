@@ -14,17 +14,15 @@ variables:
 
 steps:
 - script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)
-
+  displayName: 'dotnet build $(buildConfiguration)'
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack $(buildConfiguration)'
   inputs:
-      command: pack
-      versioningScheme: byPrereleaseNumber
-      majorVersion: '$(Major)'
-      minorVersion: '$(Minor)'
-      patchVersion: '$(Patch)'
-
+    command: pack
+    versioningScheme: byPrereleaseNumber
+    majorVersion: '$(Major)'
+    minorVersion: '$(Minor)'
+    patchVersion: '$(Patch)'
 - task: NuGetCommand@2
   inputs:
     command: 'push'
@@ -32,7 +30,3 @@ steps:
     nuGetFeedType: 'internal'
     publishVstsFeed: '80d57cd5-db73-4f6e-8ca0-132e8d3131c9/6e201802-7590-4465-aed3-d96f85295e0d'
     
-
-
-
-
