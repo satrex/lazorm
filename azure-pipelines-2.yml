@@ -15,15 +15,8 @@ variables:
 steps:
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
-
-- task: NuGetCommand@2
-  inputs:
-    command: 'pack'
-    packagesToPack: '**/*.csproj'
-    versioningScheme: 'byPrereleaseNumber'
-    majorVersion: '6'
-    minorVersion: '0'
-    patchVersion: '2'
+- script: dotnet pack --configuration $(buildConfiguration)
+  displayName: 'dotnet pack $(buildConfiguration)'
 
 - task: NuGetCommand@2
   inputs:
