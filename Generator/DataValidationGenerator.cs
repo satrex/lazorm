@@ -216,7 +216,7 @@ namespace Lazorm
             if(this.UseWCF)
                 cls.CustomAttributes.Add(new CodeAttributeDeclaration("DataContract"));
 
-            cls.IsPartial = false;
+            cls.IsPartial = true;
             cls.IsClass = true;
 
             foreach (ColumnDef column in table.Columns)
