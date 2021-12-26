@@ -172,7 +172,7 @@ namespace Lazorm
             if(File.Exists(filePath)){ File.Delete(filePath);}
 
             var table = this.Tables.Find(table => table.Name == tableName);
-            if(table == null ) throw new NullReferenceException(string.Format("table {0} is null", tableName));
+            if(table == null ) throw new NullReferenceException(string.Format("Couldn't find table {0} on database", tableName));
 
             // Write down namespaces
             var namespaceDef = new CodeNamespace(this.NameSpace);
@@ -255,6 +255,7 @@ namespace Lazorm
             field.Name = this.GetFieldName(column);
             field.Type = new CodeTypeReference(this.db.GetProgramType(column));
             field.Attributes = MemberAttributes.Private;
+            field.InitExpression = new CodeDefaultValueExpression(field.Type);
             if(!string.IsNullOrEmpty(column.Remarks))
                 field.Comments.Add(new CodeCommentStatement(column.Remarks));
             return field;
