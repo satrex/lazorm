@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <PackageId>Lazorm</PackageId>
     <Authors>Satrex</Authors>
     <Copyright>Satrex</Copyright>
@@ -19,9 +19,9 @@
     <PackOnBuild>true</PackOnBuild>
     <PackageProjectUrl>https://github.com/satrex/lazorm</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>0.6.4</Version>
-    <ReleaseVersion>0.6.4</ReleaseVersion>
-    <PackageVersion>0.6.4</PackageVersion>
+    <Version>0.6.5</Version>
+    <ReleaseVersion>0.6.5</ReleaseVersion>
+    <PackageVersion>0.6.5</PackageVersion>
     <PackageReleaseNotes>Integrated with lazorm fluxor generator. Also modified api.</PackageReleaseNotes>
     <SynchReleaseVersion>false</SynchReleaseVersion>
   </PropertyGroup>
