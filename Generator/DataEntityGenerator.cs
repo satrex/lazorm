@@ -557,11 +557,18 @@ namespace Lazorm
         {
             var className = this.GetClassName(table.Name);
             var method = new CodeMemberMethod();
-            method.Name = isAsync? "GetAsync" : "Get";
-            var taskType = new CodeTypeReference(typeof(Task<>));
-            taskType.TypeArguments.Add(className);
-            method.ReturnType = isAsync? taskType : new CodeTypeReference(className);
-            method.Attributes = MemberAttributes.Public | MemberAttributes.Static;
+            if(isAsync)
+            {
+                method.Name = "GetAsync";
+                var taskType = new CodeTypeReference(typeof(Task<>));
+                taskType.TypeArguments.Add($"{className}?");
+                method.ReturnType = taskType;
+            }
+            else{
+                method.Name = "Get";
+                method.ReturnType = new CodeTypeReference($"{className}?");
+            }
+           method.Attributes = MemberAttributes.Public | MemberAttributes.Static;
             foreach (var column in table.Columns.Where(c => c.IsPrimaryKey))
             {
                 method.Parameters.Add(new CodeParameterDeclarationExpression(this.db.GetProgramType(column), this.GetFieldName(column)));
@@ -601,7 +608,7 @@ namespace Lazorm
             var method = new CodeMemberMethod();
             method.Name = "GetAsync";
             var taskType = new CodeTypeReference(typeof(Task<>));
-            taskType.TypeArguments.Add(className);
+            taskType.TypeArguments.Add($"{className}?");
             method.ReturnType = taskType;
             method.Attributes = MemberAttributes.Public | MemberAttributes.Static;
             var parameters = new List<CodeVariableReferenceExpression>();
@@ -642,7 +649,7 @@ namespace Lazorm
             method.Name = "Get";
             var taskType = new CodeTypeReference(typeof(Task<>));
             taskType.TypeArguments.Add(className);
-            method.ReturnType = new CodeTypeReference(className);
+            method.ReturnType = new CodeTypeReference($"{className}?");
             method.Attributes = MemberAttributes.Public | MemberAttributes.Static;
             var parameters = new List<CodeVariableReferenceExpression>();
             foreach (var column in table.Columns)
@@ -671,7 +678,7 @@ namespace Lazorm
             var method = new CodeMemberMethod();
             method.Name = "GetAsync";
             var taskType = new CodeTypeReference(typeof(Task<>));
-            taskType.TypeArguments.Add(className);
+            taskType.TypeArguments.Add($"{className}?");
             method.ReturnType = taskType;
             method.Attributes = MemberAttributes.Public | MemberAttributes.Static;
             var parameters = new List<CodeVariableReferenceExpression>();
@@ -698,132 +705,5 @@ namespace Lazorm
  
         #endregion
 
-        #region 旧コード生成コード
-        /*
-        /// <summary>
-        /// ゴリゴリ書いた奴
-        /// CodoDom使った記法に書き換えたので未使用
-        /// </summary>
-        /// <param name="table"></param>
-        /// <returns></returns>
-        public string Generate(TableDef table)
-        {
-            string file = @"using System;
-using System.Collections.Generic;
-using Lazorm;
-using Lazorm.Attributes;
-
-namespace " + this.NameSpace + @"
-{
-    " + this.GenerateClass(table) + @"
-}";
-            return file;
-        }
-
-        private string GenerateClass(TableDef table)
-        {
-            string classString = @"[DbTable(DatabaseType = DatabaseType." + this.db.ToString() + @", ConnectionSettingKeyName = """ + this.ConnectionSettingKeyName + @""", Name = """ + table.Name + @""")]
-    public partial class " + this.GetClassName(table) + @" : DataEntity<" + this.GetClassName(table) + @">
-    {
-        " + this.GenerateFields(table) + @"
-        
-        " + this.GenerateProperties(table) + @"
-        " + this.GenerateMethods(table) + @"
-    }
-    ";
-            return classString;
-        }
-
-        private string GenerateMethods(TableDef table)
-        {
-            if (!table.HasPrimaryKey())
-                return string.Empty;
-
-            string methods = @"//Methods
-
-        /// <summary>
-        /// テーブルの主キーを指定して単一のEntityを返す。
-        /// 存在しない場合はnullを返す。
-        /// </summary>
-        public static " + this.GetClassName(table) + @" Get(" + this.GetParams(table) + @")
-        {
-            " + this.GetClassName(table) + @" entity = new " + this.GetClassName(table) + @"();";
- 
-            foreach(ColumnDef column in table.Columns)
-            {
-                if (column.IsPrimaryKey)
-                    methods += @"
-            entity." + this.GetPropertyName(table, column) + @" = " + this.GetFieldName(column) + @";";
-            }
-
-            methods += @"
-            if (!entity.Exists())
-                return null;
-            entity.Fill();
-            return entity;
-        }
-        ";
-
-            return methods;
-        }
-
-        private string GetParams(TableDef table)
-        {
-            string parameters = string.Empty;
-            foreach (ColumnDef column in table.Columns)
-            {
-                if(column.IsPrimaryKey)
-                    parameters += this.db.GetProgramTypeName(column) + " " + this.GetFieldName(column) + ", ";
-            }
-
-            if (parameters == string.Empty)
-                return string.Empty;
-
-            parameters = parameters.Substring(0, parameters.Length - 2);
-
-            return parameters;
-        }
-
-        private string GenerateFields(TableDef table)
-        {
-            string f = @"//Fields";
-            foreach (ColumnDef column in table.Columns)
-            {
-                f += @"
-        private " + this.db.GetProgramTypeName(column) + " " + this.GetFieldName(column) + @";";
-            }
-
-            return f;
-        }
-
-        private string GenerateProperties(TableDef table)
-        {
-            string p = @"//Properties";
-            foreach (ColumnDef column in table.Columns)
-            {
-                p += @"
-        [DbColumn(";
-                p += @"Name = """ + column.Name + @""", TypeName = """ + column.TypeName + @""", ";
-                if (column.IsPrimaryKey)
-                    p += "IsPrimaryKey = true, ";
-                if(column.Nullable)
-                    p += "Nullable = true, ";
-                if (column.IsAutoNumber)
-                    p += "IsAutoNumber = true, ";
-                p = p.Substring(0, p.Length - 2);
-                p += ")]";
-                p += @"
-        public " + this.db.GetProgramTypeName(column) + @" " + this.GetPropertyName(table, column) + @"
-        {
-            get{ return this." + this.GetFieldName(column) + @"; }
-            set{ this." + this.GetFieldName(column) + @" = value; }
-        }
-        ";
-            }
-
-            return p;
-        }
-*/
-        #endregion
     }
 }

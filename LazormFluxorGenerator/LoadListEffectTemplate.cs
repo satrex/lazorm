@@ -158,7 +158,7 @@ string localEntity = entityClassNamePlural.ToLower();
             #line hidden
             
             #line 36 ""
-            this.Write("        protected override async Task HandleAsync(");
+            this.Write("        public override async Task HandleAsync(");
             
             #line default
             #line hidden
@@ -286,7 +286,7 @@ string localEntity = entityClassNamePlural.ToLower();
         // and write HandleAsync override methods like below.
         // Don't write here because auto-generated files change will be rewritten.
                     
-        protected override async Task HandleAsync(");
+        public override async Task HandleAsync(");
             
             #line default
             #line hidden

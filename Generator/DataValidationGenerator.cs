@@ -210,6 +210,8 @@ namespace Lazorm
         {
             var singular = this.GetClassName(table.Name);
             var cls = new CodeTypeDeclaration(singular);
+            var codeComment = "TODO: Modify this scaffold validation to add custom validations.";
+            cls.Comments.Add(new CodeCommentStatement(codeComment));
 
             //クラスの属性作成
             cls.CustomAttributes.Add(new CodeAttributeDeclaration("Serializable"));
@@ -263,7 +265,7 @@ namespace Lazorm
 
         private CodeMemberProperty GenerateProperty(TableDef table, ColumnDef column)
         {
-            var property = new CodeMemberProperty();
+           var property = new CodeMemberProperty();
            if (!column.Nullable)
             {
                 var requiredAttribute = new CodeAttributeDeclaration("Required");

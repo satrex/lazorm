@@ -33,7 +33,7 @@ namespace Lazorm.Store.Features.<#= entityClassNamePlural #>.Effects
             _logger = logger;
 
 <# if (actionType == "") { #>
-        protected override async Task HandleAsync(<#= actionClassName #> action, IDispatcher dispatcher)
+        public override async Task HandleAsync(<#= actionClassName #> action, IDispatcher dispatcher)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace Lazorm.Store.Features.<#= entityClassNamePlural #>.Effects
         // and write HandleAsync override methods like below.
         // Don't write here because auto-generated files change will be rewritten.
                     
-        protected override async Task HandleAsync(<#= actionClassName #> action, IDispatcher dispatcher)
+        public override async Task HandleAsync(<#= actionClassName #> action, IDispatcher dispatcher)
         {
         
             try

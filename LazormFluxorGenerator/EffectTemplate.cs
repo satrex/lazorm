@@ -150,7 +150,7 @@ string localEntity = entityClassName.ToLower();
             #line hidden
             
             #line 35 ""
-            this.Write("> logger) =>\n            _logger = logger;\n\n        protected override async Task" +
+            this.Write("> logger) =>\n            _logger = logger;\n\n        public override async Task" +
                     " HandleAsync(");
             
             #line default

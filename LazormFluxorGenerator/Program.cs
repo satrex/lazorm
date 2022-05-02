@@ -25,33 +25,33 @@ namespace LazormFluxorGenerator
 
             // Create Once - Static files
             #region RootState
-            Directory.CreateDirectory("Fluxor/Store/States");
+            Directory.CreateDirectory("Store/States");
             RootStateTemplate rootStateTemplate = new RootStateTemplate(context);
             string rootStatePageContent = rootStateTemplate.TransformText();
-            File.WriteAllText("Fluxor/Store/States/RootState.cs", rootStatePageContent);
+            File.WriteAllText("Store/States/RootState.cs", rootStatePageContent);
             #endregion
             
             #region Features/Share
-            Directory.CreateDirectory("Fluxor/Store/Features/Share");
+            Directory.CreateDirectory("Store/Features/Share");
             FailureActionTemplate failureAction = new FailureActionTemplate();
             string failureActionpageContent = failureAction.TransformText();
-            File.WriteAllText("Fluxor/Store/Features/Share/FailureAction.cs", failureActionpageContent);
+            File.WriteAllText("Store/Features/Share/FailureAction.cs", failureActionpageContent);
             #endregion
 
             // Create for each Entities
 
             #region States
-            Directory.CreateDirectory("Fluxor/Store/States");
+            Directory.CreateDirectory("Store/States");
             StateTemplate stateTemplate = new StateTemplate(context);
             string statePageContent = stateTemplate.TransformText();
-            File.WriteAllText(string.Format("Fluxor/Store/States/{0}State.cs",context.SchemaName ), statePageContent);
+            File.WriteAllText(string.Format("Store/States/{0}State.cs",context.SchemaName ), statePageContent);
             #endregion
 
             #region Features
-            Directory.CreateDirectory("Fluxor/Store/Features/");
+            Directory.CreateDirectory("Store/Features/");
             FeatureTemplate feature = new FeatureTemplate(context: context);
             string featurePageContent = feature.TransformText();
-            File.WriteAllText(string.Format("Fluxor/Store/Features/{0}Feature.cs", context.SchemaName),
+            File.WriteAllText(string.Format("Store/Features/{0}Feature.cs", context.SchemaName),
                 featurePageContent);
             #endregion
 
@@ -68,21 +68,21 @@ namespace LazormFluxorGenerator
                 {
                     LoadListReducerTemplate listReducer = new LoadListReducerTemplate(context: context);
                     string listReducerPageContent = listReducer.TransformText();
-                    Directory.CreateDirectory(string.Format("Fluxor/Store/Features/{1}UseCase/Reducers/",
+                    Directory.CreateDirectory(string.Format("Store/Features/{1}UseCase/Reducers/",
                         context.SchemaName, context.EntityClassName));
-                    File.WriteAllText(string.Format("Fluxor/Store/Features/{1}UseCase/Reducers/{2}{0}Reducer.cs",
+                    File.WriteAllText(string.Format("Store/Features/{1}UseCase/Reducers/{2}{0}Reducer.cs",
                      context.SchemaName, context.EntityClassName, context.CrudKind), listReducerPageContent);
 
                     ReducerTemplate reducerTemplate = new ReducerTemplate(context: context);
                     string reducerPageContent = reducerTemplate.TransformText();
-                    File.WriteAllText(string.Format("Fluxor/Store/Features/{2}UseCase/Reducers/{1}{2}Reducer.cs",
+                    File.WriteAllText(string.Format("Store/Features/{2}UseCase/Reducers/{1}{2}Reducer.cs",
                         context.SchemaName, context.CrudKind, context.EntityClassName), reducerPageContent);
                 } else {
                     ReducerTemplate reducerTemplate = new ReducerTemplate(context: context);
                     string reducerPageContent = reducerTemplate.TransformText();
-                    Directory.CreateDirectory(string.Format("Fluxor/Store/Features/{1}UseCase/Reducers/",
+                    Directory.CreateDirectory(string.Format("Store/Features/{1}UseCase/Reducers/",
     context.SchemaName, context.EntityClassName));
-                    File.WriteAllText(string.Format("Fluxor/Store/Features/{2}UseCase/Reducers/{1}{2}Reducer.cs",
+                    File.WriteAllText(string.Format("Store/Features/{2}UseCase/Reducers/{1}{2}Reducer.cs",
                         context.SchemaName, context.CrudKind, context.EntityClassName), reducerPageContent);
                     #endregion
                 }
@@ -111,25 +111,25 @@ namespace LazormFluxorGenerator
                     {
                         LoadListEffectTemplate listEffect = new LoadListEffectTemplate(context: actionContext);
                         string effectPageContent = listEffect.TransformText();
-                        Directory.CreateDirectory(string.Format("Fluxor/Store/Features/{1}UseCase/Effects/", 
+                        Directory.CreateDirectory(string.Format("Store/Features/{1}UseCase/Effects/", 
                             context.SchemaName, context.EntityClassName));
-                        File.WriteAllText(string.Format("Fluxor/Store/Features/{1}UseCase/Effects/{2}{0}{3}Effect.cs",
+                        File.WriteAllText(string.Format("Store/Features/{1}UseCase/Effects/{2}{0}{3}Effect.cs",
                          context.SchemaName, context.EntityClassName, context.CrudKind, actionKind), effectPageContent);
 
 
                         EffectTemplate detailEffect = new EffectTemplate(context: actionContext);
                         string detailEffectPageContent = detailEffect.TransformText();
-                        Directory.CreateDirectory(string.Format("Fluxor/Store/Features/{1}UseCase/Effects/", 
+                        Directory.CreateDirectory(string.Format("Store/Features/{1}UseCase/Effects/", 
                             context.SchemaName, context.EntityClassName));
-                        File.WriteAllText(string.Format("Fluxor/Store/Features/{0}UseCase/Effects/{1}{0}{3}Effect.cs", 
+                        File.WriteAllText(string.Format("Store/Features/{0}UseCase/Effects/{1}{0}{3}Effect.cs", 
                             context.EntityClassName, context.CrudKind, context.SchemaName, actionKind), detailEffectPageContent);
                     }
                     else { 
                         EffectTemplate effect = new EffectTemplate(context: actionContext);
                         string effectPageContent = effect.TransformText();
-                        Directory.CreateDirectory(string.Format("Fluxor/Store/Features/{1}UseCase/Effects/",
+                        Directory.CreateDirectory(string.Format("Store/Features/{1}UseCase/Effects/",
                             context.SchemaName, context.EntityClassName));
-                        File.WriteAllText(string.Format("Fluxor/Store/Features/{0}UseCase/Effects/{1}{0}{3}Effect.cs",
+                        File.WriteAllText(string.Format("Store/Features/{0}UseCase/Effects/{1}{0}{3}Effect.cs",
                             context.EntityClassName, context.CrudKind,
                             context.SchemaName, actionKind), effectPageContent);
                     }
@@ -142,25 +142,25 @@ namespace LazormFluxorGenerator
                         // List and Detail
                         LoadListActionTemplate listAction = new LoadListActionTemplate(context: actionContext);
                         string actionPageContent = listAction.TransformText();
-                        Directory.CreateDirectory(string.Format("Fluxor/Store/Features/{2}UseCase/Actions/{1}{0}/",
+                        Directory.CreateDirectory(string.Format("Store/Features/{2}UseCase/Actions/{1}{0}/",
                             context.SchemaName, context.CrudKind, context.EntityClassName));
-                        File.WriteAllText(string.Format("Fluxor/Store/Features/{2}UseCase/Actions/{1}{0}/{1}{0}{3}Action.cs",
+                        File.WriteAllText(string.Format("Store/Features/{2}UseCase/Actions/{1}{0}/{1}{0}{3}Action.cs",
                             context.SchemaName, context.CrudKind, context.EntityClassName, actionKind), actionPageContent);
 
                         ActionTemplate detailAction = new ActionTemplate(context: actionContext);
                         string detailActionPageContent = detailAction.TransformText();
-                        Directory.CreateDirectory(string.Format("Fluxor/Store/Features/{2}UseCase/Actions/{1}{2}Detail/",
+                        Directory.CreateDirectory(string.Format("Store/Features/{2}UseCase/Actions/{1}{2}Detail/",
                            context.SchemaName, context.CrudKind, context.EntityClassName)); 
-                        File.WriteAllText(string.Format("Fluxor/Store/Features/{2}UseCase/Actions/{1}{2}Detail/{1}{2}{3}Action.cs",
+                        File.WriteAllText(string.Format("Store/Features/{2}UseCase/Actions/{1}{2}Detail/{1}{2}{3}Action.cs",
                             context.SchemaName, context.CrudKind, context.EntityClassName, actionKind), detailActionPageContent);
                     }
                     else
                     {
                         ActionTemplate action = new ActionTemplate(context: actionContext);
                         string actionPageContent = action.TransformText();
-                        Directory.CreateDirectory(string.Format("Fluxor/Store/Features/{2}UseCase/Actions/{1}{2}/",
+                        Directory.CreateDirectory(string.Format("Store/Features/{2}UseCase/Actions/{1}{2}/",
                             context.SchemaName, context.CrudKind, context.EntityClassName));
-                        File.WriteAllText(string.Format("Fluxor/Store/Features/{2}UseCase/Actions/{1}{2}/{1}{2}{3}Action.cs",
+                        File.WriteAllText(string.Format("Store/Features/{2}UseCase/Actions/{1}{2}/{1}{2}{3}Action.cs",
                             context.SchemaName, context.CrudKind, context.EntityClassName, actionKind), actionPageContent);
                     }
 

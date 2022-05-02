@@ -19,10 +19,10 @@
     <PackOnBuild>true</PackOnBuild>
     <PackageProjectUrl>https://github.com/satrex/lazorm</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>0.6.5</Version>
-    <ReleaseVersion>0.6.5</ReleaseVersion>
-    <PackageVersion>0.6.5</PackageVersion>
-    <PackageReleaseNotes>Integrated with lazorm fluxor generator. Also modified api.</PackageReleaseNotes>
+    <Version>0.6.10</Version>
+    <ReleaseVersion>0.6.10</ReleaseVersion>
+    <PackageVersion>0.6.10</PackageVersion>
+    <PackageReleaseNotes>Suppressed warning</PackageReleaseNotes>
     <SynchReleaseVersion>false</SynchReleaseVersion>
   </PropertyGroup>
 

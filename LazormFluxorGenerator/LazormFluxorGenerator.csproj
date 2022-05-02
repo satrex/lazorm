@@ -21,9 +21,9 @@
     <PackageProjectUrl>https://github.com/satrex/LazormFluxor</PackageProjectUrl>
     <RepositoryUrl>https://github.com/satrex/LazormFluxor</RepositoryUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>0.0.3</Version>
+    <Version>0.1.0</Version>
     <PackageReleaseNotes>Config Error Fixed</PackageReleaseNotes>
-    <ReleaseVersion>0.4.11</ReleaseVersion>
+    <ReleaseVersion>0.6.9</ReleaseVersion>
   </PropertyGroup>
 
   <ItemGroup>

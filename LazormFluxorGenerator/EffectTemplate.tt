@@ -35,7 +35,7 @@ namespace Lazorm.Store.Features.<#= entityClassNamePlural #>.Effects
  effectClassName #>(ILogger<<#= effectClassName #>> logger) =>
             _logger = logger;
 
-        protected override async Task HandleAsync(<#= actionClassName #> action, IDispatcher dispatcher)
+        public override async Task HandleAsync(<#= actionClassName #> action, IDispatcher dispatcher)
         {
 <# if (actionType == "") { #>
 <# if (crud == "Load" ) { #>
