@@ -71,8 +71,17 @@ namespace Lazorm
         [Option('t', "tables", HelpText = "Specify tables to process. By default, we process all tables in schema.")]
         public IEnumerable<string> Tables { get; set; }
     }
+
+    /// <summary>
+    /// Provides argument parsing in command line. 
+    /// </summary>
     public class CliParser
     {
+        /// <summary>
+        /// Parses command line arguments. 
+        /// </summary>
+        /// <param name="args">command line arguments separated by whitespace</param>
+        /// <exception cref="ArgumentException">Something wrong on argument</exception>
         public static void Parse(string[] args)
         {
             GenerateOptions generateOprions = null;
@@ -117,7 +126,7 @@ namespace Lazorm
 
         private static void GenerateFluxor(GenerateOptions generateOprions)
         {
-            var outdir = generateOprions.OutputDir;
+            var outdir = Path.Combine(Environment.CurrentDirectory, generateOprions.OutputDir);
             if(generateOprions.Mapper | generateOprions.Validation | generateOprions.RazorPage)
                 outdir = Environment.CurrentDirectory;
                 
