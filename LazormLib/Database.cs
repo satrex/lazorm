@@ -28,7 +28,11 @@ namespace Lazorm
         /// <summary>
         /// MySql
         /// </summary>
-        MySql
+        MySql,
+        /// <summary>
+        /// SQLite
+        /// </summary>
+        SqLite
     }
     
     /// <summary>
@@ -72,7 +76,10 @@ namespace Lazorm
             {"oracle", DatabaseType.Oracle},
             {"MySql", DatabaseType.MySql},
             {"mySql", DatabaseType.MySql},
-            {"mysql", DatabaseType.MySql}
+            {"mysql", DatabaseType.MySql},
+            {"SQLite", DatabaseType.SqLite},
+            {"SqLite", DatabaseType.SqLite},
+            {"sqlite", DatabaseType.SqLite}
         };
 
         /// <summary>

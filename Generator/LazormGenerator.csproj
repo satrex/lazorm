@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <PackageId>Lazorm</PackageId>
     <Authors>Satrex</Authors>
     <Copyright>Satrex</Copyright>
@@ -20,7 +20,7 @@
     <PackageProjectUrl>https://github.com/satrex/lazorm</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Version>0.6.10</Version>
-    <ReleaseVersion>0.6.10</ReleaseVersion>
+    <ReleaseVersion>0.7.0</ReleaseVersion>
     <PackageVersion>0.6.10</PackageVersion>
     <PackageReleaseNotes>Suppressed warning</PackageReleaseNotes>
     <SynchReleaseVersion>false</SynchReleaseVersion>
