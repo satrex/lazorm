@@ -8,6 +8,10 @@ using System.Linq;
 using System.Data.SqlClient;
 using Lazorm.Attributes;
 using System.Threading.Tasks;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using MySqlX.XDevAPI.Relational;
+using System.Xml.Linq;
 
 namespace Lazorm
 {
@@ -127,6 +131,8 @@ namespace Lazorm
                     return new SqlServer(connectionString);
                 case DatabaseType.MySql:
                     return new MySqlDb(connectionString);
+                case DatabaseType.SqLite:
+                    return new SqLiteDb(connectionString);
                 default:
                     throw new ApplicationException("対応外のデータベースです");
             }
@@ -508,6 +514,71 @@ namespace Lazorm
 
             return true;
         }
+        static IObservable<string> Concatenate(string[] array)
+        {
+            return array.ToObservable()
+                .Aggregate((x, y) => x + ", " + y);
+        }
+        /// <summary>
+        /// INSERT文を自動生成し、実行する
+        /// 新しく発行されたオートナンバーがある場合、
+        /// 新しく発行した値をエンティティに入れる。
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dataEntity"></param>
+        public void InsertByRx<T>(DataEntity<T> dataEntity) where T : DataEntity<T>, new()
+        {
+            DbTableAttribute table = DataEntity<T>.GetTableAttribute();
+
+            //オラクルで";"を後ろにつけると動かないらしい
+            //string sql = "INSERT INTO {0} ({1}) VALUES ({2})";
+            string items = string.Empty; //項目羅列部
+            string values = string.Empty; //値羅列部
+            List<IDbDataParameter> parameters = new List<IDbDataParameter>(); //パラメーターリスト
+
+            var elements = DataEntity<T>.GetElements();
+            var s = new Subject<KeyValuePair<DbColumnAttribute, PropertyInfo>>();
+            var keys = 
+                elements.ToObservable().Where(p => !p.Key.IsPrimaryKey)
+                .Select(p => p.Key.Name)
+                .Aggregate((l, r) => $"{l}, {r}");
+            var propvalues = 
+                elements.ToObservable().Where(p => !p.Key.IsPrimaryKey).Select(p => {
+                    var column = p.Key;
+                    var property = p.Value;
+                    var val = property.GetValue(dataEntity, null);
+                    // CreatedAt | UpdatedAt  
+                    //if (column.IsCreatedDateTime || column.IsUpdatedDateTime)
+                    //    val = DateTime.Now;
+
+                    // if column type was byte[], use parameter query
+                    if (property.PropertyType == typeof(byte[]))
+                    {
+                        string parameterName = this.GetParameterName(column.Name);
+                        parameters.Add(this.CreateDataParameter(parameterName, val, column.TypeName));
+                        return parameterName;
+                    }
+                    else
+                        return this.ConvertToSqlValue(val, property.PropertyType, column.Nullable) + ", ";
+                }).Aggregate((l, r) => $"{l}, {r}");
+            var hasAutonumber = elements.Exists(p => p.Key.IsAutoNumber);
+            var autoNumberSql = hasAutonumber ? this.AutoNumberGetSql : string.Empty;
+            var sql = keys.Zip(values, (k, v) => $"INSERT INTO {table.Name} ({k}) VALUES ({v}) {autoNumberSql}");
+            sql.Subscribe(s =>
+            {
+                var id = this.ExecuteScalar(s, parameters);
+
+                if(hasAutonumber && id is not null)
+                {
+                    var key = elements.Find(p => p.Key.IsPrimaryKey);
+                    var propertyInfo = key.Value;
+                    id = Cast(id, propertyInfo.PropertyType);
+                    propertyInfo.SetValue(dataEntity, id, null);
+                }
+            });
+
+        }
+
 
         /// <summary>
         /// INSERT文を自動生成し、実行する
@@ -538,6 +609,8 @@ namespace Lazorm
 
                 var property = element.Value;
                 object val = property.GetValue(dataEntity, null);
+                if(column.IsCreatedDateTime || column.IsUpdatedDateTime) 
+                    val = DateTime.Now;
 
                 //byte[]の更新のみパラメータークエリを使用する
                 if (property.PropertyType == typeof(byte[]))
@@ -608,6 +681,9 @@ namespace Lazorm
                 var property = element.Value;
                 
                 object val = property.GetValue(dataEntity, null);
+                if(column.IsUpdatedDateTime) 
+                    val = DateTime.Now;
+
                 if(property.PropertyType == typeof(byte[]))
                 {
                     string parameterName = this.GetParameterName(column.Name);
@@ -739,12 +815,14 @@ namespace Lazorm
             List<TableDef> tables = new List<TableDef>();
             using (IDbConnection connection = this.CreateConnection())
             {
+                Trace.WriteLine($"connection: {connection.State}");
                 connection.Open();
+
                 using (IDbCommand command = connection.CreateCommand())
                 {
                     command.CommandTimeout = this.CommandTimeout;
                     command.CommandText = this.GetTableListSql();
-                    ts.TraceInformation(command.CommandText);
+                    Trace.WriteLine($"command text:{command.CommandText}");
                     using (IDataReader tableReader = command.ExecuteReader(CommandBehavior.SingleResult))
                     {
                         while (tableReader.Read())
@@ -752,6 +830,7 @@ namespace Lazorm
                             TableDef table = new TableDef();
                             table.Name = (string)Cast(tableReader["TableName"], typeof(string));
                             table.Remarks = (string)Cast(tableReader["Remarks"], typeof(string));
+                            Trace.WriteLine($"getting columns of {table.Name}");
                             var columnDefs = this.GetColumnDefs(table.Name);
                             table.Columns.AddRange(columnDefs);
                             tables.Add(table);
@@ -792,6 +871,10 @@ namespace Lazorm
                             column.Nullable = (bool)Cast(columnReader["Nullable"], typeof(bool));
                             column.DecimalPlace = (int)Cast(columnReader["DecimalPlace"], typeof(int));
                             column.Remarks = (string)Cast(columnReader["Remarks"], typeof(string));
+                            column.IsCreatedDateTime = 
+                                System.Text.RegularExpressions.Regex.IsMatch(column.Name, "[_-]*[c|C]reated[_-]*[a|A]t");
+                            column.IsUpdatedDateTime =
+                                System.Text.RegularExpressions.Regex.IsMatch(column.Name, "[_-]*[u|U]pdated[_-]*[a|A]t");
                             columns.Add(column);
                         }
                     }

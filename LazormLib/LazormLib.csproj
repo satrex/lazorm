@@ -5,7 +5,7 @@
     <Description>Lazorm compile / runtime library.</Description>
     <RootNamespace>Lazorm</RootNamespace>
     <Authors>Satrex</Authors>
-    <Copyright>Satrex</Copyright>
+    <Copyright>Copyright (c)2022 Satrex</Copyright>
     <NeutralLanguage>en</NeutralLanguage>
     <Owners>Satrex</Owners>
     <PackageProjectUrl>https://github.com/satrex/lazorm</PackageProjectUrl>
@@ -15,14 +15,17 @@
     <PackageOutputPath>./nupkg</PackageOutputPath>
     <PackageLicenseFile>./LICENSE</PackageLicenseFile>
     <PackOnBuild>true</PackOnBuild>
-    <Version>0.6.1</Version>
-    <ReleaseVersion>0.7.0</ReleaseVersion>
-    <PackageVersion>0.6.2</PackageVersion>
+    <Version>0.7.2</Version>
+    <ReleaseVersion>0.7.2</ReleaseVersion>
+    <PackageVersion>0.7.2</PackageVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Microsoft.Data.Sqlite.Core" />
     <None Remove="System.Data.SQLite.Core" />
+    <None Remove="nupkg\" />
+    <None Remove="SQLitePCLRaw.bundle_e_sqlite3" />
+    <None Remove="System.Reactive" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.0.21" />
@@ -33,7 +36,11 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.7" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.7" />
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="7.0.0" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.116" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.2" />
+    <PackageReference Include="System.Reactive" Version="5.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="nupkg\" />
+  </ItemGroup>
 </Project>

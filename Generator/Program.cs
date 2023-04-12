@@ -16,12 +16,12 @@ namespace Lazorm
             Version ver = thisAssemName.Version;
 
             Console.WriteLine("Lazorm (c)satrex");
-            Console.WriteLine("assembly {1} version {0}", ver, thisAssemName.Name);
+            Console.WriteLine($"assembly {thisAssemName.Name} version {ver}");
             Console.WriteLine();
 
             Array.ForEach(args, a => Debug.WriteLine(a)); 
-            Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
-            Trace.AutoFlush = true;
+            //Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
+            //Trace.AutoFlush = true;
 
             CliParser.Parse(args);
   

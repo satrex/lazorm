@@ -9,7 +9,20 @@ using Microsoft.CSharp;
 using System.Threading.Tasks;
 
 namespace Lazorm
-{   
+{
+    public static class StringExpander
+    {
+        public static string Capitalize(this string str)
+        {
+            if (str.Length == 0)
+                return string.Empty;
+            else if (str.Length == 1)
+                return char.ToUpper(str[0]).ToString();
+            else
+                return char.ToUpper(str[0]) + str.Substring(1);
+        }
+    }
+
     /// <summary>
     /// データベースにマッピングされるエンティティクラスのcsファイルを
     /// 自動で生成するクラス。
@@ -59,6 +72,9 @@ namespace Lazorm
                 break;
                 case DatabaseType.MySql:
                 this.db = new MySqlDb(connectionString);
+                break;
+                case DatabaseType.SqLite:
+                this.db = new SqLiteDb(connectionString);
                 break;
 
             }
@@ -130,7 +146,7 @@ namespace Lazorm
         /// </summary>
         private string GetClassName(string tableName)
         {
-            return new Pluralize.NET.Pluralizer().Singularize(tableName);
+            return new Pluralize.NET.Pluralizer().Singularize(tableName).Capitalize();
         }
 
         private string GetFieldName(string propertyName)

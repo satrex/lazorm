@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using CommandLine;
 using CommandLine.Text;
 using Lazorm;
+using Microsoft.Extensions.Options;
 
 namespace Lazorm
 {
     enum DbKind 
     {
-        SqlServer, mssql, mySql, MySql, mysql, Oracle, oracle
+        SqlServer, mssql, mySql, MySql, mysql, Oracle, oracle, SqLite, SQLite, sqLite, sqlite
     }
 
     [Verb("show", HelpText = "Add file contents to the index.")]
@@ -22,7 +24,7 @@ namespace Lazorm
         [Option('j', "appsettingsjson", HelpText = "Specify appsettings.json file to connect database.")]
         public string AppsettingsJson { get; set; }
 
-        [Option('k', "dbkind", HelpText = "Speciry Database Kind out of: SqlServer, MySq], Oracle")]
+        [Option('k', "dbkind", HelpText = "Speciry Database Kind out of: SqlServer, MySq], Oracle, SqLite")]
         public DbKind DatabaseKind { get; set; }
 
         [Option('n', "namespace", HelpText = "Speciry namespace of generated classes. Lazorm by default.")]
@@ -33,6 +35,10 @@ namespace Lazorm
 
         [Option('t', "tables", HelpText = "Specify tables to process. By default, we process all tables in schema.")]
         public IEnumerable<string> Tables { get; set; }
+
+        [Option("verbose", HelpText = "If set true, it shows detailed log")]
+        public bool Verbose { get; set; } = false;
+
          //normal options here
         [Value(1, Default = "tables", HelpText = "Specify object by tables, columns (tables by default)", Required = true)]
         public string Value { get; set; }
@@ -47,10 +53,10 @@ namespace Lazorm
         [Option('v', "validation", Required = false, HelpText = "Generates model validation (model omit keys)")]
         public bool Validation { get; set; }
 
-        [Option('f', "fluxor", HelpText = "Generates Fluxor store set.")]
+        [Option('f', "fluxor", Required = false, HelpText = "Generates Fluxor store set.")]
         public bool Fluxor { get; set; }
 
-        [Option('r', "razor", Separator = ',', HelpText = "Generates razor page (not implemented)")]
+        [Option('p', "page", Required = false, HelpText = "Generates razor page")]
         public bool RazorPage { get; set; }
 
         [Option('c', "connectionstring", HelpText = "Specify connection string to database.")]
@@ -59,8 +65,8 @@ namespace Lazorm
         [Option('j', "appsettingsjson", HelpText = "Specify appsettings.json file to save connectionstring.")]
         public string AppsettingsJson { get; set; }
 
-        [Option('k', "dbkind", HelpText = "Speciry Database Kind out of: SqlServer, MySq], Oracle")]
-        public DbKind DatabaseKind { get; set; }
+        [Option('k', "dbkind", HelpText = "Speciry Database Kind out of: SqlServer, MySq], Oracle, SqLite")]
+        public DbKind DatabaseKind { get; set; } = DbKind.SqlServer;
 
         [Option('n', "namespace", HelpText = "Speciry namespace of generated classes. Lazorm by default.")]
         public string Namespace { get; set; } = "Lazorm";
@@ -70,6 +76,9 @@ namespace Lazorm
 
         [Option('t', "tables", HelpText = "Specify tables to process. By default, we process all tables in schema.")]
         public IEnumerable<string> Tables { get; set; }
+
+        [Option("verbose", HelpText = "If set true, it shows detailed log")]
+        public bool Verbose { get; set; } = false;
     }
 
     /// <summary>
@@ -88,8 +97,12 @@ namespace Lazorm
             ShowOptions showOptions = null;
             var parsed = Parser.Default.ParseArguments< GenerateOptions, ShowOptions>(args);   
             parsed.WithParsed<GenerateOptions>(opt => {
+                
                 if ((opt.Mapper | opt.Validation | opt.Fluxor | opt.RazorPage) == false)
                     throw new ArgumentException("You should specify output flag at least 1 out of -m|-v|-f|-r .");
+
+                if (opt.Verbose) 
+                    Trace.Listeners.Add(new ConsoleTraceListener());
 
                 generateOprions = opt;
             });
@@ -97,7 +110,7 @@ namespace Lazorm
             parsed.WithNotParsed(er =>
             {
                 // パース結果からデフォルトの文を生成したい場合は、HelpText.AutoBuildを使用する
-                var helpText = "awesome help text ";
+                var helpText = "argument is invalid";
                 // 生成後にhelpText = helpText.Add...で追加記述も可能
                 Console.WriteLine($"parse failed: {helpText}");
                 return;
@@ -119,9 +132,30 @@ namespace Lazorm
 
         }
 
-        private static void GenerateRazorPage(GenerateOptions generateOprions)
+        private static void GenerateRazorPage(GenerateOptions options)
         {
-            throw new NotImplementedException();
+            Trace.WriteLine("CliParser.GenerateRazorPage started");
+            var outFolder = PrepareOutputFolderForEntity(options);
+            Database db = Database.CreateInstance(options.DatabaseKind.ToString().ToLower(), options.ConnectionString);
+            Trace.WriteLine("db proxy created");
+
+            var keyName = string.Format("{0}Key", db.Schema);
+            var generator = new DataEntityGenerator(options.Namespace, db, keyName);
+            var tables = new List<string>();
+
+            // if tables not specified, then go all tables
+            if (0 < options.Tables?.Count())
+            {
+                tables.AddRange(options.Tables);
+            }
+            else
+            {
+
+                throw new ArgumentNullException("Please specify table to create razor page.");
+            }
+            tables.ForEach(t => {
+                generator.Generate(t, outFolder);
+            }); ;
         }
 
         private static void GenerateFluxor(GenerateOptions generateOprions)

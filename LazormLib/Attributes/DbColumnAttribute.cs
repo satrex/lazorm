@@ -18,6 +18,9 @@ namespace Lazorm.Attributes
         private int decimalPlace;
         private string remarks;
 
+        private bool isCreatedDateTime;
+        private bool isUpdatedDateTime;
+
         /// <summary>
         /// マッピングするテーブルの列名
         /// </summary>
@@ -89,5 +92,24 @@ namespace Lazorm.Attributes
             get { return this.remarks; }
             set { this.remarks = value; }
         }
+
+        /// <summary>
+        /// レコード生成日時のカラムであるかを取得または設定します。
+        /// </summary>
+        public bool IsCreatedDateTime
+        {
+            get { return isCreatedDateTime; }
+            set { isCreatedDateTime = value; }
+        }
+        
+        /// <summary>
+        /// レコード更新日時のカラムであるかを取得または設定します。
+        /// </summary>
+        public bool IsUpdatedDateTime 
+        {
+            get { return isUpdatedDateTime; }
+            set { isUpdatedDateTime = value; }
+        }
+    
     }
 }
