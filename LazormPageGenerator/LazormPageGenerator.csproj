@@ -1,0 +1,86 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <ReleaseVersion>0.7.0</ReleaseVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Update="ListPageTemplate_.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4Template.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ListPageTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="ListPageTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ListPageTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="ListPageTemplate %28コピー%29.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ListPageTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="ListPageTemplate %28コピー%29.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>DetailPageTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="DetailPageTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>DetailPageTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="DetailPageWithFluxorCodeTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>DetailPageWithFluxorCodeTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="ConfirmDialogTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ConfirmDialogTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="DetailPageWithFluxorCsTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>DetailPageWithFluxorCsTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="DetailPageWithFluxorTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>DetailPageWithFluxorTemplate.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="T4Template.cs">
+      <DependentUpon>T4Template.tt</DependentUpon>
+    </Compile>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="ListPageTemplate %28コピー%29.cs">
+      <DependentUpon>ListPageTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="ListPageTemplate %28コピー%29.cs">
+      <DependentUpon>ListPageTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="DetailPageTemplate.cs">
+      <DependentUpon>DetailPageTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ListPageTemplate.cs">
+      <DependentUpon>ListPageTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ConfirmDialogTemplate.cs">
+      <DependentUpon>ConfirmDialogTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="DetailPageWithFluxorCsTemplate.cs">
+      <DependentUpon>DetailPageWithFluxorCsTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="DetailPageWithFluxorTemplate.cs">
+      <DependentUpon>DetailPageWithFluxorTemplate.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.5.0" />
+    <PackageReference Include="Pluralize.NET" Version="1.0.2" />
+    <PackageReference Include="System.CodeDom" Version="4.7.0" />
+  </ItemGroup>
+</Project>

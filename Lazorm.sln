@@ -9,7 +9,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		nuget.config = nuget.config
 	EndProjectSection
 EndProject
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "LazormFluxorGenerator", "LazormFluxorGenerator\LazormFluxorGenerator.csproj", "{D7AAC0D3-1D08-4B73-AE64-6B6751193028}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LazormFluxorGenerator", "LazormFluxorGenerator\LazormFluxorGenerator.csproj", "{D7AAC0D3-1D08-4B73-AE64-6B6751193028}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LazormTest", "LazormTest\LazormTest.csproj", "{C38BAACE-3AB8-4341-8ACF-6E1FFF235CBC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LazormPageGenerator", "LazormPageGenerator\LazormPageGenerator.csproj", "{BD9D7180-83FE-4304-AC49-F20F321C0DEF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +29,22 @@ Global
 		{CB313252-A99B-4225-BA8D-B808D41636E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB313252-A99B-4225-BA8D-B808D41636E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB313252-A99B-4225-BA8D-B808D41636E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7AAC0D3-1D08-4B73-AE64-6B6751193028}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7AAC0D3-1D08-4B73-AE64-6B6751193028}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{D7AAC0D3-1D08-4B73-AE64-6B6751193028}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7AAC0D3-1D08-4B73-AE64-6B6751193028}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C38BAACE-3AB8-4341-8ACF-6E1FFF235CBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C38BAACE-3AB8-4341-8ACF-6E1FFF235CBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C38BAACE-3AB8-4341-8ACF-6E1FFF235CBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C38BAACE-3AB8-4341-8ACF-6E1FFF235CBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD9D7180-83FE-4304-AC49-F20F321C0DEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD9D7180-83FE-4304-AC49-F20F321C0DEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD9D7180-83FE-4304-AC49-F20F321C0DEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD9D7180-83FE-4304-AC49-F20F321C0DEF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		description = Simplified alias class members
-		version = 0.4.11
+		version = 0.7.0
 		Policies = $0
 		$0.StandardHeader = $1
 	EndGlobalSection

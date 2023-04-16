@@ -7,6 +7,7 @@ using System.CodeDom;
 using System.CodeDom.Compiler;
 using Microsoft.CSharp;
 using System.Threading.Tasks;
+using System.Reflection.Emit;
 
 namespace Lazorm
 {
@@ -291,6 +292,9 @@ namespace Lazorm
             cls.BaseTypes.Add("DataEntity<" + singular + ">");
             cls.IsPartial = true;
             cls.IsClass = true;
+            // #nullableディレクティブを含むCodeSnippetCompileUnitを作成する
+            CodeSnippetCompileUnit codeSnippet = new CodeSnippetCompileUnit("#nullable enable");
+            cls.Members.Add(new CodeSnippetTypeMember("#nullable enable"));
 
             foreach (ColumnDef column in table.Columns)
             {

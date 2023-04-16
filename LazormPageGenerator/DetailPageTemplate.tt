@@ -1,0 +1,53 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.CodeDom" #>
+
+@page "/<#= entityNamePlural #>/edit/{Id}"
+@page "/<#= entityNamePlural #>/new"
+@inject HttpClient httpClient
+@inject NavigationManager? Navigation 
+@using Lazorm;
+
+<h3>Edit <#= entityClassNamePlural #></h3>
+
+@if (<#= entityNameSingular #> == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm>
+<#= CreateFormBody() #>
+
+        <button type="submit" class="btn btn-primary" @onclick="Update<#= entityClassNameSingular #>">Update</button>
+    </EditForm>
+}
+
+@code {
+    private <#= entityClassNameSingular #> <#= entityNameSingular #>;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id == 0)
+        {
+            <#= entityNameSingular #> = new <#= entityClassNameSingular #>();
+        }
+        else
+        {
+            <#= entityNameSingular #> = await <#= entityClassNameSingular #>.GetAsync(Id);
+        }
+    }
+
+    private async Task Update<#= entityClassNameSingular #>()
+    {
+        await <#= entityNameSingular #>.StoreAsync();
+        Navigation.NavigateTo("/<#= entityNamePlural #>");
+    }
+}
+

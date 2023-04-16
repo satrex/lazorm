@@ -1,0 +1,59 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.CodeDom" #>
+
+@page "/<#= entityNamePlural #>/edit/{id}"
+@page "/<#= entityNamePlural #>/new"
+@inject HttpClient httpClient
+@attribute [Authorize]
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent;
+<h3>Edit <#= entityClassNamePlural #></h3>
+
+@if (<#= entityNamePlural #> == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="@the<#= entityClassNameSingular #>" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+        <#= CreateFormBody() #>
+
+        <button type="submit" class="btn btn-primary" @onclick="Update<#= entityClassNameSingular #>">Update</button>
+    </EditForm>
+}
+
+@if (PatientsState?.Value.IsLoading ?? false)
+{
+    <div class="d-flex flex-row justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">読み込み中...</span>
+        </div>
+    </div>
+}
+else if (PatientsState?.Value.HasCurrentErrors ?? false || PatientsState?.Value.CurrentEntity is null)
+{
+    <div class="d-flex flex-column ">
+        <span class="py-2">患者さんのデータを読み込む際に、不具合が発生しました。<br />再読み込みを試してください。<br />解決しない場合は、サポートまでご連絡ください。</span>
+        <Button class="btn btn-info py-2" >再読み込み</Button>
+    </div>
+}
+else 
+{
+ 
+    </EditForm>
+        
+    <MudDialog @bind-IsVisible="alertVisible">
+        <TitleContent>患者の削除</TitleContent>
+            <DialogContent><p>本当に削除してもよろしいですか？この操作は取り消せません。</p></DialogContent>
+            <DialogActions>
+                <MudButton Color="Color.Warning" @onclick="(()=>  DeletePatient(PatientsState?.Value?.CurrentEntity! ))">本当に削除します</MudButton>
+                <MudButton Color="Color.Secondary" @onclick="(()=>alertVisible=false) ">キャンセル</MudButton>
+            </DialogActions>
+        </MudDialog>
+}
+
+

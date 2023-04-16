@@ -77,6 +77,9 @@ namespace Lazorm
         [Option('t', "tables", HelpText = "Specify tables to process. By default, we process all tables in schema.")]
         public IEnumerable<string> Tables { get; set; }
 
+        [Option('s', "source", HelpText = "Specify source file to create razor page. Required with razor page.")]
+        public string SourceFilePath { get; set; }
+
         [Option("verbose", HelpText = "If set true, it shows detailed log")]
         public bool Verbose { get; set; } = false;
     }
@@ -135,27 +138,31 @@ namespace Lazorm
         private static void GenerateRazorPage(GenerateOptions options)
         {
             Trace.WriteLine("CliParser.GenerateRazorPage started");
-            var outFolder = PrepareOutputFolderForEntity(options);
-            Database db = Database.CreateInstance(options.DatabaseKind.ToString().ToLower(), options.ConnectionString);
-            Trace.WriteLine("db proxy created");
+            if (string.IsNullOrWhiteSpace(options.SourceFilePath))
+                throw new ArgumentNullException("Please specify source file if creating razor page");
+            
+            var outFolder = PrepareOutputFolderForPage(options);
+            LazormPageGenerator.PageGenerator.GenerateFromFile(options.SourceFilePath, outFolder);
+            //Database db = Database.CreateInstance(options.DatabaseKind.ToString().ToLower(), options.ConnectionString);
+            //Trace.WriteLine("db proxy created");
 
-            var keyName = string.Format("{0}Key", db.Schema);
-            var generator = new DataEntityGenerator(options.Namespace, db, keyName);
-            var tables = new List<string>();
+            //var keyName = string.Format("{0}Key", db.Schema);
+            //var generator = new DataEntityGenerator(options.Namespace, db, keyName);
+            //var tables = new List<string>();
 
-            // if tables not specified, then go all tables
-            if (0 < options.Tables?.Count())
-            {
-                tables.AddRange(options.Tables);
-            }
-            else
-            {
+            //// if tables not specified, then go all tables
+            //if (0 < options.Tables?.Count())
+            //{
+            //    tables.AddRange(options.Tables);
+            //}
+            //else
+            //{
 
-                throw new ArgumentNullException("Please specify table to create razor page.");
-            }
-            tables.ForEach(t => {
-                generator.Generate(t, outFolder);
-            }); ;
+            //    throw new ArgumentNullException("Please specify table to create razor page.");
+            //}
+            //tables.ForEach(t => {
+            //    generator.Generate(t, outFolder);
+            //}); ;
         }
 
         private static void GenerateFluxor(GenerateOptions generateOprions)
@@ -240,6 +247,24 @@ namespace Lazorm
             }
             return outFolder;
         }
+
+        private static string PrepareOutputFolderForPage(GenerateOptions options)
+        {
+            var outFolder = Path.Combine(Environment.CurrentDirectory, "Pages");
+            if (!String.IsNullOrWhiteSpace(options.OutputDir))
+            {
+                outFolder = options.OutputDir;
+                Console.WriteLine("Output directory is specified: {0}", outFolder);
+            }
+
+            // Creates folder if not exists
+            if (!Directory.Exists(outFolder))
+            {
+                Directory.CreateDirectory(outFolder);
+            }
+            return outFolder;
+        }
+
 
         private static string PrepareOutputFolderForEntity(GenerateOptions options)
         {

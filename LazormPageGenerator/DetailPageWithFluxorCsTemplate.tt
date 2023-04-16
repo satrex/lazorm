@@ -1,0 +1,103 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+
+using System.Threading.Tasks;
+using Fluxor;
+using Lazorm;
+using Microsoft.AspNetCore.Components;
+using Lazorm.Store.States;
+using Microsoft.Extensions.Logging; 
+using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Create<#= entityClassNameSingular #>;
+using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Load<#= entityClassNameSingular #>;
+using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Load<#= entityClassNamePlural #>;
+using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Update<#= entityClassNameSingular #>;
+using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Delete<#= entityClassNameSingular #>;
+
+public partial class <#= entityClassNameSingular #>DetailPage: Fluxor.Blazor.Web.Components.FluxorComponent 
+{
+    [Parameter]
+    public string <#= entityNameSingular #>Id {get; set;} = string.Empty;
+
+    [Inject]
+    private IState<<#= entityClassNamePlural #>State>? <#= entityClassNamePlural #>State {get; set;}
+
+    [Inject]
+    private IDispatcher? dispatcher { get; set; }
+
+    [Inject]
+    NavigationManager? Navigation {get; set;}
+
+    [Inject]
+    private ILogger<<#= entityClassNameSingular #>DetailPage>? _logger{get; set;}
+    private Lazorm.Validation.<#= entityClassNameSingular #>Validation the<#= entityClassNameSingular #> = new Lazorm.Validation.<#= entityClassNameSingular #>Validation();
+
+    private bool alertVisible = false;
+
+    protected override void OnInitialized()
+    {
+        // Load the <#= entityNameSingular #> detail on initial page navigation
+        if (int.TryParse(<#= entityNameSingular #>Id, out var parsedId))
+        {
+            var current<#= entityClassNameSingular #> = new <#= entityClassNameSingular #>() { Id = parsedId };
+            dispatcher?.Dispatch(new Load<#= entityClassNameSingular #>Action(current<#= entityClassNameSingular #>));
+        }
+        else
+        {
+            var current<#= entityClassNameSingular #> = new <#= entityClassNameSingular #>();
+        }
+
+        // Register a state change to assign the validation fields
+        if(<#= entityClassNamePlural #>State != null) <#= entityClassNamePlural #>State.StateChanged += (sender, state) =>
+        {
+            _logger.LogInformation($"StateChanged start:");
+            if (state.CurrentEntity is null)
+            {
+                return;
+            }
+            _logger.LogInformation($"Name={state.CurrentEntity.Name} Phone={state.CurrentEntity.Phone}");
+
+            the<#= entityClassNameSingular #> = new Lazorm.Validation.<#= entityClassNameSingular #>Validation(state.CurrentEntity);
+
+            StateHasChanged();
+            _logger.LogInformation($"StateChanged end:");
+        };
+
+        base.OnInitialized();
+    }
+
+    protected void Delete<#= entityClassNameSingular #>(<#= entityClassNameSingular #> deleting<#= entityClassNameSingular #>)
+    {
+        dispatcher?.Dispatch(new Delete<#= entityClassNameSingular #>Action(deleting<#= entityClassNameSingular #>));
+        Navigation?.NavigateTo("/<#= entityNamePlural #>");
+    }
+    private void StartEdition(<#= entityClassNameSingular #> <#= entityNameSingular #>)
+    {
+        Navigation?.NavigateTo($"<#= entityNamePlural #>/{ <#= entityNameSingular #>.Id }");
+    }
+    protected void HandleValidSubmit()
+    {
+        Store<#= entityClassNameSingular #>(
+            the<#= entityClassNameSingular #>.ToPatient()
+        );
+        StateHasChanged();
+    }
+
+    protected void StorePatient(Patient storingPatient)
+    {
+        if(0 == storingPatient.Id)
+        {
+            dispatcher?.Dispatch(new CreatePatientAction(storingPatient));
+        }
+        else
+        {
+            _logger.LogInformation($"Dispatching: phone= {storingPatient.Phone}");
+            dispatcher?.Dispatch(new UpdatePatientAction(storingPatient));
+        }
+
+        Navigation?.NavigateTo($"/<#= entityNamePlural #>/{<#= entityClassNamePlural #>State?.Value?.CurrentEntity?.Id}/consultations");
+    }
+}

@@ -1,0 +1,62 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.CodeDom" #>
+
+@page "/<#= entityNamePlural #>"
+
+<h1><#= entityClassNamePlural #></h1> 
+
+<table class="table">
+    <thead>
+        <tr>
+<#= CreateTableHeader() #>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var <#= entityNameSingular #> in <#= entityNamePlural #>)
+        {
+            <tr>
+<#= CreateTableBody() #>
+                <td>
+                    <button class="btn btn-primary" @onclick="() => Edit<#= entityClassNameSingular #>(<#= entityNameSingular #>)">Edit</button>
+                    <button class="btn btn-danger" @onclick="() => Delete<#= entityClassNameSingular #>(<#= entityNameSingular #>)">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<button class="btn btn-success" @onclick="Add<#= entityClassNameSingular #>">Add <#= entityClassNameSingular #></button>
+
+@code {
+    private List<<#= entityClassNameSingular #>> <#= entityNamePlural #> { get; set; } 
+    
+    protected override async Task OnInitializedAsync()
+    {
+        customers = await GetCustomersAsync();
+    }
+
+    private async Task<List<#= entityClassNameSingular #>> Get<#= entityClassNamePlural #>Async()
+    {
+        // Code to retrieve customer list from database or API
+        // return Lazorm.<#= entityClassNameSingular #>.GetAll();
+    }
+
+    private void Add<#= entityClassNameSingular #>()
+    {
+        // TODO: Implement adding <#= entityNameSingular #> functionality
+    }
+
+    private void Edit<#= entityClassNameSingular #>(<#= entityClassNameSingular #> <#= entityNameSingular #>)
+    {
+        // TODO: Implement editing <#= entityNameSingular #> functionality
+    }
+
+    private void Delete<#= entityClassNameSingular #>(<#= entityClassNameSingular #> <#= entityNameSingular #>)
+    {
+        // TODO: Implement deleting <#= entityNameSingular #> functionality
+    }
+}
