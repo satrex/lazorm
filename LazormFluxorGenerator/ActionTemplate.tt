@@ -9,9 +9,9 @@ string[] cruds = new string[] {"Create"};
 string[] actionTypes = new string[] {"", "Success", "Failure"};
 #>
 <#
-    string EntityClass = entityClassName;
-    string memberEntity = entityClassName;
-    string localEntity = entityClassName.ToLower();
+   string EntityClass = entityClassName;
+   string memberEntity = entityClassName;
+   string localEntity = entityClassName.ToLower();
 
    string actionClassName = crud + entityClassName + actionType + "Action"; 
    string effectClassName = crud + entityClassName + actionType + "Effect"; 

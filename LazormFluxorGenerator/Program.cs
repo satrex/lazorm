@@ -19,9 +19,15 @@ namespace LazormFluxorGenerator
             var pluralizer = new Pluralize.NET.Pluralizer();
             GeneratorContext context = new GeneratorContext()
             {
-                EntityClassName = entity
+                EntityClassName = pluralizer.Singularize(entity.Capitalize()),
+                SchemaName = pluralizer.Pluralize(entity.Capitalize())
             };
-            context.SchemaName = pluralizer.Pluralize(context.EntityClassName);
+
+            GeneratorContext contextForList = new GeneratorContext()
+            {
+                EntityClassName = pluralizer.Pluralize(entity.Capitalize()),
+                SchemaName = pluralizer.Pluralize(entity.Capitalize())
+            };
 
             // Create Once - Static files
             #region RootState
@@ -44,14 +50,14 @@ namespace LazormFluxorGenerator
             Directory.CreateDirectory("Store/States");
             StateTemplate stateTemplate = new StateTemplate(context);
             string statePageContent = stateTemplate.TransformText();
-            File.WriteAllText(string.Format("Store/States/{0}State.cs",context.SchemaName ), statePageContent);
+            File.WriteAllText($"Store/States/{context.SchemaName}State.cs", statePageContent);
             #endregion
 
             #region Features
             Directory.CreateDirectory("Store/Features/");
             FeatureTemplate feature = new FeatureTemplate(context: context);
             string featurePageContent = feature.TransformText();
-            File.WriteAllText(string.Format("Store/Features/{0}Feature.cs", context.SchemaName),
+            File.WriteAllText($"Store/Features/{context.SchemaName}Feature.cs",
                 featurePageContent);
             #endregion
 
@@ -60,30 +66,26 @@ namespace LazormFluxorGenerator
             foreach (var crud in crudKind)
             {
                 context.CrudKind = crud;
+                contextForList.CrudKind = crud;
 
                 #region Reducers
                 // TODO: Add reference for states- done
                 // TODO: Add reference for Lazorm Entity - done
                 if (context.CrudKind == "Load")
                 {
-                    LoadListReducerTemplate listReducer = new LoadListReducerTemplate(context: context);
+                    LoadListReducerTemplate listReducer = new LoadListReducerTemplate(context: contextForList);
                     string listReducerPageContent = listReducer.TransformText();
-                    Directory.CreateDirectory(string.Format("Store/Features/{1}UseCase/Reducers/",
-                        context.SchemaName, context.EntityClassName));
-                    File.WriteAllText(string.Format("Store/Features/{1}UseCase/Reducers/{2}{0}Reducer.cs",
-                     context.SchemaName, context.EntityClassName, context.CrudKind), listReducerPageContent);
+                    Directory.CreateDirectory($"Store/Features/{context.EntityClassName}UseCase/Reducers/");
+                    File.WriteAllText($"Store/Features/{context.EntityClassName}UseCase/Reducers/{context.CrudKind}{context.SchemaName}Reducer.cs", listReducerPageContent);
 
                     ReducerTemplate reducerTemplate = new ReducerTemplate(context: context);
                     string reducerPageContent = reducerTemplate.TransformText();
-                    File.WriteAllText(string.Format("Store/Features/{2}UseCase/Reducers/{1}{2}Reducer.cs",
-                        context.SchemaName, context.CrudKind, context.EntityClassName), reducerPageContent);
+                    File.WriteAllText($"Store/Features/{context.EntityClassName}UseCase/Reducers/{context.CrudKind}{context.EntityClassName}Reducer.cs", reducerPageContent);
                 } else {
                     ReducerTemplate reducerTemplate = new ReducerTemplate(context: context);
                     string reducerPageContent = reducerTemplate.TransformText();
-                    Directory.CreateDirectory(string.Format("Store/Features/{1}UseCase/Reducers/",
-    context.SchemaName, context.EntityClassName));
-                    File.WriteAllText(string.Format("Store/Features/{2}UseCase/Reducers/{1}{2}Reducer.cs",
-                        context.SchemaName, context.CrudKind, context.EntityClassName), reducerPageContent);
+                    Directory.CreateDirectory($"Store/Features/{context.EntityClassName}UseCase/Reducers/");
+                    File.WriteAllText($"Store/Features/{context.EntityClassName}UseCase/Reducers/{context.CrudKind}{context.EntityClassName}Reducer.cs", reducerPageContent);
                     #endregion
                 }
                 // Create for each Entities/CrudKind/Try-Success-Failure
@@ -111,57 +113,48 @@ namespace LazormFluxorGenerator
                     {
                         LoadListEffectTemplate listEffect = new LoadListEffectTemplate(context: actionContext);
                         string effectPageContent = listEffect.TransformText();
-                        Directory.CreateDirectory(string.Format("Store/Features/{1}UseCase/Effects/", 
-                            context.SchemaName, context.EntityClassName));
-                        File.WriteAllText(string.Format("Store/Features/{1}UseCase/Effects/{2}{0}{3}Effect.cs",
-                         context.SchemaName, context.EntityClassName, context.CrudKind, actionKind), effectPageContent);
+                        Directory.CreateDirectory($"Store/Features/{context.EntityClassName}UseCase/Effects/");
+                        File.WriteAllText($"Store/Features/{context.EntityClassName}UseCase/Effects/{context.CrudKind}{context.SchemaName}{actionKind}Effect.cs"
+                          , effectPageContent);
 
 
                         EffectTemplate detailEffect = new EffectTemplate(context: actionContext);
                         string detailEffectPageContent = detailEffect.TransformText();
-                        Directory.CreateDirectory(string.Format("Store/Features/{1}UseCase/Effects/", 
-                            context.SchemaName, context.EntityClassName));
-                        File.WriteAllText(string.Format("Store/Features/{0}UseCase/Effects/{1}{0}{3}Effect.cs", 
-                            context.EntityClassName, context.CrudKind, context.SchemaName, actionKind), detailEffectPageContent);
+                        Directory.CreateDirectory($"Store/Features/{context.EntityClassName}UseCase/Effects/");
+                        File.WriteAllText($"Store/Features/{context.EntityClassName}UseCase/Effects/{context.CrudKind}{context.EntityClassName}{actionKind}Effect.cs"
+                            , detailEffectPageContent);
                     }
                     else { 
                         EffectTemplate effect = new EffectTemplate(context: actionContext);
                         string effectPageContent = effect.TransformText();
-                        Directory.CreateDirectory(string.Format("Store/Features/{1}UseCase/Effects/",
-                            context.SchemaName, context.EntityClassName));
-                        File.WriteAllText(string.Format("Store/Features/{0}UseCase/Effects/{1}{0}{3}Effect.cs",
-                            context.EntityClassName, context.CrudKind,
-                            context.SchemaName, actionKind), effectPageContent);
+                        Directory.CreateDirectory($"Store/Features/{context.EntityClassName}UseCase/Effects/");
+                        File.WriteAllText($"Store/Features/{context.EntityClassName}UseCase/Effects/{context.CrudKind}{context.EntityClassName}{actionKind}Effect.cs"
+                            , effectPageContent);
                     }
                     #endregion
 
                     #region Actions
                     // TODO: Add reference for failure action - done
-                    if(actionContext.CrudKind == "Load")
+                    if (actionContext.CrudKind == "Load")
                     {
                         // List and Detail
+
                         LoadListActionTemplate listAction = new LoadListActionTemplate(context: actionContext);
                         string actionPageContent = listAction.TransformText();
-                        Directory.CreateDirectory(string.Format("Store/Features/{2}UseCase/Actions/{1}{0}/",
-                            context.SchemaName, context.CrudKind, context.EntityClassName));
-                        File.WriteAllText(string.Format("Store/Features/{2}UseCase/Actions/{1}{0}/{1}{0}{3}Action.cs",
-                            context.SchemaName, context.CrudKind, context.EntityClassName, actionKind), actionPageContent);
+                        Directory.CreateDirectory($"Store/Features/{context.EntityClassName}UseCase/Actions/{context.CrudKind}{context.SchemaName}/");
+                        File.WriteAllText($"Store/Features/{context.EntityClassName}UseCase/Actions/{context.CrudKind}{context.SchemaName}/{context.CrudKind}{context.SchemaName}{actionKind}Action.cs", actionPageContent);
 
                         ActionTemplate detailAction = new ActionTemplate(context: actionContext);
                         string detailActionPageContent = detailAction.TransformText();
-                        Directory.CreateDirectory(string.Format("Store/Features/{2}UseCase/Actions/{1}{2}Detail/",
-                           context.SchemaName, context.CrudKind, context.EntityClassName)); 
-                        File.WriteAllText(string.Format("Store/Features/{2}UseCase/Actions/{1}{2}Detail/{1}{2}{3}Action.cs",
-                            context.SchemaName, context.CrudKind, context.EntityClassName, actionKind), detailActionPageContent);
+                        Directory.CreateDirectory($"Store/Features/{context.EntityClassName}UseCase/Actions/{context.CrudKind}{context.EntityClassName}Detail/"); 
+                        File.WriteAllText($"Store/Features/{context.EntityClassName}UseCase/Actions/{context.CrudKind}{context.EntityClassName}Detail/{context.CrudKind}{context.EntityClassName}{actionKind}Action.cs", detailActionPageContent);
                     }
                     else
                     {
                         ActionTemplate action = new ActionTemplate(context: actionContext);
                         string actionPageContent = action.TransformText();
-                        Directory.CreateDirectory(string.Format("Store/Features/{2}UseCase/Actions/{1}{2}/",
-                            context.SchemaName, context.CrudKind, context.EntityClassName));
-                        File.WriteAllText(string.Format("Store/Features/{2}UseCase/Actions/{1}{2}/{1}{2}{3}Action.cs",
-                            context.SchemaName, context.CrudKind, context.EntityClassName, actionKind), actionPageContent);
+                        Directory.CreateDirectory($"Store/Features/{context.EntityClassName}UseCase/Actions/{context.CrudKind}{context.EntityClassName}/");
+                        File.WriteAllText($"Store/Features/{context.EntityClassName}UseCase/Actions/{context.CrudKind}{context.EntityClassName}/{context.CrudKind}{context.EntityClassName}{actionKind}Action.cs", actionPageContent);
                     }
 
 
