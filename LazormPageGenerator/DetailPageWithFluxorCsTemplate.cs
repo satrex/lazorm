@@ -192,7 +192,7 @@ namespace LazormPageGenerator {
             
             #line 26 ""
             this.Write("State {get; set;}\n\n    [Inject]\n    private IDispatcher? dispatcher { get; set; }" +
-                    "\n\n    [Inject]\n    NavigationManager? Navigation {get; set;}\n\n    [Inject]\n    p" +
+                    "\n\n    [Inject]\n    NavigationManager? navigation {get; set;}\n\n    [Inject]\n    p" +
                     "rivate ILogger<");
             
             #line default
@@ -458,7 +458,7 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 74 ""
-            this.Write("));\n        Navigation?.NavigateTo(\"/");
+            this.Write("));\n        navigation?.NavigateTo(\"/");
             
             #line default
             #line hidden
@@ -494,7 +494,7 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 77 ""
-            this.Write(")\n    {\n        Navigation?.NavigateTo($\"");
+            this.Write(")\n    {\n        navigation?.NavigateTo($\"");
             
             #line default
             #line hidden
@@ -542,24 +542,117 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 84 ""
-            this.Write(@".ToPatient()
-        );
-        StateHasChanged();
-    }
-
-    protected void StorePatient(Patient storingPatient)
-    {
-        if(0 == storingPatient.Id)
-        {
-            dispatcher?.Dispatch(new CreatePatientAction(storingPatient));
-        }
-        else
-        {
-            _logger.LogInformation($""Dispatching: phone= {storingPatient.Phone}"");
-            dispatcher?.Dispatch(new UpdatePatientAction(storingPatient));
-        }
-
-        Navigation?.NavigateTo($""/");
+            this.Write(".ToPatient()\n        );\n        StateHasChanged();\n    }\n\n    protected void Stor" +
+                    "e");
+            
+            #line default
+            #line hidden
+            
+            #line 89 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
+            
+            #line default
+            #line hidden
+            
+            #line 89 ""
+            this.Write("(");
+            
+            #line default
+            #line hidden
+            
+            #line 89 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
+            
+            #line default
+            #line hidden
+            
+            #line 89 ""
+            this.Write(" storing");
+            
+            #line default
+            #line hidden
+            
+            #line 89 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
+            
+            #line default
+            #line hidden
+            
+            #line 89 ""
+            this.Write(")\n    {\n        if(0 == storing");
+            
+            #line default
+            #line hidden
+            
+            #line 91 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
+            
+            #line default
+            #line hidden
+            
+            #line 91 ""
+            this.Write(".Id)\n        {\n            dispatcher?.Dispatch(new Create");
+            
+            #line default
+            #line hidden
+            
+            #line 93 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
+            
+            #line default
+            #line hidden
+            
+            #line 93 ""
+            this.Write("Action(storing");
+            
+            #line default
+            #line hidden
+            
+            #line 93 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
+            
+            #line default
+            #line hidden
+            
+            #line 93 ""
+            this.Write("));\n        }\n        else\n        {\n            // _logger.LogInformation($\"Disp" +
+                    "atching: xx = {storing");
+            
+            #line default
+            #line hidden
+            
+            #line 97 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
+            
+            #line default
+            #line hidden
+            
+            #line 97 ""
+            this.Write(".xx}\");\n            dispatcher?.Dispatch(new Update");
+            
+            #line default
+            #line hidden
+            
+            #line 98 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
+            
+            #line default
+            #line hidden
+            
+            #line 98 ""
+            this.Write("Action(storing");
+            
+            #line default
+            #line hidden
+            
+            #line 98 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
+            
+            #line default
+            #line hidden
+            
+            #line 98 ""
+            this.Write("));\n        }\n\n        navigation?.NavigateTo($\"/");
             
             #line default
             #line hidden

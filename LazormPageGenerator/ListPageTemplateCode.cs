@@ -40,7 +40,7 @@ namespace LazormPageGenerator
             {
                var str = $"{nameof(p.Name)}:{p.Name}, {nameof(p.Editable)}:{p.Editable}, {nameof(p.TypeName)}:{p.TypeName}";
                Trace.WriteLine(str);
-               td += $"                <td>@{entityNameSingular}.{p.Name}</th>\n";
+               td += $"                <td>@{entityNameSingular}.{p.Name}</td>\n";
             });
             return td;
         }

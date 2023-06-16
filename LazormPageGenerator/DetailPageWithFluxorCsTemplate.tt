@@ -29,7 +29,7 @@ public partial class <#= entityClassNameSingular #>DetailPage: Fluxor.Blazor.Web
     private IDispatcher? dispatcher { get; set; }
 
     [Inject]
-    NavigationManager? Navigation {get; set;}
+    NavigationManager? navigation {get; set;}
 
     [Inject]
     private ILogger<<#= entityClassNameSingular #>DetailPage>? _logger{get; set;}
@@ -72,11 +72,11 @@ public partial class <#= entityClassNameSingular #>DetailPage: Fluxor.Blazor.Web
     protected void Delete<#= entityClassNameSingular #>(<#= entityClassNameSingular #> deleting<#= entityClassNameSingular #>)
     {
         dispatcher?.Dispatch(new Delete<#= entityClassNameSingular #>Action(deleting<#= entityClassNameSingular #>));
-        Navigation?.NavigateTo("/<#= entityNamePlural #>");
+        navigation?.NavigateTo("/<#= entityNamePlural #>");
     }
     private void StartEdition(<#= entityClassNameSingular #> <#= entityNameSingular #>)
     {
-        Navigation?.NavigateTo($"<#= entityNamePlural #>/{ <#= entityNameSingular #>.Id }");
+        navigation?.NavigateTo($"<#= entityNamePlural #>/{ <#= entityNameSingular #>.Id }");
     }
     protected void HandleValidSubmit()
     {
@@ -86,18 +86,18 @@ public partial class <#= entityClassNameSingular #>DetailPage: Fluxor.Blazor.Web
         StateHasChanged();
     }
 
-    protected void StorePatient(Patient storingPatient)
+    protected void Store<#= entityClassNameSingular #>(<#= entityClassNameSingular #> storing<#= entityClassNameSingular #>)
     {
-        if(0 == storingPatient.Id)
+        if(0 == storing<#= entityClassNameSingular #>.Id)
         {
-            dispatcher?.Dispatch(new CreatePatientAction(storingPatient));
+            dispatcher?.Dispatch(new Create<#= entityClassNameSingular #>Action(storing<#= entityClassNameSingular #>));
         }
         else
         {
-            _logger.LogInformation($"Dispatching: phone= {storingPatient.Phone}");
-            dispatcher?.Dispatch(new UpdatePatientAction(storingPatient));
+            // _logger.LogInformation($"Dispatching: xx = {storing<#= entityClassNameSingular #>.xx}");
+            dispatcher?.Dispatch(new Update<#= entityClassNameSingular #>Action(storing<#= entityClassNameSingular #>));
         }
 
-        Navigation?.NavigateTo($"/<#= entityNamePlural #>/{<#= entityClassNamePlural #>State?.Value?.CurrentEntity?.Id}/consultations");
+        navigation?.NavigateTo($"/<#= entityNamePlural #>/{<#= entityClassNamePlural #>State?.Value?.CurrentEntity?.Id}/consultations");
     }
 }

@@ -39,13 +39,13 @@ namespace LazormPageGenerator
                     case "Double":
                     case "decimal":
                     case "Decimal":
-                        input = $"<InputNumber class=\"form-control\" id=\"input{p.Name}\" @bind-value=\"{entityNameSingular}.{p.Name}\">\n"; ;
+                        input = $"<InputNumber class=\"form-control\" id=\"input{p.Name}\" @bind-value=\"{entityNameSingular}.{p.Name}\" />\n"; ;
                         break;
                     case "bool":
-                        input = $"<InputCheckbox class=\"form-control\" id=\"input{p.Name}\" @bind-value=\"{entityNameSingular}.{p.Name}\" >";
+                        input = $"<InputCheckbox class=\"form-control\" id=\"input{p.Name}\" @bind-value=\"{entityNameSingular}.{p.Name}\" />";
                         break;
                     default:
-                        input = $"<InputText class=\"form-control\" id=\"input{p.Name}\" @bind-value=\"{entityNameSingular}.{p.Name}\">\n";
+                        input = $"<InputText class=\"form-control\" id=\"input{p.Name}\" @bind-value=\"{entityNameSingular}.{p.Name}\" />\n";
                         break;
                 }
                 td += $"       <div class=\"form-group\">\n";
