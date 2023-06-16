@@ -10,6 +10,7 @@
     <Owners>Satrex</Owners>
     <PackageProjectUrl>https://github.com/satrex/lazorm</PackageProjectUrl>
     <PackageReleaseNotes>Divided into library - because it needs a nuget pkg and dependencies on compiling.</PackageReleaseNotes>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <Summary>Compile / Runtime Library for Lazorm.</Summary>
     <Title>LazormLib</Title>
     <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -38,6 +39,7 @@
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="7.0.0" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.2" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
+    <None Include="docs\README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
   <ItemGroup>
