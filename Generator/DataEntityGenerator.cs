@@ -22,6 +22,12 @@ namespace Lazorm
             else
                 return char.ToUpper(str[0]) + str.Substring(1);
         }
+
+        public static string ToCamelCase(this string str)
+        {
+            return str.Split(new[] { "_" }, StringSplitOptions.RemoveEmptyEntries).Select(s => char.ToUpperInvariant(s[0]) + s.Substring(1, s.Length - 1)).Aggregate(string.Empty, (s1, s2) => s1 + s2);
+
+        }
     }
 
     /// <summary>
@@ -165,7 +171,7 @@ namespace Lazorm
             if (tableName == columnName)
                 return columnName + "1";
 
-            return columnName;
+            return columnName.ToCamelCase().Capitalize();
         }
     
         private List<ForeignKey> foreignKeys = new List<ForeignKey>();

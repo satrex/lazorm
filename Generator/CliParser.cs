@@ -167,9 +167,12 @@ namespace Lazorm
 
         private static void GenerateFluxor(GenerateOptions generateOprions)
         {
+            if (generateOprions.OutputDir is null) 
+		        generateOprions.OutputDir = "Lazorm";
+
             var outdir = Path.Combine(Environment.CurrentDirectory, generateOprions.OutputDir);
-            if(generateOprions.Mapper | generateOprions.Validation | generateOprions.RazorPage)
-                outdir = Environment.CurrentDirectory;
+            if (!Directory.Exists(outdir))
+                Directory.CreateDirectory(outdir);
                 
             foreach(var table in generateOprions.Tables)
             {
