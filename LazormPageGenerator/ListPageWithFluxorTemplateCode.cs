@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace LazormPageGenerator
 {
-    public partial class ListPageTemplate
+    public partial class ListPageWithFluxorTemplate
     {
         public string entityClassNameSingular;
         public string entityClassNamePlural;
@@ -12,7 +12,7 @@ namespace LazormPageGenerator
         public string pageNamespace; 
         public List<EntityProperty> entityProperties;
 
-        public ListPageTemplate(GeneratorContext context)
+        public ListPageWithFluxorTemplate(GeneratorContext context)
         {
             entityClassNameSingular = context.EntityClassName;
             entityClassNamePlural = context.EntityClassNamePlural;

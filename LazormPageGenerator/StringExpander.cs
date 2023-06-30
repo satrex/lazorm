@@ -3,7 +3,7 @@ namespace LazormPageGenerator
 {
 	public static class StringExpander
 	{
-        private const string NULLABLE = "Nullable<";
+        private const string NULLABLE = "System.Nullable<";
 
         public static string Capitalize(this string str)
         {

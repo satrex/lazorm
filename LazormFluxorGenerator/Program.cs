@@ -25,7 +25,7 @@ namespace LazormFluxorGenerator
 
             GeneratorContext contextForList = new GeneratorContext()
             {
-                EntityClassName = pluralizer.Pluralize(entity.Capitalize()),
+                EntityClassName = pluralizer.Singularize(entity.Capitalize()),
                 SchemaName = pluralizer.Pluralize(entity.Capitalize())
             };
 

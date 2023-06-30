@@ -21,127 +21,131 @@ namespace LazormPageGenerator {
             this.GenerationEnvironment = null;
             
             #line 7 ""
-            this.Write("\n@page \"/");
+            this.Write("\n@namespace ");
             
             #line default
             #line hidden
             
             #line 8 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( pageNamespace ));
+            
+            #line default
+            #line hidden
+            
+            #line 8 ""
+            this.Write(".Pages\n@page \"/");
+            
+            #line default
+            #line hidden
+            
+            #line 9 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
             
             #line default
             #line hidden
             
-            #line 8 ""
+            #line 9 ""
             this.Write("/edit/{id}\"\n@page \"/");
             
             #line default
             #line hidden
             
-            #line 9 ""
+            #line 10 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
             
             #line default
             #line hidden
             
-            #line 9 ""
+            #line 10 ""
             this.Write("/new\"\n@inject HttpClient httpClient\n@attribute [Authorize]\n@inherits Fluxor.Blazo" +
                     "r.Web.Components.FluxorComponent;\n<h3>Edit ");
             
             #line default
             #line hidden
             
-            #line 13 ""
+            #line 14 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNamePlural ));
             
             #line default
             #line hidden
             
-            #line 13 ""
+            #line 14 ""
             this.Write("</h3>\n\n@if (");
             
             #line default
             #line hidden
             
-            #line 15 ""
+            #line 16 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
             
             #line default
             #line hidden
             
-            #line 15 ""
-            this.Write(" == null)\n{\n    <p><em>Loading...</em></p>\n}\nelse\n{\n    <EditForm Model=\"@the");
+            #line 16 ""
+            this.Write("State?.Value.IsLoading ?? false)\n{\n    <p><em>Loading...</em></p>\n}\nelse if (");
             
             #line default
             #line hidden
             
-            #line 21 ""
+            #line 20 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
+            
+            #line default
+            #line hidden
+            
+            #line 20 ""
+            this.Write("State?.Value.HasCurrentErrors ?? false || ");
+            
+            #line default
+            #line hidden
+            
+            #line 20 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
+            
+            #line default
+            #line hidden
+            
+            #line 20 ""
+            this.Write("State?.Value.CurrentEntity is null)\n{\n    <div class=\"d-flex flex-column \">\n     " +
+                    "   <span class=\"py-2\">An error occured while loading ");
+            
+            #line default
+            #line hidden
+            
+            #line 23 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
+            
+            #line default
+            #line hidden
+            
+            #line 23 ""
+            this.Write(" data. <br />\n\t    Try refresh page.<br />\n\t    If the problem continues, contact" +
+                    " support.</span>\n    </div>\n}\nelse\n{\n    <EditForm Model=\"@the");
+            
+            #line default
+            #line hidden
+            
+            #line 30 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 21 ""
+            #line 30 ""
             this.Write("\" OnValidSubmit=\"@HandleValidSubmit\">\n    <DataAnnotationsValidator />\n        ");
             
             #line default
             #line hidden
             
-            #line 23 ""
+            #line 32 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( CreateFormBody() ));
             
             #line default
             #line hidden
             
-            #line 23 ""
-            this.Write("\n\n        <button type=\"submit\" class=\"btn btn-primary\" @onclick=\"Update");
-            
-            #line default
-            #line hidden
-            
-            #line 25 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
-            
-            #line default
-            #line hidden
-            
-            #line 25 ""
-            this.Write(@""">Update</button>
-    </EditForm>
-}
-
-@if (PatientsState?.Value.IsLoading ?? false)
-{
-    <div class=""d-flex flex-row justify-content-center"">
-        <div class=""spinner-border"" role=""status"">
-            <span class=""sr-only"">読み込み中...</span>
-        </div>
-    </div>
-}
-else if (PatientsState?.Value.HasCurrentErrors ?? false || PatientsState?.Value.CurrentEntity is null)
-{
-    <div class=""d-flex flex-column "">
-        <span class=""py-2"">患者さんのデータを読み込む際に、不具合が発生しました。<br />再読み込みを試してください。<br />解決しない場合は、サポートまでご連絡ください。</span>
-        <Button class=""btn btn-info py-2"" >再読み込み</Button>
-    </div>
-}
-else 
-{
- 
-    </EditForm>
-        
-    <MudDialog @bind-IsVisible=""alertVisible"">
-        <TitleContent>患者の削除</TitleContent>
-            <DialogContent><p>本当に削除してもよろしいですか？この操作は取り消せません。</p></DialogContent>
-            <DialogActions>
-                <MudButton Color=""Color.Warning"" @onclick=""(()=>  DeletePatient(PatientsState?.Value?.CurrentEntity! ))"">本当に削除します</MudButton>
-                <MudButton Color=""Color.Secondary"" @onclick=""(()=>alertVisible=false) "">キャンセル</MudButton>
-            </DialogActions>
-        </MudDialog>
-}
-
-
-");
+            #line 32 ""
+            this.Write("\n\n        <button type=\"submit\" class=\"btn btn-primary\" >Update</button>\n    </Ed" +
+                    "itForm>\n}\n");
             
             #line default
             #line hidden

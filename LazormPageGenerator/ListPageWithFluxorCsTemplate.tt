@@ -1,0 +1,51 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+
+using System.Threading.Tasks;
+using Fluxor;
+using Lazorm;
+using Microsoft.AspNetCore.Components;
+using Lazorm.Store.States;
+using Microsoft.Extensions.Logging; 
+using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Create<#= entityClassNameSingular #>;
+using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Load<#= entityClassNameSingular #>;
+using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Load<#= entityClassNamePlural #>;
+using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Update<#= entityClassNameSingular #>;
+using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Delete<#= entityClassNameSingular #>;
+
+namespace <#= pageNamespace #>.Pages
+{
+	public partial class <#= entityClassNamePlural #>Page: Fluxor.Blazor.Web.Components.FluxorComponent 
+	{
+	    [Inject]
+	    private IState<<#= entityClassNamePlural #>State>? <#= entityNamePlural #>State {get; set;}
+
+	    [Inject]
+	    private IDispatcher? dispatcher { get; set; }
+
+	    [Inject]
+	    NavigationManager? navigation {get; set;}
+
+	    [Inject]
+	    private ILogger<<#= entityClassNamePlural #>Page>? _logger{get; set;}
+
+	    private bool alertVisible = false;
+
+	    protected override void OnInitialized()
+	    {
+			// Load <#= entityNamePlural #> on initial page navigation
+			dispatcher?.Dispatch(new Load<#= entityClassNamePlural #>Action());
+
+			base.OnInitialized();
+	    }
+
+	    private void StartEdition(<#= entityClassNameSingular #> <#= entityNameSingular #>)
+	    {
+			navigation?.NavigateTo($"<#= entityNamePlural #>/{ <#= entityNameSingular #>.Id }");
+	    }
+	}
+}

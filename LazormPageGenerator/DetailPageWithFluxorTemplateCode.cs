@@ -9,6 +9,7 @@ namespace LazormPageGenerator
         public string entityClassNamePlural;
         public string entityNameSingular;
         public string entityNamePlural;
+        public string pageNamespace; 
         public List<EntityProperty> entityProperties;
 
         public DetailPageWithFluxorTemplate(GeneratorContext context)
@@ -18,6 +19,7 @@ namespace LazormPageGenerator
             entityNameSingular = entityClassNameSingular.Uncapitalize();
             entityNamePlural = entityClassNamePlural.Uncapitalize();
             entityProperties = context.EntityProperties;
+            pageNamespace = context.Namespace;
         }
 
         public string CreateFormBody()
@@ -33,19 +35,23 @@ namespace LazormPageGenerator
                     case "int":
                     case "Int32":
                     case "Int64":
+                    case "long":
                     case "single":
                     case "Single":
                     case "double":
                     case "Double":
                     case "decimal":
                     case "Decimal":
-                        input = $"<InputNumber class=\"form-control\" id=\"input{p.Name}\" @bind-value=\"{entityNameSingular}.{p.Name}\" />\n"; ;
+                        input = $"<InputNumber class=\"form-control\" id=\"input{p.Name}\" @bind-Value=\"the{entityClassNameSingular}.{p.Name}\" />\n"; ;
                         break;
                     case "bool":
-                        input = $"<InputCheckbox class=\"form-control\" id=\"input{p.Name}\" @bind-value=\"{entityNameSingular}.{p.Name}\" />";
+                        input = $"<InputCheckbox class=\"form-control\" id=\"input{p.Name}\" @bind-Value=\"the{entityClassNameSingular}.{p.Name}\" />";
+                        break;
+                    case "DateTime":
+                        input = $"<InputDate class=\"form-control\" id=\"input{p.Name}\" @bind-Value=\"the{entityClassNameSingular}.{p.Name}\" />";
                         break;
                     default:
-                        input = $"<InputText class=\"form-control\" id=\"input{p.Name}\" @bind-value=\"{entityNameSingular}.{p.Name}\" />\n";
+                        input = $"<InputText class=\"form-control\" id=\"input{p.Name}\" @bind-Value=\"the{entityClassNameSingular}.{p.Name}\" />\n";
                         break;
                 }
                 td += $"       <div class=\"form-group\">\n";

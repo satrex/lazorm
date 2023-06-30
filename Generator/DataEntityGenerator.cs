@@ -23,7 +23,7 @@ namespace Lazorm
                 return char.ToUpper(str[0]) + str.Substring(1);
         }
 
-        public static string ToCamelCase(this string str)
+        public static string ToPascalCase(this string str)
         {
             return str.Split(new[] { "_" }, StringSplitOptions.RemoveEmptyEntries).Select(s => char.ToUpperInvariant(s[0]) + s.Substring(1, s.Length - 1)).Aggregate(string.Empty, (s1, s2) => s1 + s2);
 
@@ -171,7 +171,7 @@ namespace Lazorm
             if (tableName == columnName)
                 return columnName + "1";
 
-            return columnName.ToCamelCase().Capitalize();
+            return columnName.ToPascalCase().Capitalize();
         }
     
         private List<ForeignKey> foreignKeys = new List<ForeignKey>();
@@ -266,8 +266,17 @@ namespace Lazorm
         }
         private CodeTypeDeclaration GenerateAliasClass(TableDef table)
         {
-            var singular = this.GetClassName(table.Name);
-            var cls = new CodeTypeDeclaration(table.Name);
+            var pl = new Pluralize.NET.Pluralizer();
+            var plural = string.Empty;
+	        if(pl.IsPlural(table.Name))
+            {
+                plural = table.Name.Capitalize();
+	        }
+            else
+            {
+                plural = pl.Pluralize(table.Name).Capitalize();
+	        }
+            var cls = new CodeTypeDeclaration(plural);
             cls.IsPartial = true;
             cls.IsClass = true;
             if(table.Columns.Exists(p => p.IsPrimaryKey))

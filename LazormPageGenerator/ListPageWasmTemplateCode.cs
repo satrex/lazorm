@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace LazormPageGenerator
 {
-    public partial class ListPageTemplate
+    public partial class ListPageWasmTemplate
     {
         public string entityClassNameSingular;
         public string entityClassNamePlural;
@@ -12,7 +12,7 @@ namespace LazormPageGenerator
         public string pageNamespace; 
         public List<EntityProperty> entityProperties;
 
-        public ListPageTemplate(GeneratorContext context)
+        public ListPageWasmTemplate(GeneratorContext context)
         {
             entityClassNameSingular = context.EntityClassName;
             entityClassNamePlural = context.EntityClassNamePlural;
@@ -40,9 +40,16 @@ namespace LazormPageGenerator
             var td = string.Empty;
             entityProperties.ForEach(p =>
             {
-               var str = $"{nameof(p.Name)}:{p.Name}, {nameof(p.Editable)}:{p.Editable}, {nameof(p.TypeName)}:{p.TypeName}";
-               Trace.WriteLine(str);
-               td += $"                <td>@{entityNameSingular}.{p.Name}</td>\n";
+                var str = $"{nameof(p.Name)}:{p.Name}, {nameof(p.Editable)}:{p.Editable}, {nameof(p.TypeName)}:{p.TypeName}";
+                Trace.WriteLine(str);
+                if (p.Name == "Name" || p.Name == "Title" || p.Name == "Id")
+                {
+                    td += $"                <td>";
+                    td += $"<a href=/{ entityNamePlural }/show/@{entityNameSingular}.Id >";
+                    td += $"@{entityNameSingular}.{p.Name} </a> </td>\n";
+                }
+                else
+                    td += $"                <td>@{entityNameSingular}.{p.Name}</td>\n";
             });
             return td;
         }

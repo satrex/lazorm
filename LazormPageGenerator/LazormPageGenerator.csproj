@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <ReleaseVersion>0.7.0</ReleaseVersion>
+    <ReleaseVersion>0.9.2</ReleaseVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -51,6 +51,26 @@
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>DetailPageWithFluxorTemplate.cs</LastGenOutput>
     </None>
+    <None Update="ContollerTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ControllerTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="ListPageWasmTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ListPageWasmTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="ListPageWIthFluxorTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ListPageWithFluxorTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="ListPageWithFluxorCsTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ListPageWithFluxorCsTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="ListPageWithFluxorTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ListPageWithFluxorTemplate.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="T4Template.cs">
@@ -76,6 +96,24 @@
     </Compile>
     <Compile Update="DetailPageWithFluxorTemplate.cs">
       <DependentUpon>DetailPageWithFluxorTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ContollerTemplate.cs">
+      <DependentUpon>ContollerTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ControllerTemplate.cs">
+      <DependentUpon>ControllerTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ListPageWasmTemplate.cs">
+      <DependentUpon>ListPageWasmTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ListPageWithFluxorCsTemplate.cs">
+      <DependentUpon>ListPageWithFluxorCsTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ListPageWIthFluxorTemplate.cs">
+      <DependentUpon>ListPageWIthFluxorTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ListPageWithFluxorTemplate.cs">
+      <DependentUpon>ListPageWithFluxorTemplate.tt</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

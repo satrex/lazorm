@@ -1,0 +1,49 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Lazorm;
+
+namespace <#= pageNamespace#>.Server.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class <#= entityClassNameSingular #>Controller : ControllerBase
+    {
+		public <#= entityClassNameSingular #>Controller()
+		{
+		}
+		[HttpGet]
+		public async Task<ActionResult<List<<#= entityClassNameSingular #>>>> GetAll<#= entityClassNamePlural #>()
+		{
+		    return Ok((await <#= entityClassNameSingular #>.GetAllAsync()).ToList());
+		}
+		[HttpGet("{id}")]
+		public async Task<ActionResult<<#= entityClassNameSingular #>>> Get(int id)
+		{
+		    return Ok(await <#= entityClassNameSingular #>.GetAsync(id));
+		}
+		[HttpPost]
+		public async Task<ActionResult<int>> Post(<#= entityClassNameSingular #> entity)
+		{
+		    return Ok(await entity.StoreAsync());
+		}
+		[HttpPut("{id}")]
+		public async Task<ActionResult> Put(int id, <#= entityClassNameSingular #> entity)
+		{
+		    return Ok(await entity.StoreAsync());
+		}
+		[HttpDelete("{id}")]
+		public async Task<ActionResult> Delete(<#= entityClassNameSingular #> entity)
+		{
+		    return Ok(await entity.DropAsync());
+		}
+
+    } 
+}

@@ -5,9 +5,9 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.CodeDom" #>
 
-@namespace <#= pageNamespace #>.Pages
 @page "/<#= entityNamePlural #>"
 @using Lazorm;
+@inject HttpClient httpClient 
 
 <h1><#= entityClassNamePlural #></h1> 
 
@@ -35,7 +35,6 @@
 
 @code {
     private List<<#= entityClassNameSingular #>> <#= entityNamePlural #> { get; set; } = new List<<#= entityClassNameSingular #>>();
-    
     protected override async Task OnInitializedAsync()
     {
         //  products = (await GetProductsAsync()).ToList();
@@ -45,7 +44,7 @@
     private async Task<IEnumerable<<#= entityClassNameSingular #>>> Get<#= entityClassNamePlural #>Async()
     {
         // Code to retrieve customer list from database or API
-        return await Lazorm.<#= entityClassNameSingular #>.GetAllAsync();
+        return await httpClient.GetFromJsonAsync<List<<#= entityClassNameSingular #>>>("api/<#= entityClassNameSingular #>") ?? new List<<#= entityClassNameSingular #>>();
     }
 
     private void Add<#= entityClassNameSingular #>()

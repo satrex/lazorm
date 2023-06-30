@@ -127,7 +127,7 @@ namespace Lazorm
 
         private string GetClassName(string tableName)
         {
-            return new Pluralize.NET.Pluralizer().Singularize(tableName) + "Validation";
+            return new Pluralize.NET.Pluralizer().Singularize(tableName).ToPascalCase() + "Validation";
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace Lazorm
         /// </summary>
         private string GetModelClassName(string tableName)
         {
-            return new Pluralize.NET.Pluralizer().Singularize(tableName) ;
+            return new Pluralize.NET.Pluralizer().Singularize(tableName).ToPascalCase();
         }
 
         private string GetFieldName(string propertyName)
@@ -153,7 +153,7 @@ namespace Lazorm
             if (tableName == columnName)
                 return columnName + "1";
 
-            return columnName;
+            return columnName.ToPascalCase().Capitalize(); 
         }
     
         #region コード生成

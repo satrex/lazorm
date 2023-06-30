@@ -4,13 +4,20 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.CodeDom" #>
-
 @namespace <#= pageNamespace #>.Pages
 @page "/<#= entityNamePlural #>"
-@using Lazorm;
-
+@using Lazorm
+@inject HttpClient httpClient
+@attribute [Authorize]
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent;
 <h1><#= entityClassNamePlural #></h1> 
 
+@if (<#= entityNamePlural #>State?.Value.IsLoading ?? false)
+{
+    <p><em>Loading...</em></p>
+}
+else 
+{
 <table class="table">
     <thead>
         <tr>
@@ -18,7 +25,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var <#= entityNameSingular #> in <#= entityNamePlural #>)
+        @foreach (var <#= entityNameSingular #> in <#= entityNamePlural #>State?.Value?.Current<#= entityClassNamePlural #>)
         {
             <tr>
 <#= CreateTableBody() #>
@@ -32,20 +39,13 @@
 </table>
 
 <button class="btn btn-success" @onclick="Add<#= entityClassNameSingular #>">Add <#= entityClassNameSingular #></button>
+}
 
 @code {
-    private List<<#= entityClassNameSingular #>> <#= entityNamePlural #> { get; set; } = new List<<#= entityClassNameSingular #>>();
     
     protected override async Task OnInitializedAsync()
     {
         //  products = (await GetProductsAsync()).ToList();
-        <#= entityNamePlural #> = (await Get<#= entityClassNamePlural #>Async()).ToList();
-    }
-
-    private async Task<IEnumerable<<#= entityClassNameSingular #>>> Get<#= entityClassNamePlural #>Async()
-    {
-        // Code to retrieve customer list from database or API
-        return await Lazorm.<#= entityClassNameSingular #>.GetAllAsync();
     }
 
     private void Add<#= entityClassNameSingular #>()

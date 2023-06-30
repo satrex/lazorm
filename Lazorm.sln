@@ -44,7 +44,7 @@ Global
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		description = Simplified alias class members
-		version = 0.7.0
+		version = 0.9.2
 		Policies = $0
 		$0.StandardHeader = $1
 	EndGlobalSection

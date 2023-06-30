@@ -3,8 +3,8 @@ using System.Diagnostics;
 
 namespace LazormPageGenerator
 {
-    public partial class DetailPageTemplate
-    {
+	public partial class ListPageWithFluxorCsTemplate
+	{
         public string entityClassNameSingular;
         public string entityClassNamePlural;
         public string entityNameSingular;
@@ -12,7 +12,7 @@ namespace LazormPageGenerator
         public string pageNamespace; 
         public List<EntityProperty> entityProperties;
 
-        public DetailPageTemplate(GeneratorContext context)
+        public ListPageWithFluxorCsTemplate(GeneratorContext context)
         {
             entityClassNameSingular = context.EntityClassName;
             entityClassNamePlural = context.EntityClassNamePlural;
@@ -30,7 +30,8 @@ namespace LazormPageGenerator
                 var str = $"{nameof(p.Name)}:{p.Name}, {nameof(p.Editable)}:{p.Editable}, {nameof(p.TypeName)}:{p.TypeName}";
                 Trace.WriteLine(str);
                 string input = string.Empty;
-                switch (p.TypeName.RemoveNullable()) {
+                switch (p.TypeName.RemoveNullable())
+                {
                     case "int":
                     case "Int32":
                     case "Int64":
@@ -41,16 +42,13 @@ namespace LazormPageGenerator
                     case "Double":
                     case "decimal":
                     case "Decimal":
-                        input = $"<InputNumber class=\"form-control\" id=\"input{p.Name}\" @bind-Value=\"the{entityClassNameSingular}.{p.Name}\" />";;
+                        input = $"<InputNumber class=\"form-control\" id=\"input{p.Name}\" @bind-Value=\"{entityNameSingular}.{p.Name}\" />\n"; ;
                         break;
                     case "bool":
-                        input = $"<InputCheckbox class=\"form-control\" id=\"input{p.Name}\" @bind-Value=\"the{entityClassNameSingular}.{p.Name}\" />";
-                        break;
-                    case "DateTime":
-                        input = $"<InputDate class=\"form-control\" id=\"input{p.Name}\" @bind-Value=\"the{entityClassNameSingular}.{p.Name}\" />";
+                        input = $"<InputCheckbox class=\"form-control\" id=\"input{p.Name}\" @bind-Value=\"{entityNameSingular}.{p.Name}\" />";
                         break;
                     default:
-                        input = $"<InputText class=\"form-control\" id=\"input{p.Name}\" @bind-Value=\"the{entityClassNameSingular}.{p.Name}\" />";
+                        input = $"<InputText class=\"form-control\" id=\"input{p.Name}\" @bind-Value=\"{entityNameSingular}.{p.Name}\" />\n";
                         break;
                 }
                 td += $"       <div class=\"form-group\">\n";
@@ -59,8 +57,8 @@ namespace LazormPageGenerator
                 td += $"       </div>\n";
             });
             return td;
+
         }
-
-
     }
 }
+

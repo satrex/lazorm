@@ -5,7 +5,7 @@
     <Title>Lazorm Fluxor - store files generator for fluxor</Title>
     <Description>zero configuration Fluxor store file generator</Description>
     <OutputType>Library</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <PackageId>LazormFluxor</PackageId>
     <Authors>Satrex</Authors>
     <Copyright>Copyright (c)2021 Satrex</Copyright>
@@ -23,7 +23,7 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Version>0.1.0</Version>
     <PackageReleaseNotes>Config Error Fixed</PackageReleaseNotes>
-    <ReleaseVersion>0.4.11</ReleaseVersion>
+    <ReleaseVersion>0.9.2</ReleaseVersion>
   </PropertyGroup>
 
   <ItemGroup>

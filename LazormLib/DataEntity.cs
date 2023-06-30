@@ -333,7 +333,7 @@ namespace Lazorm
 
             using (MemoryStream stream = new MemoryStream())
             {
-                BinaryFormatter formatter = new BinaryFormatter();
+                XmlSerializer formatter = new XmlSerializer(typeof (T));
 
                 formatter.Serialize(stream, this);
 

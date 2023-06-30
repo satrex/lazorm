@@ -15,6 +15,7 @@ namespace LazormPageGenerator
 
         public List<EntityProperty> EntityProperties { get; set; }  = new List<EntityProperty>();
 
+        public string Namespace { get; set; } = "Lazorm";
     }
 
     public class EntityProperty

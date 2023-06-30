@@ -5,22 +5,24 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.CodeDom" #>
 
+@namespace <#= pageNamespace #>.Pages
+@page "/<#= entityNamePlural #>/show/{Id}"
 @page "/<#= entityNamePlural #>/edit/{Id}"
 @page "/<#= entityNamePlural #>/new"
 @inject HttpClient httpClient
 @inject NavigationManager? navigation 
 @using Lazorm;
 
-<h3>Edit <#= entityClassNamePlural #></h3>
+<h3>Edit <#= entityClassNameSingular #></h3>
 
-@if (<#= entityNameSingular #> == null)
+@if (the<#= entityClassNameSingular #> == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    <EditForm Model="@<#= entityNameSingular #>" OnValidSubmit="@HandleValidSubmit">
-    <DataAnnotationsValidator />>
+    <EditForm Model="@the<#= entityClassNameSingular #>" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
 <#= CreateFormBody() #>
 
         <button type="submit" class="btn btn-primary">Update</button>
@@ -28,7 +30,7 @@ else
 }
 
 @code {
-    private <#= entityClassNameSingular #> <#= entityNameSingular #>;
+    private <#= entityClassNameSingular #> the<#= entityClassNameSingular #>;
 
     [Parameter]
     public int Id { get; set; }
@@ -37,17 +39,23 @@ else
     {
         if (Id == 0)
         {
-            <#= entityNameSingular #> = new <#= entityClassNameSingular #>();
+            the<#= entityClassNameSingular #> = new <#= entityClassNameSingular #>();
         }
         else
         {
-            <#= entityNameSingular #> = await <#= entityClassNameSingular #>.GetAsync(Id);
+            the<#= entityClassNameSingular #> = await Get<#= entityClassNameSingular #>Async();
         }
     }
-
+    
+    private async Task<<#= entityClassNameSingular #>> Get<#= entityClassNameSingular #>Async()
+    {
+        // Code to retrieve list from database or API
+        return await httpClient.GetFromJsonAsync<<#= entityClassNameSingular #>>("api/<#= entityClassNameSingular #>/@Id ") ?? new <#= entityClassNameSingular #>();
+    }
+    
     private async Task HandleValidSubmit()
     {
-        await <#= entityNameSingular #>.StoreAsync();
+        await the<#= entityClassNameSingular #>.StoreAsync();
         navigation?.NavigateTo("/<#= entityNamePlural #>");
     }
 }

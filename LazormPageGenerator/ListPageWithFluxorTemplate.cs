@@ -15,270 +15,200 @@ namespace LazormPageGenerator {
     using System;
     
     
-    public partial class ListPageTemplate : ListPageTemplateBase {
+    public partial class ListPageWithFluxorTemplate : ListPageWithFluxorTemplateBase {
         
         public virtual string TransformText() {
             this.GenerationEnvironment = null;
             
             #line 7 ""
-            this.Write("\n@namespace ");
+            this.Write("@namespace ");
             
             #line default
             #line hidden
             
-            #line 8 ""
+            #line 7 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( pageNamespace ));
             
             #line default
             #line hidden
             
-            #line 8 ""
+            #line 7 ""
             this.Write(".Pages\n@page \"/");
             
             #line default
             #line hidden
             
-            #line 9 ""
+            #line 8 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
             
             #line default
             #line hidden
             
-            #line 9 ""
-            this.Write("\"\n@using Lazorm;\n\n<h1>");
+            #line 8 ""
+            this.Write("\"\n@using Lazorm\n@inject HttpClient httpClient\n@attribute [Authorize]\n@inherits Fl" +
+                    "uxor.Blazor.Web.Components.FluxorComponent;\n<h1>");
             
             #line default
             #line hidden
             
-            #line 12 ""
+            #line 13 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNamePlural ));
             
             #line default
             #line hidden
             
-            #line 12 ""
-            this.Write("</h1> \n\n<table class=\"table\">\n    <thead>\n        <tr>\n");
+            #line 13 ""
+            this.Write("</h1> \n\n@if (");
             
             #line default
             #line hidden
             
-            #line 17 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( CreateTableHeader() ));
-            
-            #line default
-            #line hidden
-            
-            #line 17 ""
-            this.Write("\n        </tr>\n    </thead>\n    <tbody>\n        @foreach (var ");
-            
-            #line default
-            #line hidden
-            
-            #line 21 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityNameSingular ));
-            
-            #line default
-            #line hidden
-            
-            #line 21 ""
-            this.Write(" in ");
-            
-            #line default
-            #line hidden
-            
-            #line 21 ""
+            #line 15 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
             
             #line default
             #line hidden
             
-            #line 21 ""
+            #line 15 ""
+            this.Write("State?.Value.IsLoading ?? false)\n{\n    <p><em>Loading...</em></p>\n}\nelse \n{\n<tabl" +
+                    "e class=\"table\">\n    <thead>\n        <tr>\n");
+            
+            #line default
+            #line hidden
+            
+            #line 24 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( CreateTableHeader() ));
+            
+            #line default
+            #line hidden
+            
+            #line 24 ""
+            this.Write("\n        </tr>\n    </thead>\n    <tbody>\n        @foreach (var ");
+            
+            #line default
+            #line hidden
+            
+            #line 28 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityNameSingular ));
+            
+            #line default
+            #line hidden
+            
+            #line 28 ""
+            this.Write(" in ");
+            
+            #line default
+            #line hidden
+            
+            #line 28 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
+            
+            #line default
+            #line hidden
+            
+            #line 28 ""
+            this.Write("State?.Value?.Current");
+            
+            #line default
+            #line hidden
+            
+            #line 28 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNamePlural ));
+            
+            #line default
+            #line hidden
+            
+            #line 28 ""
             this.Write(")\n        {\n            <tr>\n");
             
             #line default
             #line hidden
             
-            #line 24 ""
+            #line 31 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( CreateTableBody() ));
             
             #line default
             #line hidden
             
-            #line 24 ""
+            #line 31 ""
             this.Write("\n                <td>\n                    <button class=\"btn btn-primary\" @onclic" +
                     "k=\"() => Edit");
             
             #line default
             #line hidden
             
-            #line 26 ""
+            #line 33 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 26 ""
+            #line 33 ""
             this.Write("(");
             
             #line default
             #line hidden
             
-            #line 26 ""
+            #line 33 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNameSingular ));
             
             #line default
             #line hidden
             
-            #line 26 ""
+            #line 33 ""
             this.Write(")\">Edit</button>\n                    <button class=\"btn btn-danger\" @onclick=\"() " +
                     "=> Delete");
             
             #line default
             #line hidden
             
-            #line 27 ""
+            #line 34 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 27 ""
+            #line 34 ""
             this.Write("(");
             
             #line default
             #line hidden
             
-            #line 27 ""
+            #line 34 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNameSingular ));
             
             #line default
             #line hidden
             
-            #line 27 ""
+            #line 34 ""
             this.Write(")\">Delete</button>\n                </td>\n            </tr>\n        }\n    </tbody>" +
                     "\n</table>\n\n<button class=\"btn btn-success\" @onclick=\"Add");
             
             #line default
             #line hidden
             
-            #line 34 ""
+            #line 41 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 34 ""
+            #line 41 ""
             this.Write("\">Add ");
             
             #line default
             #line hidden
             
-            #line 34 ""
+            #line 41 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 34 ""
-            this.Write("</button>\n\n@code {\n    private List<");
-            
-            #line default
-            #line hidden
-            
-            #line 37 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
-            
-            #line default
-            #line hidden
-            
-            #line 37 ""
-            this.Write("> ");
-            
-            #line default
-            #line hidden
-            
-            #line 37 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
-            
-            #line default
-            #line hidden
-            
-            #line 37 ""
-            this.Write(" { get; set; } = new List<");
-            
-            #line default
-            #line hidden
-            
-            #line 37 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
-            
-            #line default
-            #line hidden
-            
-            #line 37 ""
-            this.Write(">();\n    \n    protected override async Task OnInitializedAsync()\n    {\n        //" +
-                    "  products = (await GetProductsAsync()).ToList();\n        ");
-            
-            #line default
-            #line hidden
-            
-            #line 42 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
-            
-            #line default
-            #line hidden
-            
-            #line 42 ""
-            this.Write(" = (await Get");
-            
-            #line default
-            #line hidden
-            
-            #line 42 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNamePlural ));
-            
-            #line default
-            #line hidden
-            
-            #line 42 ""
-            this.Write("Async()).ToList();\n    }\n\n    private async Task<IEnumerable<");
-            
-            #line default
-            #line hidden
-            
-            #line 45 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
-            
-            #line default
-            #line hidden
-            
-            #line 45 ""
-            this.Write(">> Get");
-            
-            #line default
-            #line hidden
-            
-            #line 45 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNamePlural ));
-            
-            #line default
-            #line hidden
-            
-            #line 45 ""
-            this.Write("Async()\n    {\n        // Code to retrieve customer list from database or API\n    " +
-                    "    return await Lazorm.");
-            
-            #line default
-            #line hidden
-            
-            #line 48 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
-            
-            #line default
-            #line hidden
-            
-            #line 48 ""
-            this.Write(".GetAllAsync();\n    }\n\n    private void Add");
+            #line 41 ""
+            this.Write("</button>\n}\n\n@code {\n    \n    protected override async Task OnInitializedAsync()\n" +
+                    "    {\n        //  products = (await GetProductsAsync()).ToList();\n    }\n\n    pri" +
+                    "vate void Add");
             
             #line default
             #line hidden
@@ -409,7 +339,7 @@ namespace LazormPageGenerator {
         }
     }
     
-    public class ListPageTemplateBase {
+    public class ListPageWithFluxorTemplateBase {
         
         private global::System.Text.StringBuilder builder;
         

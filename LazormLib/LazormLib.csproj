@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>LazormLib</PackageId>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Description>Lazorm compile / runtime library.</Description>
     <RootNamespace>Lazorm</RootNamespace>
     <Authors>Satrex</Authors>
@@ -9,17 +9,16 @@
     <NeutralLanguage>en</NeutralLanguage>
     <Owners>Satrex</Owners>
     <PackageProjectUrl>https://github.com/satrex/lazorm</PackageProjectUrl>
-    <PackageReleaseNotes>Divided into library - because it needs a nuget pkg and dependencies on compiling.</PackageReleaseNotes>
+    <PackageReleaseNotes>Updated for .Net 7.0</PackageReleaseNotes>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Summary>Compile / Runtime Library for Lazorm.</Summary>
     <Title>LazormLib</Title>
     <PackageOutputPath>./nupkg</PackageOutputPath>
     <PackageLicenseFile>./LICENSE</PackageLicenseFile>
     <PackOnBuild>true</PackOnBuild>
-    <Version>0.7.2</Version>
-    <ReleaseVersion>0.7.2</ReleaseVersion>
-    <PackageVersion>0.7.2</PackageVersion>
-    <SynchReleaseVersion>false</SynchReleaseVersion>
+    <Version>0.9.0</Version>
+    <ReleaseVersion>0.9.2</ReleaseVersion>
+    <PackageVersion>0.9.0</PackageVersion>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Microsoft.Data.Sqlite.Core" />
@@ -39,7 +38,7 @@
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="7.0.0" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.2" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
-    <None Include="docs\README.md" Pack="true" PackagePath="\"/>
+    <None Include="docs\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>

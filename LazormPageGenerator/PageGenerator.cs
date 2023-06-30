@@ -8,7 +8,7 @@ namespace LazormPageGenerator
 {
         public class PageGenerator
     {
-        public static void GenerateFromFile(string filePath, string outDir)
+        public static void GenerateFromFile(string filePath, string outDir, string pageNamespace, bool withFluxor = false, bool isWasm = false)
         {
             // ソースコードをテキストとして読み込む
             var code = File.ReadAllText(filePath);
@@ -119,29 +119,64 @@ namespace LazormPageGenerator
             #endregion
             Trace.WriteLine("Source file parsing end");
 
-            //    #region ListPage
+            var dir = Directory.CreateDirectory(path: Path.Combine(outDir, context.EntityClassNamePlural));
+
+	    #region BlazorWasm
+            if (isWasm)
+            {
+                // creating api controller
+                ControllerTemplate controllerTemplate = new ControllerTemplate(context: context);
+                string controllerContent = controllerTemplate.TransformText();
+                var contDir = Directory.CreateDirectory(path: Path.Combine(Environment.CurrentDirectory, "Controllers"));
+                File.WriteAllText(Path.Combine(contDir.FullName, $"{context.EntityClassName}Controller.cs"), controllerContent);
+                // creating list page file
+                ListPageWasmTemplate listWasmTemplate = new(context: context);
+                string listWasmPageContent = listWasmTemplate.TransformText();
+                File.WriteAllText(Path.Combine(dir.FullName, "Index.razor"), listWasmPageContent);
+                return;
+            }
+	    #endregion
+
+	    #region BlazorServer
+	    #region Fluxor
+            if (withFluxor)
+
+            {
+                // creating list page file
+                ListPageWithFluxorTemplate listFluxorTemplate = new(context: context);
+                string listFluxorPageContent = listFluxorTemplate.TransformText();
+                File.WriteAllText(Path.Combine(dir.FullName, $"{context.EntityClassNamePlural}Page.razor"), listFluxorPageContent);
+                ListPageWithFluxorCsTemplate listFluxorCs = new (context: context);
+                string listFluxorCsContent = listFluxorCs.TransformText();
+                File.WriteAllText(Path.Combine(dir.FullName, $"{context.EntityClassNamePlural}Page.razor.cs"), listFluxorCsContent);
+
+                // creating detail page with fluxor
+                DetailPageWithFluxorTemplate detailPageWithFluxor = new DetailPageWithFluxorTemplate(context: context);
+                string detailPageWithFluxorContent = detailPageWithFluxor.TransformText();
+                File.WriteAllText(Path.Combine(dir.FullName, $"Edit{context.EntityClassName}Page.razor"), detailPageWithFluxorContent);
+                DetailPageWithFluxorCsTemplate fluxorCs = new DetailPageWithFluxorCsTemplate(context: context);
+                string fluxorCsContent = fluxorCs.TransformText();
+                File.WriteAllText(Path.Combine(dir.FullName, $"Edit{context.EntityClassName}Page.razor.cs"), fluxorCsContent);
+
+                return;
+            }
+	    #endregion
 
             // creating list page file
-            ListPageTemplate listTemplate = new(context: context);
-            string listReducerPageContent = listTemplate.TransformText();
-            var dir = Directory.CreateDirectory(path: Path.Combine(outDir, context.EntityClassNamePlural));
-            File.WriteAllText(Path.Combine(dir.FullName, "Index.razor"), listReducerPageContent);
+            ListPageTemplate listServerTemplate = new(context: context);
+            string listServerPageContent = listServerTemplate.TransformText();
+            File.WriteAllText(Path.Combine(dir.FullName, "Index.razor"), listServerPageContent);
 
             // creating confirmation dialog file
             ConfirmDialogTemplate confirmDialogTemplate = new ConfirmDialogTemplate();
+            string ConfirmDialogContent = confirmDialogTemplate.TransformText();
 
             // creating detail page file
             DetailPageTemplate detailPageTemplate = new(context: context);
             string detailPageContent = detailPageTemplate.TransformText();
-            File.WriteAllText(Path.Combine(dir.FullName, $"Edit{context.EntityClassName}.razor"), detailPageContent);
+            File.WriteAllText(Path.Combine(dir.FullName, $"Edit{context.EntityClassName}Page.razor"), detailPageContent);
 
-            // creating detail page with fluxor
-            DetailPageWithFluxorTemplate detailPageWithFluxor = new DetailPageWithFluxorTemplate(context: context);
-            string detailPageWithFluxorContent = detailPageWithFluxor.TransformText();
-            File.WriteAllText(Path.Combine(dir.FullName, $"Edit{context.EntityClassName}WithFluxor.razor"), detailPageWithFluxorContent);
-            DetailPageWithFluxorCsTemplate fluxorCs = new DetailPageWithFluxorCsTemplate(context: context);
-            string fluxorCsContent = fluxorCs.TransformText();
-            File.WriteAllText(Path.Combine(dir.FullName, $"Edit{context.EntityClassName}WithFluxor.razor.cs"), fluxorCsContent);
+     #endregion 
 
 
         }
