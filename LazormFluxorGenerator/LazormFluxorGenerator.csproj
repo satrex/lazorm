@@ -149,6 +149,9 @@
       <DependentUpon>ReducerTemplate.tt</DependentUpon>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Utilities\Utilities.csproj" />
+  </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
