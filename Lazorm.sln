@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LazormTest", "LazormTest\La
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LazormPageGenerator", "LazormPageGenerator\LazormPageGenerator.csproj", "{BD9D7180-83FE-4304-AC49-F20F321C0DEF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LazormBoilerplate", "LazormBoilerplate\LazormBoilerplate.csproj", "{8BA6D56B-DC12-4DAC-82DA-64E5E70F3F5D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{BD9D7180-83FE-4304-AC49-F20F321C0DEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD9D7180-83FE-4304-AC49-F20F321C0DEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD9D7180-83FE-4304-AC49-F20F321C0DEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BA6D56B-DC12-4DAC-82DA-64E5E70F3F5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BA6D56B-DC12-4DAC-82DA-64E5E70F3F5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BA6D56B-DC12-4DAC-82DA-64E5E70F3F5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BA6D56B-DC12-4DAC-82DA-64E5E70F3F5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		description = Simplified alias class members

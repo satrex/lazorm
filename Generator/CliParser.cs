@@ -6,6 +6,7 @@ using System.Linq;
 using CommandLine;
 using CommandLine.Text;
 using Lazorm;
+using LazormBoilerplate;
 using Microsoft.Extensions.Options;
 
 namespace Lazorm
@@ -89,7 +90,12 @@ namespace Lazorm
         [Option("verbose", HelpText = "If set true, it shows detailed log")]
         public bool Verbose { get; set; } = false;
     }
-
+    [Verb("boilerplate", HelpText = "Record changes to the repository.")]
+    class BoilerplateOptions
+    {
+        [Option('f', "fluxor", Required = false, HelpText = "Generates boilerplates of Fluxor.")]
+        public bool Fluxor { get; set; }        
+    }
     /// <summary>
     /// Provides argument parsing in command line. 
     /// </summary>
@@ -104,18 +110,43 @@ namespace Lazorm
         {
             GenerateOptions generateOprions = null;
             ShowOptions showOptions = null;
-            var parsed = Parser.Default.ParseArguments< GenerateOptions, ShowOptions>(args);   
-            parsed.WithParsed<GenerateOptions>(opt => {
-                
+            var parsed = Parser.Default.ParseArguments<GenerateOptions, ShowOptions, BoilerplateOptions>(args);
+            parsed.WithParsed<GenerateOptions>(opt =>
+            {
+
                 if ((opt.Mapper | opt.Validation | opt.Fluxor | opt.RazorPage) == false)
                     throw new ArgumentException("You should specify output flag at least 1 out of -m|-v|-f|-r .");
 
-                if (opt.Verbose) 
+                if (opt.Verbose)
                     Trace.Listeners.Add(new ConsoleTraceListener());
 
                 generateOprions = opt;
+                if (generateOprions != null)
+                {
+                    if (generateOprions.Mapper)
+                        GenerateModel(generateOprions);
+                    if (generateOprions.Validation)
+                        GenerateValidation(generateOprions);
+                    if (generateOprions.Fluxor)
+                        GenerateFluxor(generateOprions);
+                    if (generateOprions.RazorPage)
+                        GenerateRazorPage(generateOprions);
+                }
+                return;
             });
-            parsed.WithParsed<ShowOptions>(opt => showOptions = opt);
+            parsed.WithParsed<ShowOptions>(opt =>
+            {
+                showOptions = opt;
+
+                if (showOptions != null)
+                    ProcessShowCommand(showOptions);
+            });
+            parsed.WithParsed<BoilerplateOptions>(opt => {
+                if(opt.Fluxor)
+                {
+                    FluxorBoilerplate.WriteInNeed();
+                }
+            });
             parsed.WithNotParsed(er =>
             {
                 // パース結果からデフォルトの文を生成したい場合は、HelpText.AutoBuildを使用する
@@ -125,19 +156,6 @@ namespace Lazorm
                 return;
             });
 
-            if(generateOprions != null) { 
-                if(generateOprions.Mapper)
-                    GenerateModel(generateOprions);
-                if (generateOprions.Validation)
-                    GenerateValidation(generateOprions);
-                if (generateOprions.Fluxor)
-                    GenerateFluxor(generateOprions);
-                if (generateOprions.RazorPage)
-                    GenerateRazorPage(generateOprions);
-            }
-
-            if ( showOptions != null)
-                ProcessShowCommand( showOptions);
 
         }
 
@@ -177,14 +195,14 @@ namespace Lazorm
 
         private static void GenerateFluxor(GenerateOptions generateOprions)
         {
-            if (generateOprions.OutputDir is null) 
-		        generateOprions.OutputDir = "Lazorm";
+            if (generateOprions.OutputDir is null)
+                generateOprions.OutputDir = "Lazorm";
 
             var outdir = Path.Combine(Environment.CurrentDirectory, generateOprions.OutputDir);
             if (!Directory.Exists(outdir))
                 Directory.CreateDirectory(outdir);
-                
-            foreach(var table in generateOprions.Tables)
+
+            foreach (var table in generateOprions.Tables)
             {
                 LazormFluxorGenerator.Generator.Run(table, outdir);
             }
@@ -210,14 +228,15 @@ namespace Lazorm
                     tables.Add(t.Name)
                 );
             }
-            tables.ForEach(t => {
+            tables.ForEach(t =>
+            {
                 generator.Generate(t, outFolder);
             });
         }
 
-        private static void GenerateModel( GenerateOptions options)
+        private static void GenerateModel(GenerateOptions options)
         {
-            
+
             var outFolder = PrepareOutputFolderForEntity(options);
             Database db = Database.CreateInstance(options.DatabaseKind.ToString().ToLower(), options.ConnectionString);
 
@@ -236,7 +255,8 @@ namespace Lazorm
                     tables.Add(t.Name)
                 );
             }
-            tables.ForEach(t => {
+            tables.ForEach(t =>
+            {
                 generator.Generate(t, outFolder);
             });
 
@@ -264,12 +284,12 @@ namespace Lazorm
         private static string PrepareOutputFolderForPage(GenerateOptions options)
         {
             return PrepareOutputFolder(options, "Pages");
-	    }
+        }
 
         private static string PrepareOutputFolderForContollers(GenerateOptions options)
         {
             return PrepareOutputFolder(options, "Controllers");
-	    }
+        }
 
         private static string PrepareOutputFolder(GenerateOptions options, string FolderName)
         {
@@ -306,7 +326,7 @@ namespace Lazorm
             return outFolder;
         }
 
-        private static void ProcessShowCommand( ShowOptions options)
+        private static void ProcessShowCommand(ShowOptions options)
         {
             Database db = Database.CreateInstance(options.DatabaseKind.ToString(), options.ConnectionString);
 

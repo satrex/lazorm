@@ -19,9 +19,9 @@
     <PackOnBuild>true</PackOnBuild>
     <PackageProjectUrl>https://github.com/satrex/lazorm</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>0.9.2</Version>
-    <ReleaseVersion>0.9.2</ReleaseVersion>
-    <PackageVersion>0.9.2</PackageVersion>
+    <Version>0.9.3</Version>
+    <ReleaseVersion>0.9.3</ReleaseVersion>
+    <PackageVersion>0.9.3</PackageVersion>
     <PackageReleaseNotes>Fixed bug on generating fluxor classes</PackageReleaseNotes>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
@@ -72,6 +72,7 @@
     <ProjectReference Include="..\LazormLib\LazormLib.csproj" />
     <ProjectReference Include="..\LazormFluxorGenerator\LazormFluxorGenerator.csproj" />
     <ProjectReference Include="..\LazormPageGenerator\LazormPageGenerator.csproj" />
+    <ProjectReference Include="..\LazormBoilerplate\LazormBoilerplate.csproj" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
