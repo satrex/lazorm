@@ -1,7 +1,9 @@
-﻿namespace LazormPageGenerator
+﻿// StringExpander -  2023/08/29
+
+namespace Lazorm
 {
     public static class StringExpander
-	{
+    {
         public static string Capitalize(this string str)
         {
             return Utilities.StringExpander.Capitalize(str);
