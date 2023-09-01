@@ -41,66 +41,68 @@ namespace <#= pageNamespace #>.Pages
 
 	    protected override void OnInitialized()
 	    {
-		// Load the <#= entityNameSingular #> detail on initial page navigation
-		if (int.TryParse(<#= entityNameSingular #>Id, out var parsedId))
-		{
-		    var current<#= entityClassNameSingular #> = new <#= entityClassNameSingular #>() { Id = parsedId };
-		    dispatcher?.Dispatch(new Load<#= entityClassNameSingular #>Action(current<#= entityClassNameSingular #>));
-		}
-		else
-		{
-		    var current<#= entityClassNameSingular #> = new <#= entityClassNameSingular #>();
-		}
+			// Load the <#= entityNameSingular #> detail on initial page navigation
+			if (int.TryParse(<#= entityNameSingular #>Id, out var parsedId))
+			{
+				var current<#= entityClassNameSingular #> = new <#= entityClassNameSingular #>() { Id = parsedId };
+				dispatcher?.Dispatch(new Load<#= entityClassNameSingular #>Action(current<#= entityClassNameSingular #>));
+			}
+			else
+			{
+				var current<#= entityClassNameSingular #> = new <#= entityClassNameSingular #>();
+			}
 
-		// Register a state change to assign the validation fields
-		if(<#= entityNamePlural #>State != null) <#= entityNamePlural #>State.StateChanged += (sender, e) =>
-		{
-		    _logger.LogInformation($"StateChanged start:");
-		    if (<#= entityNamePlural #>State.Value.CurrentEntity is null)
-		    {
-			return;
-		    }
-		    _logger.LogInformation($"Name={<#= entityNamePlural #>State.Value.CurrentEntity.Name} ");
+			// Register a state change to assign the validation fields
+			if(<#= entityNamePlural #>State != null) <#= entityNamePlural #>State.StateChanged += (sender, e) =>
+			{
+				_logger?.LogInformation($"StateChanged start:");
+				if (<#= entityNamePlural #>State.Value.CurrentEntity is null)
+				{
+				return;
+				}
+				_logger?.LogInformation($"Id={<#= entityNamePlural #>State.Value.CurrentEntity.Id} ");
 
-		    the<#= entityClassNameSingular #> = new Lazorm.<#= entityClassNameSingular #>Validation(<#= entityNamePlural #>State.Value.CurrentEntity);
+				the<#= entityClassNameSingular #> = new Lazorm.<#= entityClassNameSingular #>Validation(<#= entityNamePlural #>State.Value.CurrentEntity);
 
-		    StateHasChanged();
-		    _logger.LogInformation($"StateChanged end:");
-		};
+				StateHasChanged();
+				_logger?.LogInformation($"StateChanged end:");
+			};
 
-		base.OnInitialized();
+			base.OnInitialized();
 	    }
 
 	    protected void Delete<#= entityClassNameSingular #>(<#= entityClassNameSingular #> deleting<#= entityClassNameSingular #>)
 	    {
-		dispatcher?.Dispatch(new Delete<#= entityClassNameSingular #>Action(deleting<#= entityClassNameSingular #>));
-		navigation?.NavigateTo("/<#= entityNamePlural #>");
+			dispatcher?.Dispatch(new Delete<#= entityClassNameSingular #>Action(deleting<#= entityClassNameSingular #>));
+			navigation?.NavigateTo("/<#= entityNamePlural #>");
 	    }
+
 	    private void StartEdition(<#= entityClassNameSingular #> <#= entityNameSingular #>)
 	    {
-		navigation?.NavigateTo($"<#= entityNamePlural #>/{ <#= entityNameSingular #>.Id }");
+			navigation?.NavigateTo($"<#= entityNamePlural #>/{ <#= entityNameSingular #>.Id }");
 	    }
+
 	    protected void HandleValidSubmit()
 	    {
-		Store<#= entityClassNameSingular #>(
-		    the<#= entityClassNameSingular #>.To<#= entityClassNameSingular #>()
-		);
-		StateHasChanged();
+			Store<#= entityClassNameSingular #>(
+			    the<#= entityClassNameSingular #>.To<#= entityClassNameSingular #>()
+			);
+			StateHasChanged();
 	    }
 
 	    protected void Store<#= entityClassNameSingular #>(<#= entityClassNameSingular #> storing<#= entityClassNameSingular #>)
 	    {
-		if(0 == storing<#= entityClassNameSingular #>.Id)
-		{
-		    dispatcher?.Dispatch(new Create<#= entityClassNameSingular #>Action(storing<#= entityClassNameSingular #>));
-		}
-		else
-		{
-		    // _logger.LogInformation($"Dispatching: xx = {storing<#= entityClassNameSingular #>.xx}");
-		    dispatcher?.Dispatch(new Update<#= entityClassNameSingular #>Action(storing<#= entityClassNameSingular #>));
-		}
+			if(0 == storing<#= entityClassNameSingular #>.Id)
+			{
+			    dispatcher?.Dispatch(new Create<#= entityClassNameSingular #>Action(storing<#= entityClassNameSingular #>));
+			}
+			else
+			{
+			    // _logger.LogInformation($"Dispatching: xx = {storing<#= entityClassNameSingular #>.xx}");
+			    dispatcher?.Dispatch(new Update<#= entityClassNameSingular #>Action(storing<#= entityClassNameSingular #>));
+			}
 
-		navigation?.NavigateTo($"/<#= entityNamePlural #>/{<#= entityNamePlural #>State?.Value?.CurrentEntity?.Id}/");
+			navigation?.NavigateTo($"/<#= entityNamePlural #>/{<#= entityNamePlural #>State?.Value?.CurrentEntity?.Id}/");
 	    }
 	}
 }

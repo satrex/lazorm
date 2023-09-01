@@ -254,7 +254,7 @@ namespace LazormPageGenerator {
             
             #line 38 ""
             this.Write("Validation();\n\n\t    private bool alertVisible = false;\n\n\t    protected override v" +
-                    "oid OnInitialized()\n\t    {\n\t\t// Load the ");
+                    "oid OnInitialized()\n\t    {\n\t\t\t// Load the ");
             
             #line default
             #line hidden
@@ -266,7 +266,7 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 44 ""
-            this.Write(" detail on initial page navigation\n\t\tif (int.TryParse(");
+            this.Write(" detail on initial page navigation\n\t\t\tif (int.TryParse(");
             
             #line default
             #line hidden
@@ -278,7 +278,7 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 45 ""
-            this.Write("Id, out var parsedId))\n\t\t{\n\t\t    var current");
+            this.Write("Id, out var parsedId))\n\t\t\t{\n\t\t\t\tvar current");
             
             #line default
             #line hidden
@@ -302,7 +302,7 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 47 ""
-            this.Write("() { Id = parsedId };\n\t\t    dispatcher?.Dispatch(new Load");
+            this.Write("() { Id = parsedId };\n\t\t\t\tdispatcher?.Dispatch(new Load");
             
             #line default
             #line hidden
@@ -326,7 +326,7 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 48 ""
-            this.Write("));\n\t\t}\n\t\telse\n\t\t{\n\t\t    var current");
+            this.Write("));\n\t\t\t}\n\t\t\telse\n\t\t\t{\n\t\t\t\tvar current");
             
             #line default
             #line hidden
@@ -350,7 +350,7 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 52 ""
-            this.Write("();\n\t\t}\n\n\t\t// Register a state change to assign the validation fields\n\t\tif(");
+            this.Write("();\n\t\t\t}\n\n\t\t\t// Register a state change to assign the validation fields\n\t\t\tif(");
             
             #line default
             #line hidden
@@ -374,8 +374,8 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 56 ""
-            this.Write("State.StateChanged += (sender, e) =>\n\t\t{\n\t\t    _logger.LogInformation($\"StateChan" +
-                    "ged start:\");\n\t\t    if (");
+            this.Write("State.StateChanged += (sender, e) =>\n\t\t\t{\n\t\t\t\t_logger?.LogInformation($\"StateChan" +
+                    "ged start:\");\n\t\t\t\tif (");
             
             #line default
             #line hidden
@@ -387,8 +387,8 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 59 ""
-            this.Write("State.Value.CurrentEntity is null)\n\t\t    {\n\t\t\treturn;\n\t\t    }\n\t\t    _logger.LogIn" +
-                    "formation($\"Name={");
+            this.Write("State.Value.CurrentEntity is null)\n\t\t\t\t{\n\t\t\t\treturn;\n\t\t\t\t}\n\t\t\t\t_logger?.LogInform" +
+                    "ation($\"Id={");
             
             #line default
             #line hidden
@@ -400,7 +400,7 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 63 ""
-            this.Write("State.Value.CurrentEntity.Name} \");\n\n\t\t    the");
+            this.Write("State.Value.CurrentEntity.Id} \");\n\n\t\t\t\tthe");
             
             #line default
             #line hidden
@@ -436,9 +436,9 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 65 ""
-            this.Write("State.Value.CurrentEntity);\n\n\t\t    StateHasChanged();\n\t\t    _logger.LogInformatio" +
-                    "n($\"StateChanged end:\");\n\t\t};\n\n\t\tbase.OnInitialized();\n\t    }\n\n\t    protected vo" +
-                    "id Delete");
+            this.Write("State.Value.CurrentEntity);\n\n\t\t\t\tStateHasChanged();\n\t\t\t\t_logger?.LogInformation($" +
+                    "\"StateChanged end:\");\n\t\t\t};\n\n\t\t\tbase.OnInitialized();\n\t    }\n\n\t    protected voi" +
+                    "d Delete");
             
             #line default
             #line hidden
@@ -474,7 +474,7 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 74 ""
-            this.Write(")\n\t    {\n\t\tdispatcher?.Dispatch(new Delete");
+            this.Write(")\n\t    {\n\t\t\tdispatcher?.Dispatch(new Delete");
             
             #line default
             #line hidden
@@ -498,7 +498,7 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 76 ""
-            this.Write("));\n\t\tnavigation?.NavigateTo(\"/");
+            this.Write("));\n\t\t\tnavigation?.NavigateTo(\"/");
             
             #line default
             #line hidden
@@ -510,131 +510,119 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 77 ""
-            this.Write("\");\n\t    }\n\t    private void StartEdition(");
+            this.Write("\");\n\t    }\n\n\t    private void StartEdition(");
             
             #line default
             #line hidden
             
-            #line 79 ""
+            #line 80 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 79 ""
+            #line 80 ""
             this.Write(" ");
             
             #line default
             #line hidden
             
-            #line 79 ""
+            #line 80 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNameSingular ));
             
             #line default
             #line hidden
             
-            #line 79 ""
-            this.Write(")\n\t    {\n\t\tnavigation?.NavigateTo($\"");
+            #line 80 ""
+            this.Write(")\n\t    {\n\t\t\tnavigation?.NavigateTo($\"");
             
             #line default
             #line hidden
             
-            #line 81 ""
+            #line 82 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
             
             #line default
             #line hidden
             
-            #line 81 ""
+            #line 82 ""
             this.Write("/{ ");
             
             #line default
             #line hidden
             
-            #line 81 ""
+            #line 82 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNameSingular ));
             
             #line default
             #line hidden
             
-            #line 81 ""
-            this.Write(".Id }\");\n\t    }\n\t    protected void HandleValidSubmit()\n\t    {\n\t\tStore");
+            #line 82 ""
+            this.Write(".Id }\");\n\t    }\n\n\t    protected void HandleValidSubmit()\n\t    {\n\t\t\tStore");
             
             #line default
             #line hidden
             
-            #line 85 ""
+            #line 87 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 85 ""
-            this.Write("(\n\t\t    the");
+            #line 87 ""
+            this.Write("(\n\t\t\t    the");
             
             #line default
             #line hidden
             
-            #line 86 ""
+            #line 88 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 86 ""
+            #line 88 ""
             this.Write(".To");
             
             #line default
             #line hidden
             
-            #line 86 ""
+            #line 88 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 86 ""
-            this.Write("()\n\t\t);\n\t\tStateHasChanged();\n\t    }\n\n\t    protected void Store");
+            #line 88 ""
+            this.Write("()\n\t\t\t);\n\t\t\tStateHasChanged();\n\t    }\n\n\t    protected void Store");
             
             #line default
             #line hidden
             
-            #line 91 ""
+            #line 93 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 91 ""
+            #line 93 ""
             this.Write("(");
             
             #line default
             #line hidden
             
-            #line 91 ""
+            #line 93 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 91 ""
+            #line 93 ""
             this.Write(" storing");
             
             #line default
             #line hidden
             
-            #line 91 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
-            
-            #line default
-            #line hidden
-            
-            #line 91 ""
-            this.Write(")\n\t    {\n\t\tif(0 == storing");
-            
-            #line default
-            #line hidden
-            
             #line 93 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
@@ -642,7 +630,7 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 93 ""
-            this.Write(".Id)\n\t\t{\n\t\t    dispatcher?.Dispatch(new Create");
+            this.Write(")\n\t    {\n\t\t\tif(0 == storing");
             
             #line default
             #line hidden
@@ -654,78 +642,91 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 95 ""
+            this.Write(".Id)\n\t\t\t{\n\t\t\t    dispatcher?.Dispatch(new Create");
+            
+            #line default
+            #line hidden
+            
+            #line 97 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
+            
+            #line default
+            #line hidden
+            
+            #line 97 ""
             this.Write("Action(storing");
             
             #line default
             #line hidden
             
-            #line 95 ""
+            #line 97 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 95 ""
-            this.Write("));\n\t\t}\n\t\telse\n\t\t{\n\t\t    // _logger.LogInformation($\"Dispatching: xx = {storing");
+            #line 97 ""
+            this.Write("));\n\t\t\t}\n\t\t\telse\n\t\t\t{\n\t\t\t    // _logger.LogInformation($\"Dispatching: xx = {stori" +
+                    "ng");
             
             #line default
             #line hidden
             
-            #line 99 ""
+            #line 101 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 99 ""
-            this.Write(".xx}\");\n\t\t    dispatcher?.Dispatch(new Update");
+            #line 101 ""
+            this.Write(".xx}\");\n\t\t\t    dispatcher?.Dispatch(new Update");
             
             #line default
             #line hidden
             
-            #line 100 ""
+            #line 102 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 100 ""
+            #line 102 ""
             this.Write("Action(storing");
             
             #line default
             #line hidden
             
-            #line 100 ""
+            #line 102 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 100 ""
-            this.Write("));\n\t\t}\n\n\t\tnavigation?.NavigateTo($\"/");
+            #line 102 ""
+            this.Write("));\n\t\t\t}\n\n\t\t\tnavigation?.NavigateTo($\"/");
             
             #line default
             #line hidden
             
-            #line 103 ""
+            #line 105 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
             
             #line default
             #line hidden
             
-            #line 103 ""
+            #line 105 ""
             this.Write("/{");
             
             #line default
             #line hidden
             
-            #line 103 ""
+            #line 105 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
             
             #line default
             #line hidden
             
-            #line 103 ""
+            #line 105 ""
             this.Write("State?.Value?.CurrentEntity?.Id}/\");\n\t    }\n\t}\n}");
             
             #line default

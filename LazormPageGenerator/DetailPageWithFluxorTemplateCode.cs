@@ -29,31 +29,7 @@ namespace LazormPageGenerator
             {
                 var str = $"{nameof(p.Name)}:{p.Name}, {nameof(p.Editable)}:{p.Editable}, {nameof(p.TypeName)}:{p.TypeName}";
                 Trace.WriteLine(str);
-                string input = string.Empty;
-                switch (p.TypeName.RemoveNullable())
-                {
-                    case "int":
-                    case "Int32":
-                    case "Int64":
-                    case "long":
-                    case "single":
-                    case "Single":
-                    case "double":
-                    case "Double":
-                    case "decimal":
-                    case "Decimal":
-                        input = $"<InputNumber class=\"form-control\" id=\"input{p.Name}\" @bind-Value=\"the{entityClassNameSingular}.{p.Name}\" />\n"; ;
-                        break;
-                    case "bool":
-                        input = $"<InputCheckbox class=\"form-control\" id=\"input{p.Name}\" @bind-Value=\"the{entityClassNameSingular}.{p.Name}\" />";
-                        break;
-                    case "DateTime":
-                        input = $"<InputDate class=\"form-control\" id=\"input{p.Name}\" @bind-Value=\"the{entityClassNameSingular}.{p.Name}\" />";
-                        break;
-                    default:
-                        input = $"<InputText class=\"form-control\" id=\"input{p.Name}\" @bind-Value=\"the{entityClassNameSingular}.{p.Name}\" />\n";
-                        break;
-                }
+                string input = PageGenerator.GenerateFormInput(p, $"the{ entityClassNameSingular}");
                 td += $"       <div class=\"form-group\">\n";
                 td += $"            <label for=\"input{p.Name}\">{p.Name}:</label>\n";
                 td += $"            {input}\n";

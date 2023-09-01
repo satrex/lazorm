@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace LazormPageGenerator
 {
-        public class PageGenerator
+    public class PageGenerator
     {
-        public static void GenerateFromFile(string filePath, string outDir, string pageNamespace, bool withFluxor = false, bool isWasm = false)
+        public static void GeneratePageFromFile(string filePath, string outDir, string pageNamespace, bool withFluxor = false, bool isWasm = false)
         {
             // ソースコードをテキストとして読み込む
             var code = File.ReadAllText(filePath);
@@ -179,6 +179,41 @@ namespace LazormPageGenerator
      #endregion 
 
 
+        }
+
+        public static string GenerateFormInput(EntityProperty entityProperty, string bindValueName)
+        {
+            string input = string.Empty;
+            switch (entityProperty.TypeName.RemoveNullable())
+            {
+                case "int":
+                case "Int32":
+                case "Int64":
+                case "long":
+                case "single":
+                case "Single":
+                case "double":
+                case "Double":
+                case "decimal":
+                case "Decimal":
+                    input = $"<InputNumber class=\"form-control\" id=\"input{entityProperty.Name}\" @bind-Value=\"{bindValueName}.{entityProperty.Name}\" />\n"; ;
+                    Trace.WriteLine($"InputNumber property: {entityProperty.Name} type: {entityProperty.TypeName}");
+                    break;
+                case "bool":
+                    input = $"<InputCheckbox class=\"form-control\" id=\"input{entityProperty.Name}\" @bind-Value=\"{bindValueName}.{entityProperty.Name}\" />\n";
+                    Trace.WriteLine($"InputCheckbox property: {entityProperty.Name} type: {entityProperty.TypeName}");
+                    break;
+                case "System.DateTime":
+                case "DateTime":
+                    input = $"<InputDate class=\"form-control\" id=\"input{entityProperty.Name}\" @bind-Value=\"{bindValueName}.{entityProperty.Name}\" />\n";
+                    Trace.WriteLine($"InputDate property: {entityProperty.Name} type: {entityProperty.TypeName}");
+                    break;
+                default:
+                    input = $"<InputText class=\"form-control\" id=\"input{entityProperty.Name}\" @bind-Value=\"{bindValueName}.{entityProperty.Name}\" />\n";
+                    Trace.WriteLine($"InputText property: {entityProperty.Name} type: {entityProperty.TypeName}");
+                    break;
+            }
+            return input;
         }
 
         //public static void Generate(T entity, string outDir)

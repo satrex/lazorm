@@ -119,7 +119,19 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 28 ""
-            this.Write(")\n        {\n            <tr>\n");
+            this.Write(" ?? new List<");
+            
+            #line default
+            #line hidden
+            
+            #line 28 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
+            
+            #line default
+            #line hidden
+            
+            #line 28 ""
+            this.Write(">())\n        {\n            <tr>\n");
             
             #line default
             #line hidden
