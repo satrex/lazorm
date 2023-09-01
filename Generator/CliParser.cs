@@ -95,6 +95,9 @@ namespace Lazorm
     {
         [Option('f', "fluxor", Required = false, HelpText = "Generates boilerplates of Fluxor.")]
         public bool Fluxor { get; set; }        
+
+        [Option("verbose", HelpText = "If set true, it shows detailed log")]
+        public bool Verbose { get; set; } = false;
     }
     /// <summary>
     /// Provides argument parsing in command line. 
@@ -142,7 +145,10 @@ namespace Lazorm
                     ProcessShowCommand(showOptions);
             });
             parsed.WithParsed<BoilerplateOptions>(opt => {
-                if(opt.Fluxor)
+                if (opt.Verbose)
+                    Trace.Listeners.Add(new ConsoleTraceListener());
+
+                if (opt.Fluxor)
                 {
                     FluxorBoilerplate.WriteInNeed();
                 }

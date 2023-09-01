@@ -31,12 +31,13 @@ public static class FluxorBoilerplate
 
     }
 
-    private static void InsertRow(string filePath,  string pattern, string insertion , string fileNotFoundMessage)
+    private static void InsertRow(string filePath, string pattern, string insertion, string fileNotFoundMessage)
     {
-	    var targetFile = new FileInfo(filePath);
+        Trace.WriteLine($"Inserting text \"{insertion}\" to {filePath}");
+        var targetFile = new FileInfo(filePath);
         if (!targetFile.Exists)
         {
-            if(!string.IsNullOrWhiteSpace(fileNotFoundMessage))
+            if (!string.IsNullOrWhiteSpace(fileNotFoundMessage))
                 Console.WriteLine(fileNotFoundMessage);
             Console.WriteLine($"{filePath} not found");
             return;
@@ -47,8 +48,12 @@ public static class FluxorBoilerplate
         {
             var newText = Regex.Replace(originText, pattern, $"{insertion}{Environment.NewLine}$&", RegexOptions.Multiline);
             File.WriteAllText(path: targetFile.FullName, contents: newText);
+            Trace.WriteLine($"Inserted text successfully");
         }
- 
+        else
+        { 
+            Trace.WriteLine($"Inserting text is already exists in {filePath}");
+        }
     }
 
 }
