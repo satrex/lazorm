@@ -21,6 +21,9 @@ public static class FluxorBoilerplate
 
         InsertRow(filePath: programCs.FullName, pattern: buildText, insertion: magicSpell, fileNotFoundMessage: errorWarning);
 
+        var buildHttp = "builder.Services.AddHttpClient();";
+        InsertRow(filePath: programCs.FullName, pattern: buildText, insertion: buildHttp, fileNotFoundMessage: errorWarning);
+
         // to  App.razor
         var appRazor = new FileInfo(Path.Combine(Directory.GetCurrentDirectory(), "App.razor"));
         var pattern = "^.*Router AppAssembly=.*$";
