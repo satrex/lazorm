@@ -174,7 +174,7 @@ namespace Lazorm
             var outFolder = PrepareOutputFolderForPage(options);
 
             // generate page without fluxor
-            LazormPageGenerator.PageGenerator.GenerateFromFile(options.SourceFilePath, outFolder, options.Namespace, options.PageUsesFluxor, options.PageIsWasmClient);
+            LazormPageGenerator.PageGenerator.GeneratePageFromFile(options.SourceFilePath, outFolder, options.Namespace, options.PageUsesFluxor, options.PageIsWasmClient);
 
 
             //Database db = Database.CreateInstance(options.DatabaseKind.ToString().ToLower(), options.ConnectionString);
