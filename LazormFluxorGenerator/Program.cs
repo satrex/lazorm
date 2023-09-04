@@ -19,14 +19,14 @@ namespace LazormFluxorGenerator
             var pluralizer = new Pluralize.NET.Pluralizer();
             GeneratorContext context = new GeneratorContext()
             {
-                EntityClassName = pluralizer.Singularize(entity.Capitalize()),
-                SchemaName = pluralizer.Pluralize(entity.Capitalize())
+                EntityClassName = pluralizer.Singularize(entity.ToPascalCase()),
+                SchemaName = pluralizer.Pluralize(entity.ToPascalCase())
             };
 
             GeneratorContext contextForList = new GeneratorContext()
             {
-                EntityClassName = pluralizer.Singularize(entity.Capitalize()),
-                SchemaName = pluralizer.Pluralize(entity.Capitalize())
+                EntityClassName = pluralizer.Singularize(entity.ToPascalCase()),
+                SchemaName = pluralizer.Pluralize(entity.ToPascalCase())
             };
 
             // Create Once - Static files
