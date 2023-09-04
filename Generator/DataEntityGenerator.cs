@@ -134,7 +134,7 @@ namespace Lazorm
         /// </summary>
         private string GetClassName(string tableName)
         {
-            return new Pluralize.NET.Pluralizer().Singularize(tableName).ToPascalCase();
+            return new Pluralize.NET.Pluralizer().Singularize(tableName).Capitalize();
         }
 
         private string GetFieldName(string propertyName)
@@ -152,7 +152,7 @@ namespace Lazorm
             if (tableName == columnName)
                 return columnName + "1";
 
-            return columnName.ToPascalCase();
+            return columnName.ToPascalCase().Capitalize();
         }
     
         private List<ForeignKey> foreignKeys = new List<ForeignKey>();
