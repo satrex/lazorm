@@ -130,11 +130,16 @@ namespace Lazorm
         }
 
         /// <summary>
-        /// 最後のsをとりのぞく　iesをyにする
-        /// </summary>
-        private string GetClassName(string tableName)
+        /// Singularize table name and capitalize to pascal case
+        /// Absolute specification with prefix !
+        /// ex: D_SJDS -> DSJD | D_SJDS! -> DSJDS
+	    /// </summary>
+        private string GetClassName(string tableName, bool asIs = false)
         {
-            return new Pluralize.NET.Pluralizer().Singularize(tableName).ToPascalCase();
+            if (asIs)
+                return tableName.ToPascalCase();
+            else
+                return new Pluralize.NET.Pluralizer().Singularize(tableName).ToPascalCase();
         }
 
         private string GetFieldName(string propertyName)
@@ -200,11 +205,13 @@ namespace Lazorm
         /// <summary>
         /// Generates an entity class file
         /// </summary>
-        /// <param name="tableName">specitying target table name</param>
+        /// <param name="tableNameWithFlag">specitying target table name. prefix ! will generate class name w/o singularize</param>
         /// <param name="outDirectory">specifying output directory</param>
-        public void Generate(string tableName, string outDirectory)
+        public void Generate(string tableNameWithFlag, string outDirectory)
         {
-            string className = this.GetClassName(tableName);
+            bool preserveTableName = tableNameWithFlag.EndsWith("!");
+            string tableName = tableNameWithFlag.Replace("!", ""); 
+            string className = this.GetClassName(tableName, preserveTableName );
             string filePath = Path.Combine(outDirectory, string.Format("{0}.cs", className));
 
             // Delete file if exists
@@ -225,11 +232,11 @@ namespace Lazorm
             namespaceDef.Imports.Add(new CodeNamespaceImport("System.ComponentModel.DataAnnotations"));
 
             // Generate target class
-            namespaceDef.Types.Add(this.GenerateClass(table));
-            if(table.Name != className)
-            {
-                namespaceDef.Types.Add(this.GenerateAliasClass(table));
-            }
+            namespaceDef.Types.Add(this.GenerateClass(table, preserveTableName));
+            //if(table.Name != className)
+            //{
+            //    namespaceDef.Types.Add(this.GenerateAliasClass(table));
+            //}
 
             var compileUnit = new CodeCompileUnit();
             compileUnit.Namespaces.Add(namespaceDef);
@@ -248,15 +255,8 @@ namespace Lazorm
         private CodeTypeDeclaration GenerateAliasClass(TableDef table)
         {
             var pl = new Pluralize.NET.Pluralizer();
-            var plural = string.Empty;
-	        if(pl.IsPlural(table.Name))
-            {
-                plural = table.Name.Capitalize();
-	        }
-            else
-            {
-                plural = pl.Pluralize(table.Name).Capitalize();
-	        }
+            var plural = pl.Pluralize(table.Name).ToPascalCase();
+	        
             var cls = new CodeTypeDeclaration(plural);
             cls.IsPartial = true;
             cls.IsClass = true;
@@ -268,9 +268,9 @@ namespace Lazorm
             return cls;
         }
 
-        private CodeTypeDeclaration GenerateClass(TableDef table)
+        private CodeTypeDeclaration GenerateClass(TableDef table, bool preserveTableName = false)
         {
-            var singular = this.GetClassName(table.Name);
+            var singular = this.GetClassName(table.Name, preserveTableName);
             var cls = new CodeTypeDeclaration(singular);
 
             //クラスの属性作成
@@ -300,8 +300,8 @@ namespace Lazorm
 
             if(table.Columns.Exists(p => p.IsPrimaryKey))
             {
-                cls.Members.Add(this.GenerateGetMethod(table));
-                cls.Members.Add(this.GenerateGetAsyncMethod(table));
+                cls.Members.Add(this.GenerateGetMethod(table, preserveTableName));
+                cls.Members.Add(this.GenerateGetAsyncMethod(table, preserveTableName));
             }
 
             // Get Foreign Keys
@@ -569,9 +569,9 @@ namespace Lazorm
             return property;
         }
 
-        private CodeMemberMethod GenerateGetMethod(TableDef table, bool isAsync = false)
+        private CodeMemberMethod GenerateGetMethod(TableDef table, bool preserveTableName = false,  bool isAsync = false)
         {
-            var className = this.GetClassName(table.Name);
+            var className = this.GetClassName(table.Name, preserveTableName);
             var method = new CodeMemberMethod();
             if(isAsync)
             {
@@ -592,7 +592,7 @@ namespace Lazorm
 
             //ClassName entity = new ClassName()　みたいなコードをつくる
             method.Statements.Add(new CodeVariableDeclarationStatement(
-                new CodeTypeReference(this.GetClassName(table.Name)), "entity", new CodeObjectCreateExpression(new CodeTypeReference(this.GetClassName(table.Name)))));
+                new CodeTypeReference(className), "entity", new CodeObjectCreateExpression(new CodeTypeReference(className))));
 
             //entity.Id = _Id みたいなコードを主キーすべてに対してつくる
             foreach (var column in table.Columns)
@@ -618,9 +618,9 @@ namespace Lazorm
             return method;
         }
 
-        private CodeMemberMethod GenerateGetAsyncMethod(TableDef table)
+        private CodeMemberMethod GenerateGetAsyncMethod(TableDef table, bool preserveTableName = false)
         {
-            var className = this.GetClassName(table.Name);
+            var className = this.GetClassName(table.Name, preserveTableName);
             var method = new CodeMemberMethod();
             method.Name = "GetAsync";
             var taskType = new CodeTypeReference(typeof(Task<>));

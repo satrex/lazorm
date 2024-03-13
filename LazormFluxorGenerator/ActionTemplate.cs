@@ -43,8 +43,31 @@ string[] actionTypes = new string[] {"", "Success", "Failure"};
             #line hidden
             
             #line 19 ""
-            this.Write("using Lazorm;\nusing Lazorm.Store.Features.Share;\n\nnamespace Lazorm.Store.Features" +
-                    ".");
+            this.Write("using Lazorm;\nusing ");
+            
+            #line default
+            #line hidden
+            
+            #line 20 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( namespaceText ));
+            
+            #line default
+            #line hidden
+            
+            #line 20 ""
+            this.Write(".Store.Features.Share;\n\nnamespace ");
+            
+            #line default
+            #line hidden
+            
+            #line 22 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( namespaceText ));
+            
+            #line default
+            #line hidden
+            
+            #line 22 ""
+            this.Write(".Store.Features.");
             
             #line default
             #line hidden

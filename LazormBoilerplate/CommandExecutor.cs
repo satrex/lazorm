@@ -6,6 +6,12 @@ namespace LazormBoilerplate
 {
 	public static class CommandExecutor
 	{
+        public static void InstallLazormlib()
+        {
+            var logger = new LoggerFactory().CreateLogger("Boilerplate");
+            ("dotnet add package lazormlib").Bash(logger);
+        }
+
         public static Task<int> Bash(this string cmd, ILogger? logger)
         {
             var source = new TaskCompletionSource<int>();

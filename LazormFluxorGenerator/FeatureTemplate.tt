@@ -20,10 +20,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Fluxor;
 using Lazorm;
-using Lazorm.Store.Features;
-using Lazorm.Store.States;
+using <#= namespaceText #>.Store.Features;
+using <#= namespaceText #>.Store.States;
 
-namespace Lazorm.Store.Features
+namespace Laz<#= namespaceText #>orm.Store.Features
 {
     public class <#= entityClassNamePlural #>Feature : Feature<<#= stateClassName #>>
     {

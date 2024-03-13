@@ -12,5 +12,7 @@ namespace LazormFluxorGenerator
         public string CrudKind { get; set; }
 
         public string SchemaName { get; set; }
+
+        public string NameSpace { get; set; }
     }
 }

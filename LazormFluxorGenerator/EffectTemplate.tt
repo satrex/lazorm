@@ -21,11 +21,9 @@ using System;
 using System.Threading.Tasks;
 using Fluxor;
 using Lazorm;
-using Lazorm.Store.Features.<#= entityClassName #>UseCase.Actions.<#= crud #><#= entityClassName #>;
-using Microsoft.Extensions.Logging;
-using Blazor.Extensions.Logging;
+using <#= namespaceText #>.Store.Features.<#= entityClassName #>UseCase.Actions.<#= crud #><#= entityClassName #>;
 
-namespace Lazorm.Store.Features.<#= entityClassNamePlural #>.Effects
+namespace <#= namespaceText #>.Store.Features.<#= entityClassNamePlural #>.Effects
 {
     public partial class <#= effectClassName #>: Effect<<#= actionClassName #>>
     {

@@ -18,10 +18,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Fluxor;
 using Lazorm;
-using Lazorm.Store.Features.<#= entityClassName #>UseCase.Actions.<#= crud #><#= entityClassName #>;
-using Lazorm.Store.States;
+using <#= namespaceText #>.Store.Features.<#= entityClassName #>UseCase.Actions.<#= crud #><#= entityClassName #>;
+using <#= namespaceText #>.Store.States;
 
-namespace Lazorm.Store.Features.<#= entityClassName #>UseCase.Reducers
+namespace <#= namespaceText #>.Store.Features.<#= entityClassName #>UseCase.Reducers
 {
     #region Reducer
     public static class <#= crud #><#= entityClassName #>ActionsReducer

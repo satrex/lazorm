@@ -129,7 +129,10 @@ WHERE
 
         public override Type GetProgramType(ColumnDef column)
         {
-            switch (column.TypeName.ToUpper())
+            var typenameWithoutLength = Regex.Replace(column.TypeName, "\\(.*\\)", string.Empty);
+            //Console.WriteLine($"replacing : " + typenameWithoutLength);
+
+            switch (typenameWithoutLength.ToUpper())
             {
                 case "INTEGER":
                 case "INT":
@@ -139,7 +142,7 @@ WHERE
                     return column.Nullable ? typeof(Nullable<double>) : typeof(double);
                 case "TEXT":
                     return typeof(string);
-               case "BLOB":
+                case "BLOB":
                     return typeof(byte[]);
                 default:
                     throw new Exception("対応外の型を使用しています。" + column.TypeName);
@@ -150,7 +153,7 @@ WHERE
         /// SQL Serverのカラムに使用するデータ型を取得します。
         /// </summary>
         /// <param name="typeName">SQL Serverで使用する、データ型を文字列で指定します。</param>
-        /// <returns>OracleTypeクラスの型を返却します。</returns>
+        /// <returns>SqliteTypeクラスの型を返却します。</returns>
         public Microsoft.Data.Sqlite.SqliteType GetSqlDbType(string typeName)
         {
             switch (typeName)

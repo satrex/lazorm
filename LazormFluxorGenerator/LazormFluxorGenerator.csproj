@@ -23,7 +23,7 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Version>0.1.0</Version>
     <PackageReleaseNotes>Config Error Fixed</PackageReleaseNotes>
-    <ReleaseVersion>0.9.2</ReleaseVersion>
+    <ReleaseVersion>0.10.2</ReleaseVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -102,6 +102,10 @@
       <LastGenOutput>LoadListReducerTemplate.cs</LastGenOutput>
       
     </None>
+    <None Update="LoadListReducerTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>LoadListReducerTemplate.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Pluralize.NET" Version="1.0.2" />
@@ -111,9 +115,6 @@
   <ItemGroup>
     <Compile Update="RootState.cs">
       <DependentUpon>RootStateTemplate.tt</DependentUpon>
-    </Compile>
-    <Compile Update="FailureActionTemplate.cs">
-      <DependentUpon>FailureActionTemplate.tt</DependentUpon>
     </Compile>
     <Compile Update="StateTemplate.cs">
       <DependentUpon>StateTemplate.tt</DependentUpon>
@@ -142,11 +143,14 @@
     <Compile Update="ListLoadReducerTemplate.cs">
       <DependentUpon>ListLoadReducerTemplate.tt</DependentUpon>
     </Compile>
-    <Compile Update="LoadListReducerTemplate.cs">
-      <DependentUpon>LoadListReducerTemplate.tt</DependentUpon>
-    </Compile>
     <Compile Update="ReducerTemplate.cs">
       <DependentUpon>ReducerTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="FailureActionTemplate.cs">
+      <DependentUpon>FailureActionTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="LoadListReducerTemplate.cs">
+      <DependentUpon>LoadListReducerTemplate.tt</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

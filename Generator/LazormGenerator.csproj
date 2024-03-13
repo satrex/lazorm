@@ -19,9 +19,9 @@
     <PackOnBuild>true</PackOnBuild>
     <PackageProjectUrl>https://github.com/satrex/lazorm</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>0.9.4</Version>
-    <ReleaseVersion>0.9.4</ReleaseVersion>
-    <PackageVersion>0.9.4</PackageVersion>
+    <Version>0.10.2</Version>
+    <ReleaseVersion>0.10.2</ReleaseVersion>
+    <PackageVersion>0.10.2</PackageVersion>
     <PackageReleaseNotes>Fixed bug on generating fluxor classes</PackageReleaseNotes>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>

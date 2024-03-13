@@ -17,9 +17,9 @@ string[] actionTypes = new string[] {"", "Success", "Failure"};
    string effectClassName = crud + entityClassName + actionType + "Effect"; 
 #>
 using Lazorm;
-using Lazorm.Store.Features.Share;
+using <#= namespaceText #>.Store.Features.Share;
 
-namespace Lazorm.Store.Features.<#= entityClassName #>UseCase.Actions.<#= crud #><#= entityClassName #>
+namespace <#= namespaceText #>.Store.Features.<#= entityClassName #>UseCase.Actions.<#= crud #><#= entityClassName #>
 {
 <# if (actionType == "Failure") {#>
     public class <#= actionClassName #> : FailureAction

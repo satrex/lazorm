@@ -8,7 +8,7 @@ namespace LazormFluxorGenerator
 {
     public class Generator
     {
-        public static void Run(string entity, string outDir )
+        public static void Run(string entity, string outDir, string namespaceText )
         {
             if (string.IsNullOrWhiteSpace(entity))
                 throw new ArgumentException("Entity Name must be specified.");
@@ -20,13 +20,15 @@ namespace LazormFluxorGenerator
             GeneratorContext context = new GeneratorContext()
             {
                 EntityClassName = pluralizer.Singularize(entity.ToPascalCase()),
-                SchemaName = pluralizer.Pluralize(entity.ToPascalCase())
+                SchemaName = pluralizer.Pluralize(entity.ToPascalCase()),
+                NameSpace = namespaceText
             };
 
             GeneratorContext contextForList = new GeneratorContext()
             {
                 EntityClassName = pluralizer.Singularize(entity.ToPascalCase()),
-                SchemaName = pluralizer.Pluralize(entity.ToPascalCase())
+                SchemaName = pluralizer.Pluralize(entity.ToPascalCase()),
+                NameSpace = namespaceText
             };
 
             // Create Once - Static files
@@ -39,7 +41,7 @@ namespace LazormFluxorGenerator
             
             #region Features/Share
             Directory.CreateDirectory("Store/Features/Share");
-            FailureActionTemplate failureAction = new FailureActionTemplate();
+            FailureActionTemplate failureAction = new FailureActionTemplate(context);
             string failureActionpageContent = failureAction.TransformText();
             File.WriteAllText("Store/Features/Share/FailureAction.cs", failureActionpageContent);
             #endregion
@@ -69,11 +71,9 @@ namespace LazormFluxorGenerator
                 contextForList.CrudKind = crud;
 
                 #region Reducers
-                // TODO: Add reference for states- done
-                // TODO: Add reference for Lazorm Entity - done
                 if (context.CrudKind == "Load")
                 {
-                    LoadListReducerTemplate listReducer = new LoadListReducerTemplate(context: contextForList);
+                    LoadListReducerTemplate listReducer = new LoadListReducerTemplate(context: context);
                     string listReducerPageContent = listReducer.TransformText();
                     Directory.CreateDirectory($"Store/Features/{context.EntityClassName}UseCase/Reducers/");
                     File.WriteAllText($"Store/Features/{context.EntityClassName}UseCase/Reducers/{context.CrudKind}{context.SchemaName}Reducer.cs", listReducerPageContent);
@@ -102,13 +102,11 @@ namespace LazormFluxorGenerator
                         ActionKind = actionKind,
                         CrudKind = context.CrudKind,
                         EntityClassName = context.EntityClassName,
-                        SchemaName = context.SchemaName
+                        SchemaName = context.SchemaName,
+                        NameSpace = context.NameSpace
                     };
 
                     #region Effect
-                    // TODO: Add reference of Fluxor - done 
-                    // TODO: Add reference of Lazorm Entity - done 
-                    // TODO: Fix indents - done
                     if (actionContext.CrudKind == "Load")
                     {
                         LoadListEffectTemplate listEffect = new LoadListEffectTemplate(context: actionContext);

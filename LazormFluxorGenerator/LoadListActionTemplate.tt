@@ -18,10 +18,10 @@ string[] actionTypes = new string[] {"", "Success", "Failure"};
 #>
 
 using Lazorm;
-using Lazorm.Store.Features.Share;
+using <#= namespaceText #>.Store.Features.Share;
 using System.Collections.Generic;
 
-namespace Lazorm.Store.Features.<#= entityClassName #>UseCase.Actions.<#= crud #><#= entityClassNamePlural #>
+namespace <#= namespaceText #>.Store.Features.<#= entityClassName #>UseCase.Actions.<#= crud #><#= entityClassNamePlural #>
 {
     #region Action
     <# if (actionType == "") {#>

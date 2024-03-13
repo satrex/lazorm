@@ -49,29 +49,45 @@ namespace LazormPageGenerator
                     Trace.WriteLine(" {nameof(symbol.IsStatic)}: {symbol.IsStatic}" );
                     if (symbol!.Name == Path.GetFileNameWithoutExtension(filePath))
                     {
-                        context.EntityClassName = symbol.Name.Capitalize();
-                        context.EntityClassNamePlural = pluralizer.Pluralize(symbol.Name).Capitalize();
+                        context.EntityClassName = symbol.Name.ToPascalCase();
+                        context.EntityClassNamePlural = pluralizer.Pluralize(symbol.Name).ToPascalCase();
                     }
-
-                    //// 継承しているクラスやインタフェースがあるかどうか
-                    //if (syntax.BaseList != null)
-                    //{
-                    //    // 継承しているクラスなどのシンボルを取得
-                    //    var inheritanceList = from baseSyntax in syntax.BaseList.Types
-                    //                          let symbolInfo = semanticModel.GetSymbolInfo(baseSyntax.Type)
-                    //                          let sym = symbolInfo.Symbol
-                    //                          select sym;
-
-                    //    // 継承しているクラスなどを出力
-                    //    Console.WriteLine(" Inheritance:");
-                    //    foreach (var inheritance in inheritanceList)
-                    //        Console.WriteLine("  {0}", inheritance.ToDisplayString());
-                    //}
                 }
+
+                var recordSyntaxArray = nodes.OfType<RecordDeclarationSyntax>();
+                foreach (var syntax in recordSyntaxArray)
+                {
+                    var symbol = semanticModel.GetDeclaredSymbol(syntax);
+                    Trace.WriteLine("{symbol!.DeclaredAccessibility} {symbol}");
+                    Trace.WriteLine(" {nameof(symbol.IsAbstract)}: {symbol.IsAbstract}");
+                    Trace.WriteLine(" {nameof(symbol.IsStatic)}: {symbol.IsStatic}" );
+                    if (symbol!.Name == Path.GetFileNameWithoutExtension(filePath))
+                    {
+                        context.EntityClassName = symbol.Name.ToPascalCase();
+                        context.EntityClassNamePlural = pluralizer.Pluralize(symbol.Name).ToPascalCase();
+                    }
+                }
+
+                var structSyntaxArray = nodes.OfType<StructDeclarationSyntax>();
+                foreach (var syntax in structSyntaxArray)
+                {
+                    var symbol = semanticModel.GetDeclaredSymbol(syntax);
+                    Trace.WriteLine("{symbol!.DeclaredAccessibility} {symbol}");
+                    Trace.WriteLine(" {nameof(symbol.IsAbstract)}: {symbol.IsAbstract}");
+                    Trace.WriteLine(" {nameof(symbol.IsStatic)}: {symbol.IsStatic}" );
+                    if (symbol!.Name == Path.GetFileNameWithoutExtension(filePath))
+                    {
+                        context.EntityClassName = symbol.Name.ToPascalCase();
+                        context.EntityClassNamePlural = pluralizer.Pluralize(symbol.Name).ToPascalCase();
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(context.EntityClassName))
+                    throw new ArgumentException("couldn't find class or record or struct name");
 
                 var propertySyntaxArray = nodes.OfType<PropertyDeclarationSyntax>();
                 var pageColumns = new List<System.Reflection.PropertyInfo>();
-                foreach (var syntax in propertySyntaxArray)
+                foreach (var syntax in propertySyntaxArray.Where(p => p.Modifiers.Any(SyntaxKind.PublicKeyword)))
                 {
                     var symbol = semanticModel.GetDeclaredSymbol(syntax)!;
                     Trace.WriteLine($"{symbol.DeclaredAccessibility} {symbol}");
