@@ -518,7 +518,7 @@ namespace Lazorm
             field.Name = this.GetFieldName(column);
             field.Type = new CodeTypeReference(this.db.GetProgramType(column));
             field.Attributes = MemberAttributes.Private;
-            if(!string.IsNullOrEmpty(column.Remarks))
+            if(column.Remarks.Any())
                 field.Comments.Add(new CodeCommentStatement(column.Remarks));
             return field;
         }

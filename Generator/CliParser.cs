@@ -211,11 +211,11 @@ namespace Lazorm
         /// <exception cref="ArgumentException">Something wrong on argument</exception>
         public static void Parse(string[] args)
         {
-            GenerateOptions generateOprions = null;
+            GenerateOptions generateOptions = null;
             ShowOptions showOptions = null;
-            var parsed = Parser.Default.ParseArguments<GenerateOptions, GenerateModelOptions, GenerateFluxorOptions,GeneratePageOptions, ShowOptions, BoilerplateOptions>(args);
+            var parsed = Parser.Default.ParseArguments<GenerateOptions, GenerateModelOptions, GenerateValidationOptions, GenerateFluxorOptions,GeneratePageOptions, ShowOptions, BoilerplateOptions>(args);
             parsed.WithParsed<GenerateModelOptions>(opt => {
-                generateOprions = new GenerateOptions()
+                generateOptions = new GenerateOptions()
                 {
                     AppsettingsJson = opt.AppsettingsJson,
                     ConnectionString = opt.ConnectionString,
@@ -225,34 +225,49 @@ namespace Lazorm
                     Tables = opt.Tables,
                     Verbose = opt.Verbose
                 };
-                GenerateModel(generateOprions);
+                GenerateModel(generateOptions);
 
                 if(opt.WithValidation)
                 {
-                    GenerateValidation(generateOprions);
+                    GenerateValidation(generateOptions);
                 }
             });
+            parsed.WithParsed<GenerateValidationOptions>(opt => {
+                generateOptions = new GenerateOptions()
+                {
+                    AppsettingsJson = opt.AppsettingsJson,
+                    ConnectionString = opt.ConnectionString,
+                    DatabaseKind = opt.DatabaseKind,
+                    Namespace = opt.Namespace,
+                    OutputDir = opt.OutputDir,
+                    Tables = opt.Tables,
+                    Verbose = opt.Verbose
+                };
+                GenerateValidation(generateOptions);                
+            });
             parsed.WithParsed<GeneratePageOptions>(opt => {
-                generateOprions = new GenerateOptions()
+                generateOptions = new GenerateOptions()
                 {
                     SourceFilePath = opt.SourceFilePath,
                     Namespace = opt.Namespace,
                     OutputDir = opt.OutputDir,
+                    PageUsesFluxor = opt.PageUsesFluxor,
+                    PageIsWasmClient = opt.PageIsWasmClient,
                     Verbose = opt.Verbose
                 };
-                GenerateRazorPage(generateOprions);
+                GenerateRazorPage(generateOptions);
             });
-	    parsed.WithParsed<GenerateFluxorOptions>(opt => {
-            generateOprions = new GenerateOptions()
-            {
-                SourceFilePath = opt.SourceFilePath,
-                Namespace = opt.Namespace,
-                OutputDir = opt.OutputDir,
-                Tables = opt.Tables,
-                Verbose = opt.Verbose
-            };
-            GenerateFluxor(generateOprions);
-        });
+	        parsed.WithParsed<GenerateFluxorOptions>(opt => {
+                generateOptions = new GenerateOptions()
+                {
+                    SourceFilePath = opt.SourceFilePath,
+                    Namespace = opt.Namespace,
+                    OutputDir = opt.OutputDir,
+                    Tables = opt.Tables,
+                    Verbose = opt.Verbose
+                };
+                GenerateFluxor(generateOptions);
+            });
             parsed.WithParsed<GenerateOptions>(opt =>
             {
 
@@ -262,17 +277,17 @@ namespace Lazorm
                 if (opt.Verbose)
                     Trace.Listeners.Add(new ConsoleTraceListener());
 
-                generateOprions = opt;
-                if (generateOprions != null)
+                generateOptions = opt;
+                if (generateOptions != null)
                 {
-                    if (generateOprions.Mapper)
-                        GenerateModel(generateOprions);
-                    if (generateOprions.Validation)
-                        GenerateValidation(generateOprions);
-                    if (generateOprions.Fluxor)
-                        GenerateFluxor(generateOprions);
-                    if (generateOprions.RazorPage)
-                        GenerateRazorPage(generateOprions);
+                    if (generateOptions.Mapper)
+                        GenerateModel(generateOptions);
+                    if (generateOptions.Validation)
+                        GenerateValidation(generateOptions);
+                    if (generateOptions.Fluxor)
+                        GenerateFluxor(generateOptions);
+                    if (generateOptions.RazorPage)
+                        GenerateRazorPage(generateOptions);
                 }
 
                 return;
@@ -327,26 +342,26 @@ namespace Lazorm
 
         }
 
-        private static void GenerateFluxor(GenerateOptions generateOprions)
+        private static void GenerateFluxor(GenerateOptions generateOptions)
         {
-            if (generateOprions.OutputDir is null)
-                generateOprions.OutputDir = "Lazorm";
+            if (generateOptions.OutputDir is null)
+                generateOptions.OutputDir = "Lazorm";
 
-            var outdir = Path.Combine(Environment.CurrentDirectory, generateOprions.OutputDir);
+            var outdir = Path.Combine(Environment.CurrentDirectory, generateOptions.OutputDir);
             if (!Directory.Exists(outdir))
                 Directory.CreateDirectory(outdir);
 
-            foreach (var table in generateOprions.Tables)
+            foreach (var table in generateOptions.Tables)
             {
-                LazormFluxorGenerator.Generator.Run(table, outdir, generateOprions.Namespace);
+                LazormFluxorGenerator.Generator.Run(table, outdir, generateOptions.Namespace);
             }
 
-            foreach (var sourceFile in generateOprions.SourceFilePath)
+            foreach (var sourceFile in generateOptions.SourceFilePath)
             {
                 try
                 {
                     var className = GetClassName(sourceFile);
-                    LazormFluxorGenerator.Generator.Run(className, outdir, namespaceText: generateOprions.Namespace);
+                    LazormFluxorGenerator.Generator.Run(className, outdir, namespaceText: generateOptions.Namespace);
 
                 }
                 catch (Exception e)
