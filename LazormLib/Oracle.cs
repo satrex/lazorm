@@ -107,7 +107,7 @@ ORDER BY C.COLUMN_ID
                     }
 
                     if (column.DecimalPlace == 0)
-                        return column.Nullable ? typeof(Nullable<int>) : typeof(int);
+                        return column.Nullable || column.IsAutoNumber ? typeof(Nullable<int>) : typeof(int);
                     else
                         return column.Nullable ? typeof(Nullable<decimal>) : typeof(decimal);
                 case "CHAR":

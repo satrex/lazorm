@@ -113,16 +113,44 @@ WHERE
 
         internal override string GetColumnListSql(string tableName)
         {
-            var sql = string.Format($@"SELECT 
-              name as ColumnName,
-              type as TypeName,
-              0 as Length,
-              pk as IsPrimaryKey,
-              0 as IsAutoNumber,
-              (CASE [notnull] WHEN 0 THEN 1 WHEN 1 THEN 0 END) as Nullable,
-              0 as DecimalPlace,
-              '' as Remarks 
-              FROM pragma_table_info('{tableName}')");
+            var sql = string.Format($@"WITH RECURSIVE
+  a AS (
+    SELECT name, lower(REPLACE (replace(replace(sql, char(13), ' '), char(10), ' '), char(9), ' ')) AS sql
+    FROM sqlite_master
+    WHERE lower(sql) LIKE '%integer% autoincrement%'
+  ),
+  b AS (
+    SELECT name, trim(substr(sql, instr(sql, '(') + 1)) AS sql
+    FROM a
+  ),
+  c AS (
+    SELECT b.name, sql, '' AS col
+    FROM b
+    UNION ALL
+    SELECT 
+      c.name, 
+      trim(substr(c.sql, ifnull(nullif(instr(c.sql, ','), 0), instr(c.sql, ')')) + 1)) AS sql, 
+      trim(substr(c.sql, 1, ifnull(nullif(instr(c.sql, ','), 0), instr(c.sql, ')')) - 1)) AS col
+    FROM c JOIN b ON c.name = b.name
+    WHERE c.sql != ''
+  ),
+  d AS (
+    SELECT name, substr(col, 1, instr(col, ' ') - 1) AS col
+    FROM c
+    WHERE col LIKE '%autoincrement%'
+  )
+SELECT 
+  name as ColumnName,
+  type as TypeName,
+  0 as Length,
+  pk as IsPrimaryKey,
+  (SELECT COUNT(*)
+	FROM d
+	WHERE d.name = '{tableName}' and d.col = t.name) as IsAutoNumber,
+  (CASE [notnull] WHEN 0 THEN 1 WHEN 1 THEN 0 END) as Nullable,
+  0 as DecimalPlace,
+  '' as Remarks 
+              FROM pragma_table_info('{tableName}') t");
 
             return sql;
            }
@@ -136,7 +164,7 @@ WHERE
             {
                 case "INTEGER":
                 case "INT":
-                    return  column.Nullable ? typeof(Nullable<Int64>) : typeof(Int64);
+                    return  column.Nullable || column.IsAutoNumber ? typeof(Nullable<Int64>) : typeof(Int64);
                 case "NUMERIC":
                 case "REAL":
                     return column.Nullable ? typeof(Nullable<double>) : typeof(double);

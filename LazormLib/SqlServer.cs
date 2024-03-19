@@ -177,7 +177,7 @@ ORDER BY c.colorder
                 case "int":
                 case "tinyint":
                 case "smallint":
-                    return column.Nullable ? typeof(Nullable<int>) : typeof(int);
+                    return column.Nullable || column.IsAutoNumber ? typeof(Nullable<int>) : typeof(int);
                 case "bigint":
                     return  column.Nullable ? typeof(Nullable<Int64>) : typeof(Int64);
                 case "char":

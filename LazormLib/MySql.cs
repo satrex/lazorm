@@ -151,7 +151,7 @@ WHERE `TABLE_SCHEMA`='{0}'
                 case "smallint":
                 case "tinyint":
                 case "mediumint":
-                    return column.Nullable ? typeof(Nullable<int>) : typeof(int);
+                    return column.Nullable || column.IsAutoNumber ? typeof(Nullable<int>) : typeof(int);
                 case "bigint":
                     return  column.Nullable ? typeof(Nullable<Int64>) : typeof(Int64);
                 case "char":
