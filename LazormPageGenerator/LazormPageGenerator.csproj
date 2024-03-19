@@ -71,6 +71,14 @@
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ListPageWithFluxorTemplate.cs</LastGenOutput>
     </None>
+    <None Update="T4Template.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ShowPageWithFluxorTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="ShowPageWithFluxorTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ShowPageWithFluxorTemplate.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="T4Template.cs">
@@ -114,6 +122,9 @@
     </Compile>
     <Compile Update="ListPageWithFluxorTemplate.cs">
       <DependentUpon>ListPageWithFluxorTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ShowPageWithFluxorTemplate.cs">
+      <DependentUpon>ShowPageWithFluxorTemplate.tt</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

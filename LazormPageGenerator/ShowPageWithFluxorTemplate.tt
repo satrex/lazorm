@@ -3,22 +3,46 @@
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.CodeDom" #>
 
+@namespace <#= pageNamespace #>.Pages
+@page "/<#= entityNamePlural #>/show/{<#= entityNameSingular #>Id}"
+@inject HttpClient httpClient
+@attribute [Authorize]
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent;
+@using System.Threading.Tasks;
+@using Fluxor;
+@using Lazorm;
+@using Microsoft.AspNetCore.Components;
+@using Lazorm.Store.States;
+@using Microsoft.Extensions.Logging; 
+@using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Create<#= entityClassNameSingular #>;
+@using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Load<#= entityClassNameSingular #>;
+@using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Load<#= entityClassNamePlural #>;
+@using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Update<#= entityClassNameSingular #>;
+@using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Delete<#= entityClassNameSingular #>;
+<h3><#= entityClassNamePlural #></h3>
 
-using System.Threading.Tasks;
-using Fluxor;
-using Lazorm;
-using Microsoft.AspNetCore.Components;
-using Lazorm.Store.States;
-using Microsoft.Extensions.Logging; 
-using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Create<#= entityClassNameSingular #>;
-using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Load<#= entityClassNameSingular #>;
-using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Load<#= entityClassNamePlural #>;
-using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Update<#= entityClassNameSingular #>;
-using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Delete<#= entityClassNameSingular #>;
-
-namespace <#= pageNamespace #>.Pages
+@if (<#= entityNamePlural #>State?.Value.IsLoading ?? false)
 {
+    <p><em>Loading...</em></p>
+}
+else if (<#= entityNamePlural #>State?.Value.HasCurrentErrors ?? false || <#= entityNamePlural #>State?.Value.CurrentEntity is null)
+{
+    <div class="d-flex flex-column ">
+        <span class="py-2">An error occured while loading <#= entityNamePlural #> data. <br />
+	    Try refresh page.<br />
+	    If the problem continues, contact support.</span>
+    </div>
+}
+else if(<#= entityNamePlural #>State?.Value.CurrentEntity is not null)
+{
+    <#= CreateFormBody() #>
+	<button class="btn btn-secondary" @onclick="() => BackToList()">Back To List</button>
+	<button class="btn btn-primary" @onclick="() => StartEdition(<#= entityNamePlural #>State?.Value.CurrentEntity)">Edit</button>
+}
+
+@code {
 	[Parameter]
 	public string <#= entityNameSingular #>Id {get; set;} = string.Empty;
 
@@ -69,37 +93,13 @@ namespace <#= pageNamespace #>.Pages
 		base.OnInitialized();
 	}
 
-	protected void Delete<#= entityClassNameSingular #>(<#= entityClassNameSingular #> deleting<#= entityClassNameSingular #>)
-	{
-		dispatcher?.Dispatch(new Delete<#= entityClassNameSingular #>Action(deleting<#= entityClassNameSingular #>));
-		navigation?.NavigateTo("/<#= entityNamePlural #>");
-	}
-
 	private void StartEdition(<#= entityClassNameSingular #> <#= entityNameSingular #>)
 	{
-		navigation?.NavigateTo($"<#= entityNamePlural #>/{ <#= entityNameSingular #>.Id }");
+		navigation?.NavigateTo($"<#= entityNamePlural #>/edit/{ <#= entityNameSingular #>.Id }");
 	}
-
-	protected void HandleValidSubmit()
+	
+	private void BackToList()
 	{
-		Store<#= entityClassNameSingular #>(
-			the<#= entityClassNameSingular #>.To<#= entityClassNameSingular #>()
-		);
-		StateHasChanged();
-	}
-
-	protected void Store<#= entityClassNameSingular #>(<#= entityClassNameSingular #> storing<#= entityClassNameSingular #>)
-	{
-		if(0 == storing<#= entityClassNameSingular #>.Id)
-		{
-			dispatcher?.Dispatch(new Create<#= entityClassNameSingular #>Action(storing<#= entityClassNameSingular #>));
-		}
-		else
-		{
-			// _logger.LogInformation($"Dispatching: xx = {storing<#= entityClassNameSingular #>.xx}");
-			dispatcher?.Dispatch(new Update<#= entityClassNameSingular #>Action(storing<#= entityClassNameSingular #>));
-		}
-
-		navigation?.NavigateTo($"/<#= entityNamePlural #>/{<#= entityNamePlural #>State?.Value?.CurrentEntity?.Id}/");
+		navigation?.NavigateTo($"<#= entityNamePlural #>/");
 	}
 }

@@ -24,7 +24,6 @@
 <#= CreateTableBody() #>
                 <td>
                     <button class="btn btn-primary" @onclick="() => Edit<#= entityClassNameSingular #>(<#= entityNameSingular #>)">Edit</button>
-                    <button class="btn btn-danger" @onclick="() => Delete<#= entityClassNameSingular #>(<#= entityNameSingular #>)">Delete</button>
                 </td>
             </tr>
         }
@@ -51,15 +50,12 @@
     private void Add<#= entityClassNameSingular #>()
     {
         // TODO: Implement adding <#= entityNameSingular #> functionality
+        // navigation?.NavigateTo("/<#= entityNamePlural #> /new");
     }
 
     private void Edit<#= entityClassNameSingular #>(<#= entityClassNameSingular #> <#= entityNameSingular #>)
     {
         // TODO: Implement editing <#= entityNameSingular #> functionality
-    }
-
-    private void Delete<#= entityClassNameSingular #>(<#= entityClassNameSingular #> <#= entityNameSingular #>)
-    {
-        // TODO: Implement deleting <#= entityNameSingular #> functionality
+        // navigation?.NavigateTo($"/<#= entityNamePlural #> /edit/{<#= entityNameSingular #>.Id}");
     }
 }

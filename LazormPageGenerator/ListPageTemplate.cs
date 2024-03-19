@@ -130,179 +130,166 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 26 ""
-            this.Write(")\">Edit</button>\n                    <button class=\"btn btn-danger\" @onclick=\"() " +
-                    "=> Delete");
+            this.Write(")\">Edit</button>\n                </td>\n            </tr>\n        }\n    </tbody>\n<" +
+                    "/table>\n\n<button class=\"btn btn-success\" @onclick=\"Add");
             
             #line default
             #line hidden
             
-            #line 27 ""
+            #line 33 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 27 ""
-            this.Write("(");
-            
-            #line default
-            #line hidden
-            
-            #line 27 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityNameSingular ));
-            
-            #line default
-            #line hidden
-            
-            #line 27 ""
-            this.Write(")\">Delete</button>\n                </td>\n            </tr>\n        }\n    </tbody>" +
-                    "\n</table>\n\n<button class=\"btn btn-success\" @onclick=\"Add");
-            
-            #line default
-            #line hidden
-            
-            #line 34 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
-            
-            #line default
-            #line hidden
-            
-            #line 34 ""
+            #line 33 ""
             this.Write("\">Add ");
             
             #line default
             #line hidden
             
-            #line 34 ""
+            #line 33 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 34 ""
+            #line 33 ""
             this.Write("</button>\n\n@code {\n    private List<");
             
             #line default
             #line hidden
             
-            #line 37 ""
+            #line 36 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 37 ""
+            #line 36 ""
             this.Write("> ");
             
             #line default
             #line hidden
             
-            #line 37 ""
+            #line 36 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
             
             #line default
             #line hidden
             
-            #line 37 ""
+            #line 36 ""
             this.Write(" { get; set; } = new List<");
             
             #line default
             #line hidden
             
-            #line 37 ""
+            #line 36 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 37 ""
+            #line 36 ""
             this.Write(">();\n    \n    protected override async Task OnInitializedAsync()\n    {\n        //" +
                     "  products = (await GetProductsAsync()).ToList();\n        ");
             
             #line default
             #line hidden
             
-            #line 42 ""
+            #line 41 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
             
             #line default
             #line hidden
             
-            #line 42 ""
+            #line 41 ""
             this.Write(" = (await Get");
             
             #line default
             #line hidden
             
-            #line 42 ""
+            #line 41 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNamePlural ));
             
             #line default
             #line hidden
             
-            #line 42 ""
+            #line 41 ""
             this.Write("Async()).ToList();\n    }\n\n    private async Task<IEnumerable<");
             
             #line default
             #line hidden
             
-            #line 45 ""
+            #line 44 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 45 ""
+            #line 44 ""
             this.Write(">> Get");
             
             #line default
             #line hidden
             
-            #line 45 ""
+            #line 44 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNamePlural ));
             
             #line default
             #line hidden
             
-            #line 45 ""
+            #line 44 ""
             this.Write("Async()\n    {\n        // Code to retrieve customer list from database or API\n    " +
                     "    return await Lazorm.");
             
             #line default
             #line hidden
             
-            #line 48 ""
+            #line 47 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 48 ""
+            #line 47 ""
             this.Write(".GetAllAsync();\n    }\n\n    private void Add");
             
             #line default
             #line hidden
             
-            #line 51 ""
+            #line 50 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 51 ""
+            #line 50 ""
             this.Write("()\n    {\n        // TODO: Implement adding ");
             
             #line default
             #line hidden
             
-            #line 53 ""
+            #line 52 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNameSingular ));
             
             #line default
             #line hidden
             
+            #line 52 ""
+            this.Write(" functionality\n        // navigation?.NavigateTo(\"/");
+            
+            #line default
+            #line hidden
+            
             #line 53 ""
-            this.Write(" functionality\n    }\n\n    private void Edit");
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
+            
+            #line default
+            #line hidden
+            
+            #line 53 ""
+            this.Write(" /new\");\n    }\n\n    private void Edit");
             
             #line default
             #line hidden
@@ -350,55 +337,31 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 58 ""
-            this.Write(" functionality\n    }\n\n    private void Delete");
+            this.Write(" functionality\n        // navigation?.NavigateTo($\"/");
             
             #line default
             #line hidden
             
-            #line 61 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
+            #line 59 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
             
             #line default
             #line hidden
             
-            #line 61 ""
-            this.Write("(");
+            #line 59 ""
+            this.Write(" /edit/{");
             
             #line default
             #line hidden
             
-            #line 61 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
-            
-            #line default
-            #line hidden
-            
-            #line 61 ""
-            this.Write(" ");
-            
-            #line default
-            #line hidden
-            
-            #line 61 ""
+            #line 59 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNameSingular ));
             
             #line default
             #line hidden
             
-            #line 61 ""
-            this.Write(")\n    {\n        // TODO: Implement deleting ");
-            
-            #line default
-            #line hidden
-            
-            #line 63 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityNameSingular ));
-            
-            #line default
-            #line hidden
-            
-            #line 63 ""
-            this.Write(" functionality\n    }\n}");
+            #line 59 ""
+            this.Write(".Id}\");\n    }\n}");
             
             #line default
             #line hidden

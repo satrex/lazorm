@@ -6,10 +6,20 @@
 <#@ import namespace="System.CodeDom" #>
 @namespace <#= pageNamespace #>.Pages
 @page "/<#= entityNamePlural #>"
-@using Lazorm
 @inject HttpClient httpClient
 @attribute [Authorize]
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent;
+@using System.Threading.Tasks;
+@using Fluxor;
+@using Lazorm;
+@using Microsoft.AspNetCore.Components;
+@using Lazorm.Store.States;
+@using Microsoft.Extensions.Logging; 
+@using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Create<#= entityClassNameSingular #>;
+@using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Load<#= entityClassNameSingular #>;
+@using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Load<#= entityClassNamePlural #>;
+@using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Update<#= entityClassNameSingular #>;
+@using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Delete<#= entityClassNameSingular #>;
 <h1><#= entityClassNamePlural #></h1> 
 
 @if (<#= entityNamePlural #>State?.Value.IsLoading ?? false)
@@ -27,12 +37,11 @@ else
     <tbody>
         @foreach (var <#= entityNameSingular #> in <#= entityNamePlural #>State?.Value?.Current<#= entityClassNamePlural #> ?? new List<<#= entityClassNameSingular #>>())
         {
-            <tr>
+             <tr  @onclick="() => ShowDetail(<#= entityNameSingular #>)">
 <#= CreateTableBody() #>
-                <td>
+                <!-- <td>
                     <button class="btn btn-primary" @onclick="() => Edit<#= entityClassNameSingular #>(<#= entityNameSingular #>)">Edit</button>
-                    <button class="btn btn-danger" @onclick="() => Delete<#= entityClassNameSingular #>(<#= entityNameSingular #>)">Delete</button>
-                </td>
+                </td> -->
             </tr>
         }
     </tbody>
@@ -42,24 +51,43 @@ else
 }
 
 @code {
-    
-    protected override async Task OnInitializedAsync()
-    {
-        //  products = (await GetProductsAsync()).ToList();
-    }
+    [Inject]
+	private IState<<#= entityClassNamePlural #>State>? <#= entityNamePlural #>State {get; set;}
+
+	[Inject]
+	private IDispatcher? dispatcher { get; set; }
+
+	[Inject]
+	NavigationManager? navigation {get; set;}
+
+	[Inject]
+	private ILogger<<#= entityClassNamePlural #>Page>? _logger{get; set;}
+
+	private bool alertVisible = false;
+
+	protected override void OnInitialized()
+	{
+		// Load <#= entityNamePlural #> on initial page navigation
+		dispatcher?.Dispatch(new Load<#= entityClassNamePlural #>Action());
+
+		base.OnInitialized();
+	}
+
+	private void ShowDetail(<#= entityClassNameSingular #> <#= entityNameSingular #>)
+	{
+		navigation?.NavigateTo($"<#= entityNamePlural #>/show/{ <#= entityNameSingular #>.Id }");
+	}
 
     private void Add<#= entityClassNameSingular #>()
     {
         // TODO: Implement adding <#= entityNameSingular #> functionality
+		navigation?.NavigateTo($"<#= entityNamePlural #>/new");
     }
 
     private void Edit<#= entityClassNameSingular #>(<#= entityClassNameSingular #> <#= entityNameSingular #>)
     {
         // TODO: Implement editing <#= entityNameSingular #> functionality
+		navigation?.NavigateTo($"<#= entityNamePlural #>/edit/{ <#= entityNameSingular #>.Id }");
     }
 
-    private void Delete<#= entityClassNameSingular #>(<#= entityClassNameSingular #> <#= entityNameSingular #>)
-    {
-        // TODO: Implement deleting <#= entityNameSingular #> functionality
-    }
 }

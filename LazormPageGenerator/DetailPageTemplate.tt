@@ -12,6 +12,16 @@
 @inject HttpClient httpClient
 @inject NavigationManager? navigation 
 @using Lazorm;
+@using System.Threading.Tasks;
+@using Fluxor;
+@using Microsoft.AspNetCore.Components;
+@using Lazorm.Store.States;
+@using Microsoft.Extensions.Logging; 
+@using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Create<#= entityClassNameSingular #>;
+@using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Load<#= entityClassNameSingular #>;
+@using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Load<#= entityClassNamePlural #>;
+@using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Update<#= entityClassNameSingular #>;
+@using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Delete<#= entityClassNameSingular #>;
 
 <h3>Edit <#= entityClassNameSingular #></h3>
 

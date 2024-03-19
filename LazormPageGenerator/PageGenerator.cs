@@ -162,17 +162,20 @@ namespace LazormPageGenerator
                 ListPageWithFluxorTemplate listFluxorTemplate = new(context: context);
                 string listFluxorPageContent = listFluxorTemplate.TransformText();
                 File.WriteAllText(Path.Combine(dir.FullName, $"{context.EntityClassNamePlural}Page.razor"), listFluxorPageContent);
-                ListPageWithFluxorCsTemplate listFluxorCs = new (context: context);
-                string listFluxorCsContent = listFluxorCs.TransformText();
-                File.WriteAllText(Path.Combine(dir.FullName, $"{context.EntityClassNamePlural}Page.razor.cs"), listFluxorCsContent);
+                //ListPageWithFluxorCsTemplate listFluxorCs = new (context: context);
+                //string listFluxorCsContent = listFluxorCs.TransformText();
+                //File.WriteAllText(Path.Combine(dir.FullName, $"{context.EntityClassNamePlural}Page.razor.cs"), listFluxorCsContent);
 
                 // creating detail page with fluxor
                 DetailPageWithFluxorTemplate detailPageWithFluxor = new DetailPageWithFluxorTemplate(context: context);
                 string detailPageWithFluxorContent = detailPageWithFluxor.TransformText();
                 File.WriteAllText(Path.Combine(dir.FullName, $"Edit{context.EntityClassName}Page.razor"), detailPageWithFluxorContent);
-                DetailPageWithFluxorCsTemplate fluxorCs = new DetailPageWithFluxorCsTemplate(context: context);
-                string fluxorCsContent = fluxorCs.TransformText();
-                File.WriteAllText(Path.Combine(dir.FullName, $"Edit{context.EntityClassName}Page.razor.cs"), fluxorCsContent);
+                ShowPageWithFluxorTemplate showPageWithFluxor = new ShowPageWithFluxorTemplate(context: context);
+                string showPageWithFluxorContent = showPageWithFluxor.TransformText();
+                File.WriteAllText(Path.Combine(dir.FullName, $"Show{context.EntityClassName}Page.razor"), showPageWithFluxorContent);
+                //DetailPageWithFluxorCsTemplate fluxorCs = new DetailPageWithFluxorCsTemplate(context: context);
+                //string fluxorCsContent = fluxorCs.TransformText();
+                //File.WriteAllText(Path.Combine(dir.FullName, $"Edit{context.EntityClassName}Page.razor.cs"), fluxorCsContent);
 
                 return;
             }
@@ -195,6 +198,40 @@ namespace LazormPageGenerator
      #endregion 
 
 
+        }
+        public static string GenerateReadonlyElement(EntityProperty entityProperty, string bindValueName)
+        {
+            string input = string.Empty;
+            switch (entityProperty.TypeName.RemoveNullable())
+            {
+                case "int":
+                case "Int32":
+                case "Int64":
+                case "long":
+                case "single":
+                case "Single":
+                case "double":
+                case "Double":
+                case "decimal":
+                case "Decimal":
+                    input = $"<InputNumber class=\"form-control\" id=\"input{entityProperty.Name}\" @bind-Value=\"{bindValueName}.{entityProperty.Name}\" />\n"; ;
+                    Trace.WriteLine($"InputNumber property: {entityProperty.Name} type: {entityProperty.TypeName}");
+                    break;
+                case "bool":
+                    input = $"<InputCheckbox class=\"form-control\" id=\"input{entityProperty.Name}\" @bind-Value=\"{bindValueName}.{entityProperty.Name}\" />\n";
+                    Trace.WriteLine($"InputCheckbox property: {entityProperty.Name} type: {entityProperty.TypeName}");
+                    break;
+                case "System.DateTime":
+                case "DateTime":
+                    input = $"<InputDate class=\"form-control\" id=\"input{entityProperty.Name}\" @bind-Value=\"{bindValueName}.{entityProperty.Name}\" />\n";
+                    Trace.WriteLine($"InputDate property: {entityProperty.Name} type: {entityProperty.TypeName}");
+                    break;
+                default:
+                    input = $"<InputText class=\"form-control\" id=\"input{entityProperty.Name}\" @bind-Value=\"{bindValueName}.{entityProperty.Name}\" />\n";
+                    Trace.WriteLine($"InputText property: {entityProperty.Name} type: {entityProperty.TypeName}");
+                    break;
+            }
+            return input;
         }
 
         public static string GenerateFormInput(EntityProperty entityProperty, string bindValueName)

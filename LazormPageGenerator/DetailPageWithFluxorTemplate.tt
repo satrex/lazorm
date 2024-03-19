@@ -6,11 +6,23 @@
 <#@ import namespace="System.CodeDom" #>
 
 @namespace <#= pageNamespace #>.Pages
-@page "/<#= entityNamePlural #>/edit/{id}"
+@page "/<#= entityNamePlural #>/edit/{<#= entityNameSingular #>Id}"
 @page "/<#= entityNamePlural #>/new"
 @inject HttpClient httpClient
 @attribute [Authorize]
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent;
+@using System.Threading.Tasks;
+@using Fluxor;
+@using Lazorm;
+@using Microsoft.AspNetCore.Components;
+@using Lazorm.Store.States;
+@using Microsoft.Extensions.Logging; 
+@using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Create<#= entityClassNameSingular #>;
+@using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Load<#= entityClassNameSingular #>;
+@using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Load<#= entityClassNamePlural #>;
+@using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Update<#= entityClassNameSingular #>;
+@using Lazorm.Store.Features.<#= entityClassNameSingular #>UseCase.Actions.Delete<#= entityClassNameSingular #>;
+
 <h3>Edit <#= entityClassNamePlural #></h3>
 
 @if (<#= entityNamePlural #>State?.Value.IsLoading ?? false)
@@ -27,10 +39,105 @@ else if (<#= entityNamePlural #>State?.Value.HasCurrentErrors ?? false || <#= en
 }
 else
 {
-    <EditForm Model="@the<#= entityClassNameSingular #>" OnValidSubmit="@HandleValidSubmit">
+    <EditForm id="<#= entityNameSingular #>Form" Model="@the<#= entityClassNameSingular #>" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
         <#= CreateFormBody() #>
-
-        <button type="submit" class="btn btn-primary" >Update</button>
     </EditForm>
+	<button class="btn btn-secondary" @onclick="() => BackToShowPage()">Cancel</button>
+    <button type="submit" form="<#= entityNameSingular #>Form" class="btn btn-primary" >Update</button>
+	<button class="btn btn-danger" @onclick="() => Delete<#= entityClassNameSingular #>(<#= entityNamePlural #>State?.Value.CurrentEntity)">Delete</button>
+}
+
+@code {
+	[Parameter]
+	public string <#= entityNameSingular #>Id {get; set;} = string.Empty;
+
+	[Inject]
+	private IState<<#= entityClassNamePlural #>State>? <#= entityNamePlural #>State {get; set;}
+
+	[Inject]
+	private IDispatcher? dispatcher { get; set; }
+
+	[Inject]
+	NavigationManager? navigation {get; set;}
+
+	[Inject]
+	private ILogger<Edit<#= entityClassNameSingular #>Page>? _logger{get; set;}
+	private Lazorm.<#= entityClassNameSingular #>Validation the<#= entityClassNameSingular #> = new Lazorm.<#= entityClassNameSingular #>Validation();
+
+	private bool alertVisible = false;
+
+	protected override void OnInitialized()
+	{
+		// Load the <#= entityNameSingular #> detail on initial page navigation
+		if (int.TryParse(<#= entityNameSingular #>Id, out var parsedId))
+		{
+			var current<#= entityClassNameSingular #> = new <#= entityClassNameSingular #>() { Id = parsedId };
+			dispatcher?.Dispatch(new Load<#= entityClassNameSingular #>Action(current<#= entityClassNameSingular #>));
+		}
+		else
+		{
+			var current<#= entityClassNameSingular #> = new <#= entityClassNameSingular #>();
+		}
+
+		// Register a state change to assign the validation fields
+		if(<#= entityNamePlural #>State != null) <#= entityNamePlural #>State.StateChanged += (sender, e) =>
+		{
+			_logger?.LogInformation($"StateChanged start:");
+			if (<#= entityNamePlural #>State.Value.CurrentEntity is null)
+			{
+				return;
+			}
+			_logger?.LogInformation($"Id={<#= entityNamePlural #>State.Value.CurrentEntity.Id} ");
+
+			the<#= entityClassNameSingular #> = new Lazorm.<#= entityClassNameSingular #>Validation(<#= entityNamePlural #>State.Value.CurrentEntity);
+
+			StateHasChanged();
+			_logger?.LogInformation($"StateChanged end:");
+		};
+
+		base.OnInitialized();
+	}
+
+	protected void Delete<#= entityClassNameSingular #>(<#= entityClassNameSingular #> deleting<#= entityClassNameSingular #>)
+	{
+		dispatcher?.Dispatch(new Delete<#= entityClassNameSingular #>Action(deleting<#= entityClassNameSingular #>));
+		navigation?.NavigateTo("/<#= entityNamePlural #>");
+	}
+
+	private void BackToShowPage()
+	{
+		if (string.IsNullOrEmpty(<#= entityNameSingular #>Id ))
+		{
+			navigation?.NavigateTo($"/<#= entityNamePlural #>/");
+		}
+		else
+		{
+			navigation?.NavigateTo($"<#= entityNamePlural #>/show/{ <#= entityNameSingular #>Id }");
+		}
+	}
+
+	protected void HandleValidSubmit()
+	{
+		Store<#= entityClassNameSingular #>(
+			the<#= entityClassNameSingular #>.To<#= entityClassNameSingular #>()
+		);
+		StateHasChanged();
+	}
+
+	protected void Store<#= entityClassNameSingular #>(<#= entityClassNameSingular #> storing<#= entityClassNameSingular #>)
+	{
+		if(0 == storing<#= entityClassNameSingular #>.Id)
+		{
+			dispatcher?.Dispatch(new Create<#= entityClassNameSingular #>Action(storing<#= entityClassNameSingular #>));
+			navigation?.NavigateTo($"/<#= entityNamePlural #>/");
+		}
+		else
+		{
+			// _logger.LogInformation($"Dispatching: xx = {storing<#= entityClassNameSingular #>.xx}");
+			dispatcher?.Dispatch(new Update<#= entityClassNameSingular #>Action(storing<#= entityClassNameSingular #>));
+			navigation?.NavigateTo($"/<#= entityNamePlural #>/show/{<#= entityNamePlural #>State?.Value?.CurrentEntity?.Id}/");
+		}
+
+	}
 }
