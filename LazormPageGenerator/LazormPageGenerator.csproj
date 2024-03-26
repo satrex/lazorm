@@ -43,12 +43,8 @@
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ConfirmDialogTemplate.cs</LastGenOutput>
     </None>
-    <None Update="DetailPageWithFluxorCsTemplate.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>DetailPageWithFluxorCsTemplate.cs</LastGenOutput>
-    </None>
     <None Update="DetailPageWithFluxorTemplate.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DetailPageWithFluxorTemplate.cs</LastGenOutput>
     </None>
     <None Update="ContollerTemplate.tt">
@@ -63,10 +59,6 @@
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ListPageWithFluxorTemplate.cs</LastGenOutput>
     </None>
-    <None Update="ListPageWithFluxorCsTemplate.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>ListPageWithFluxorCsTemplate.cs</LastGenOutput>
-    </None>
     <None Update="ListPageWithFluxorTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ListPageWithFluxorTemplate.cs</LastGenOutput>
@@ -78,6 +70,18 @@
     <None Update="ShowPageWithFluxorTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ShowPageWithFluxorTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="PreprocessedT4Template.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>TableComponentTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="TableComponentTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>TableComponentTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="ControllerTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ControllerTemplate.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -99,12 +103,6 @@
     <Compile Update="ConfirmDialogTemplate.cs">
       <DependentUpon>ConfirmDialogTemplate.tt</DependentUpon>
     </Compile>
-    <Compile Update="DetailPageWithFluxorCsTemplate.cs">
-      <DependentUpon>DetailPageWithFluxorCsTemplate.tt</DependentUpon>
-    </Compile>
-    <Compile Update="DetailPageWithFluxorTemplate.cs">
-      <DependentUpon>DetailPageWithFluxorTemplate.tt</DependentUpon>
-    </Compile>
     <Compile Update="ContollerTemplate.cs">
       <DependentUpon>ContollerTemplate.tt</DependentUpon>
     </Compile>
@@ -114,9 +112,6 @@
     <Compile Update="ListPageWasmTemplate.cs">
       <DependentUpon>ListPageWasmTemplate.tt</DependentUpon>
     </Compile>
-    <Compile Update="ListPageWithFluxorCsTemplate.cs">
-      <DependentUpon>ListPageWithFluxorCsTemplate.tt</DependentUpon>
-    </Compile>
     <Compile Update="ListPageWIthFluxorTemplate.cs">
       <DependentUpon>ListPageWIthFluxorTemplate.tt</DependentUpon>
     </Compile>
@@ -125,6 +120,15 @@
     </Compile>
     <Compile Update="ShowPageWithFluxorTemplate.cs">
       <DependentUpon>ShowPageWithFluxorTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="PreprocessedT4Template.cs">
+      <DependentUpon>PreprocessedT4Template.tt</DependentUpon>
+    </Compile>
+    <Compile Update="TableComponentTemplate.cs">
+      <DependentUpon>TableComponentTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="DetailPageWithFluxorTemplate.cs">
+      <DependentUpon>DetailPageWithFluxorTemplate.tt</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

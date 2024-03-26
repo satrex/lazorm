@@ -8,136 +8,12 @@ namespace LazormPageGenerator
 {
     public class PageGenerator
     {
-        public static void GeneratePageFromFile(string filePath, string outDir, string pageNamespace, bool withFluxor = false, bool isWasm = false)
+        public static void GeneratePageFromFile(string filePath, string outDir, string pageNamespace, bool withFluxor = false, bool isWasm = false, IEnumerable<string>? children = default(IEnumerable<string>))
         {
-            // ソースコードをテキストとして読み込む
-            var code = File.ReadAllText(filePath);
-            
-            List<SyntaxTree> syntaxTrees = new List<SyntaxTree>();
-            // 構文木の生成
-
-            var syntaxTree = CSharpSyntaxTree.ParseText(code, CSharpParseOptions.Default, filePath);
-            // 構文木をリストへ格納
-            syntaxTrees.Add(syntaxTree);
-
-            var compilation = CSharpCompilation.Create("lazorm", syntaxTrees, null);
-
-            var pluralizer = new Pluralize.NET.Pluralizer();
-            GeneratorContext context = new GeneratorContext();
-
-            Trace.WriteLine("Parsing source file...");
-            #region Source File Parsing
-            foreach (var tree in syntaxTrees)
-            {
-                // コンパイラからセマンティックモデルの取得
-                var semanticModel = compilation.GetSemanticModel(tree);
-                // 構文木からルートの子ノード群を取得
-                var nodes = tree.GetRoot().DescendantNodes();
-
-                // ノード群からクラスに関する構文情報群を取得
-                // クラスはClassDeclarationSyntax
-                // インタフェースはInterfaceDeclarationSyntax
-                // 列挙型はEnumDeclarationSyntax
-                // 構造体はStructDeclarationSyntax
-                // デリゲートはDelegateDeclarationSyntax
-                var classSyntaxArray = nodes.OfType<ClassDeclarationSyntax>();
-                foreach (var syntax in classSyntaxArray)
-                {
-                    var symbol = semanticModel.GetDeclaredSymbol(syntax);
-                    Trace.WriteLine("{symbol!.DeclaredAccessibility} {symbol}");
-                    Trace.WriteLine(" {nameof(symbol.IsAbstract)}: {symbol.IsAbstract}");
-                    Trace.WriteLine(" {nameof(symbol.IsStatic)}: {symbol.IsStatic}" );
-                    if (symbol!.Name == Path.GetFileNameWithoutExtension(filePath))
-                    {
-                        context.EntityClassName = symbol.Name.ToPascalCase();
-                        context.EntityClassNamePlural = pluralizer.Pluralize(symbol.Name).ToPascalCase();
-                    }
-                }
-
-                var recordSyntaxArray = nodes.OfType<RecordDeclarationSyntax>();
-                foreach (var syntax in recordSyntaxArray)
-                {
-                    var symbol = semanticModel.GetDeclaredSymbol(syntax);
-                    Trace.WriteLine("{symbol!.DeclaredAccessibility} {symbol}");
-                    Trace.WriteLine(" {nameof(symbol.IsAbstract)}: {symbol.IsAbstract}");
-                    Trace.WriteLine(" {nameof(symbol.IsStatic)}: {symbol.IsStatic}" );
-                    if (symbol!.Name == Path.GetFileNameWithoutExtension(filePath))
-                    {
-                        context.EntityClassName = symbol.Name.ToPascalCase();
-                        context.EntityClassNamePlural = pluralizer.Pluralize(symbol.Name).ToPascalCase();
-                    }
-                }
-
-                var structSyntaxArray = nodes.OfType<StructDeclarationSyntax>();
-                foreach (var syntax in structSyntaxArray)
-                {
-                    var symbol = semanticModel.GetDeclaredSymbol(syntax);
-                    Trace.WriteLine("{symbol!.DeclaredAccessibility} {symbol}");
-                    Trace.WriteLine(" {nameof(symbol.IsAbstract)}: {symbol.IsAbstract}");
-                    Trace.WriteLine(" {nameof(symbol.IsStatic)}: {symbol.IsStatic}" );
-                    if (symbol!.Name == Path.GetFileNameWithoutExtension(filePath))
-                    {
-                        context.EntityClassName = symbol.Name.ToPascalCase();
-                        context.EntityClassNamePlural = pluralizer.Pluralize(symbol.Name).ToPascalCase();
-                    }
-                }
-
-                if (string.IsNullOrWhiteSpace(context.EntityClassName))
-                    throw new ArgumentException("couldn't find class or record or struct name");
-
-                var propertySyntaxArray = nodes.OfType<PropertyDeclarationSyntax>();
-                var pageColumns = new List<System.Reflection.PropertyInfo>();
-                foreach (var syntax in propertySyntaxArray.Where(p => p.Modifiers.Any(SyntaxKind.PublicKeyword)))
-                {
-                    var symbol = semanticModel.GetDeclaredSymbol(syntax)!;
-                    Trace.WriteLine($"{symbol.DeclaredAccessibility} {symbol}");
-                    Trace.WriteLine($" Namespace: {symbol.ContainingSymbol}" );
-                    Trace.WriteLine($" Class: {symbol.ContainingType.Name}" );
-                    Trace.WriteLine($" {nameof(symbol.IsStatic)}: {symbol.IsStatic}");
-
-                    // アクセサの取得
-                    var accessors = from accessor in syntax.AccessorList!.Accessors
-                                    select new
-                                    {
-                                        Name = accessor.Keyword.ToString(),
-                                        Access = accessor.Modifiers.Count > 0 ?
-                                            semanticModel.GetDeclaredSymbol(accessor)!.DeclaredAccessibility :
-                                            Accessibility.Public
-                                    };
-
-                    // クエリ式使わない場合
-                    //var accessors = new List<(string Name, Accessibility Access)>();
-                    //foreach (var accessor in syntax.AccessorList.Accessors)
-                    //{
-                    //    var accessibility = Accessibility.Public;
-                    //    var keyword = accessor.Keyword.ToString();
-                    //    if (accessor.Modifiers.Count > 0)
-                    //    {
-                    //        var msym = semanticModel.GetDeclaredSymbol(accessor);
-                    //        accessibility = msym.DeclaredAccessibility;
-                    //    }
-                    //    accessors.Add((keyword, accessibility));
-                    //}
-
-                    // アクセサの出力
-                    Trace.WriteLine(" Accessors:");
-                    foreach (var accessor in accessors)
-                        Trace.WriteLine($"  {accessor.Access} {accessor.Name}");
-
-                    // 戻り値の出力
-                    Trace.WriteLine($" Type: {symbol.Type}");
-                    if(symbol.ContainingType.Name == Path.GetFileNameWithoutExtension(filePath))
-                    {
-                        context.EntityProperties.Add(new EntityProperty(symbol.Name, accessors.Any(p => p.Name == "set"), symbol.Type.ToString() ?? string.Empty));
-                    }
-                }
-            }
-            #endregion
-            Trace.WriteLine("Source file parsing end");
-
+            GeneratorContext context = new GeneratorContext(filePath);
             var dir = Directory.CreateDirectory(path: Path.Combine(outDir, context.EntityClassNamePlural));
 
-	    #region BlazorWasm
+            #region BlazorWasm
             if (isWasm)
             {
                 // creating api controller
@@ -153,33 +29,49 @@ namespace LazormPageGenerator
             }
 	    #endregion
 
-	    #region BlazorServer
-	    #region Fluxor
+	        #region BlazorServer
+	        #region Fluxor
             if (withFluxor)
-
             {
+                foreach(var child in children ?? new string[0])
+                {
+                    if (!File.Exists(child)) {
+                        Trace.WriteLine($"child file {child} not found. skipping...");
+		            }
+                    else 
+		            {
+                        GeneratorContext childContext = new GeneratorContext(child);
+                        TableComponentTemplate childTableComponentTemplate = new TableComponentTemplate(childContext);
+                        string childTableComponentContent = childTableComponentTemplate.TransformText();
+                        File.WriteAllText(Path.Combine(dir.FullName, $"{childContext.EntityClassName}TableComponent.razor"), childTableComponentContent);
+                        TableComponentTemplate editableTableComponentTemplate = new TableComponentTemplate(context: childContext, mode: TableComponentTemplate.Mode.Edit);
+                        string editableTableComponentContent = editableTableComponentTemplate.TransformText();
+                        File.WriteAllText(Path.Combine(dir.FullName, $"{childContext.EntityClassName}EditTableComponent.razor"), editableTableComponentContent);
+                    }
+                }
                 // creating list page file
                 ListPageWithFluxorTemplate listFluxorTemplate = new(context: context);
                 string listFluxorPageContent = listFluxorTemplate.TransformText();
                 File.WriteAllText(Path.Combine(dir.FullName, $"{context.EntityClassNamePlural}Page.razor"), listFluxorPageContent);
+                TableComponentTemplate tableComponentTemplate = new TableComponentTemplate(context: context, mode:TableComponentTemplate.Mode.Show);
+                string tableComponentContent = tableComponentTemplate.TransformText();
+                File.WriteAllText(Path.Combine(dir.FullName, $"{context.EntityClassName}TableComponent.razor"), tableComponentContent);
                 //ListPageWithFluxorCsTemplate listFluxorCs = new (context: context);
                 //string listFluxorCsContent = listFluxorCs.TransformText();
                 //File.WriteAllText(Path.Combine(dir.FullName, $"{context.EntityClassNamePlural}Page.razor.cs"), listFluxorCsContent);
 
                 // creating detail page with fluxor
-                DetailPageWithFluxorTemplate detailPageWithFluxor = new DetailPageWithFluxorTemplate(context: context);
+                DetailPageWithFluxorTemplate detailPageWithFluxor = new DetailPageWithFluxorTemplate(context: context, children ?? new string[0]);
                 string detailPageWithFluxorContent = detailPageWithFluxor.TransformText();
                 File.WriteAllText(Path.Combine(dir.FullName, $"Edit{context.EntityClassName}Page.razor"), detailPageWithFluxorContent);
+
                 ShowPageWithFluxorTemplate showPageWithFluxor = new ShowPageWithFluxorTemplate(context: context);
                 string showPageWithFluxorContent = showPageWithFluxor.TransformText();
                 File.WriteAllText(Path.Combine(dir.FullName, $"Show{context.EntityClassName}Page.razor"), showPageWithFluxorContent);
-                //DetailPageWithFluxorCsTemplate fluxorCs = new DetailPageWithFluxorCsTemplate(context: context);
-                //string fluxorCsContent = fluxorCs.TransformText();
-                //File.WriteAllText(Path.Combine(dir.FullName, $"Edit{context.EntityClassName}Page.razor.cs"), fluxorCsContent);
 
                 return;
             }
-	    #endregion
+            #endregion
 
             // creating list page file
             ListPageTemplate listServerTemplate = new(context: context);

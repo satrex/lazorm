@@ -28,25 +28,8 @@
 }
 else 
 {
-<table class="table">
-    <thead>
-        <tr>
-<#= CreateTableHeader() #>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var <#= entityNameSingular #> in <#= entityNamePlural #>State?.Value?.Current<#= entityClassNamePlural #> ?? new List<<#= entityClassNameSingular #>>())
-        {
-             <tr  @onclick="() => ShowDetail(<#= entityNameSingular #>)">
-<#= CreateTableBody() #>
-                <!-- <td>
-                    <button class="btn btn-primary" @onclick="() => Edit<#= entityClassNameSingular #>(<#= entityNameSingular #>)">Edit</button>
-                </td> -->
-            </tr>
-        }
-    </tbody>
-</table>
-
+<<#= entityClassNameSingular #>TableComponent <#= entityClassNamePlural #>=<#= entityNamePlural #>State?.Value?.Current<#= entityClassNamePlural #> OnRowClickCallback="@ShowDetail" >
+</<#= entityClassNameSingular #>TableComponent>
 <button class="btn btn-success" @onclick="Add<#= entityClassNameSingular #>">Add <#= entityClassNameSingular #></button>
 }
 

@@ -199,359 +199,308 @@ namespace LazormPageGenerator {
             #line hidden
             
             #line 25 ""
-            this.Write("State?.Value.IsLoading ?? false)\n{\n    <p><em>Loading...</em></p>\n}\nelse \n{\n<tabl" +
-                    "e class=\"table\">\n    <thead>\n        <tr>\n");
+            this.Write("State?.Value.IsLoading ?? false)\n{\n    <p><em>Loading...</em></p>\n}\nelse \n{\n<");
             
             #line default
             #line hidden
             
-            #line 34 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( CreateTableHeader() ));
+            #line 31 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 34 ""
-            this.Write("\n        </tr>\n    </thead>\n    <tbody>\n        @foreach (var ");
+            #line 31 ""
+            this.Write("TableComponent ");
             
             #line default
             #line hidden
             
-            #line 38 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityNameSingular ));
+            #line 31 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNamePlural ));
             
             #line default
             #line hidden
             
-            #line 38 ""
-            this.Write(" in ");
+            #line 31 ""
+            this.Write("=");
             
             #line default
             #line hidden
             
-            #line 38 ""
+            #line 31 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
             
             #line default
             #line hidden
             
-            #line 38 ""
+            #line 31 ""
             this.Write("State?.Value?.Current");
             
             #line default
             #line hidden
             
-            #line 38 ""
+            #line 31 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNamePlural ));
             
             #line default
             #line hidden
             
-            #line 38 ""
-            this.Write(" ?? new List<");
+            #line 31 ""
+            this.Write(" OnRowClickCallback=\"@ShowDetail\" >\n</");
             
             #line default
             #line hidden
             
-            #line 38 ""
+            #line 32 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 38 ""
-            this.Write(">())\n        {\n             <tr  @onclick=\"() => ShowDetail(");
+            #line 32 ""
+            this.Write("TableComponent>\n<button class=\"btn btn-success\" @onclick=\"Add");
             
             #line default
             #line hidden
             
-            #line 40 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityNameSingular ));
-            
-            #line default
-            #line hidden
-            
-            #line 40 ""
-            this.Write(")\">\n");
-            
-            #line default
-            #line hidden
-            
-            #line 41 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( CreateTableBody() ));
-            
-            #line default
-            #line hidden
-            
-            #line 41 ""
-            this.Write("\n                <!-- <td>\n                    <button class=\"btn btn-primary\" @o" +
-                    "nclick=\"() => Edit");
-            
-            #line default
-            #line hidden
-            
-            #line 43 ""
+            #line 33 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 43 ""
-            this.Write("(");
-            
-            #line default
-            #line hidden
-            
-            #line 43 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityNameSingular ));
-            
-            #line default
-            #line hidden
-            
-            #line 43 ""
-            this.Write(")\">Edit</button>\n                </td> -->\n            </tr>\n        }\n    </tbod" +
-                    "y>\n</table>\n\n<button class=\"btn btn-success\" @onclick=\"Add");
-            
-            #line default
-            #line hidden
-            
-            #line 50 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
-            
-            #line default
-            #line hidden
-            
-            #line 50 ""
+            #line 33 ""
             this.Write("\">Add ");
             
             #line default
             #line hidden
             
-            #line 50 ""
+            #line 33 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 50 ""
+            #line 33 ""
             this.Write("</button>\n}\n\n@code {\n    [Inject]\n\tprivate IState<");
             
             #line default
             #line hidden
             
-            #line 55 ""
+            #line 38 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNamePlural ));
             
             #line default
             #line hidden
             
-            #line 55 ""
+            #line 38 ""
             this.Write("State>? ");
             
             #line default
             #line hidden
             
-            #line 55 ""
+            #line 38 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
             
             #line default
             #line hidden
             
-            #line 55 ""
+            #line 38 ""
             this.Write("State {get; set;}\n\n\t[Inject]\n\tprivate IDispatcher? dispatcher { get; set; }\n\n\t[In" +
                     "ject]\n\tNavigationManager? navigation {get; set;}\n\n\t[Inject]\n\tprivate ILogger<");
             
             #line default
             #line hidden
             
-            #line 64 ""
+            #line 47 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNamePlural ));
             
             #line default
             #line hidden
             
-            #line 64 ""
+            #line 47 ""
             this.Write("Page>? _logger{get; set;}\n\n\tprivate bool alertVisible = false;\n\n\tprotected overri" +
                     "de void OnInitialized()\n\t{\n\t\t// Load ");
             
             #line default
             #line hidden
             
-            #line 70 ""
+            #line 53 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
             
             #line default
             #line hidden
             
-            #line 70 ""
+            #line 53 ""
             this.Write(" on initial page navigation\n\t\tdispatcher?.Dispatch(new Load");
             
             #line default
             #line hidden
             
-            #line 71 ""
+            #line 54 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNamePlural ));
             
             #line default
             #line hidden
             
-            #line 71 ""
+            #line 54 ""
             this.Write("Action());\n\n\t\tbase.OnInitialized();\n\t}\n\n\tprivate void ShowDetail(");
             
             #line default
             #line hidden
             
-            #line 76 ""
+            #line 59 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 76 ""
+            #line 59 ""
             this.Write(" ");
             
             #line default
             #line hidden
             
-            #line 76 ""
+            #line 59 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNameSingular ));
             
             #line default
             #line hidden
             
-            #line 76 ""
+            #line 59 ""
             this.Write(")\n\t{\n\t\tnavigation?.NavigateTo($\"");
             
             #line default
             #line hidden
             
-            #line 78 ""
+            #line 61 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
             
             #line default
             #line hidden
             
-            #line 78 ""
+            #line 61 ""
             this.Write("/show/{ ");
             
             #line default
             #line hidden
             
-            #line 78 ""
+            #line 61 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNameSingular ));
             
             #line default
             #line hidden
             
-            #line 78 ""
+            #line 61 ""
             this.Write(".Id }\");\n\t}\n\n    private void Add");
             
             #line default
             #line hidden
             
-            #line 81 ""
+            #line 64 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 81 ""
+            #line 64 ""
             this.Write("()\n    {\n        // TODO: Implement adding ");
             
             #line default
             #line hidden
             
-            #line 83 ""
+            #line 66 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNameSingular ));
             
             #line default
             #line hidden
             
-            #line 83 ""
+            #line 66 ""
             this.Write(" functionality\n\t\tnavigation?.NavigateTo($\"");
             
             #line default
             #line hidden
             
-            #line 84 ""
+            #line 67 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
             
             #line default
             #line hidden
             
-            #line 84 ""
+            #line 67 ""
             this.Write("/new\");\n    }\n\n    private void Edit");
             
             #line default
             #line hidden
             
-            #line 87 ""
+            #line 70 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 87 ""
+            #line 70 ""
             this.Write("(");
             
             #line default
             #line hidden
             
-            #line 87 ""
+            #line 70 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
             
             #line default
             #line hidden
             
-            #line 87 ""
+            #line 70 ""
             this.Write(" ");
             
             #line default
             #line hidden
             
-            #line 87 ""
+            #line 70 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNameSingular ));
             
             #line default
             #line hidden
             
-            #line 87 ""
+            #line 70 ""
             this.Write(")\n    {\n        // TODO: Implement editing ");
             
             #line default
             #line hidden
             
-            #line 89 ""
+            #line 72 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNameSingular ));
             
             #line default
             #line hidden
             
-            #line 89 ""
+            #line 72 ""
             this.Write(" functionality\n\t\tnavigation?.NavigateTo($\"");
             
             #line default
             #line hidden
             
-            #line 90 ""
+            #line 73 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNamePlural ));
             
             #line default
             #line hidden
             
-            #line 90 ""
+            #line 73 ""
             this.Write("/edit/{ ");
             
             #line default
             #line hidden
             
-            #line 90 ""
+            #line 73 ""
             this.Write(this.ToStringHelper.ToStringWithCulture( entityNameSingular ));
             
             #line default
             #line hidden
             
-            #line 90 ""
+            #line 73 ""
             this.Write(".Id }\");\n    }\n\n}");
             
             #line default

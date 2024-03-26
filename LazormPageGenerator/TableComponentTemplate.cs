@@ -14,150 +14,61 @@ namespace LazormPageGenerator {
     using System;
     
     
-    public partial class ControllerTemplate : ControllerTemplateBase {
+    public partial class TableComponentTemplate : TableComponentTemplateBase {
         
         public virtual string TransformText() {
             this.GenerationEnvironment = null;
             
             #line 6 ""
-            this.Write("using System;\nusing System.Collections.Generic;\nusing System.Linq;\nusing System.T" +
-                    "hreading.Tasks;\nusing Microsoft.AspNetCore.Mvc;\nusing Lazorm;\n\nnamespace ");
+            this.Write("@using Lazorm\n\n<table class=\"table\">\n    <thead>\n        <tr>\n");
             
             #line default
             #line hidden
             
-            #line 13 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( pageNamespace));
+            #line 11 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( CreateTableHeader() ));
             
             #line default
             #line hidden
             
-            #line 13 ""
-            this.Write(".Server.Controllers\n{\n    [Route(\"api/[controller]\")]\n    [ApiController]\n    pub" +
-                    "lic class ");
+            #line 11 ""
+            this.Write("\n        </tr>\n    </thead>\n    <tbody>\n\n");
             
             #line default
             #line hidden
             
-            #line 17 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
+            #line 16 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( CreateTableBody(editMode) ));
             
             #line default
             #line hidden
             
-            #line 17 ""
-            this.Write("Controller : ControllerBase\n    {\n\t\tpublic ");
+            #line 16 ""
+            this.Write("\n    </tbody>\n</table>\n\n@code {\n    [Parameter]\n    ");
             
             #line default
             #line hidden
             
-            #line 19 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
+            #line 22 ""
+            this.Write(this.ToStringHelper.ToStringWithCulture( CreateEntityList(editMode) ));
             
             #line default
             #line hidden
             
-            #line 19 ""
-            this.Write("Controller()\n\t\t{\n\t\t}\n\t\t[HttpGet]\n\t\tpublic async Task<ActionResult<List<");
-            
-            #line default
-            #line hidden
-            
-            #line 23 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
-            
-            #line default
-            #line hidden
-            
-            #line 23 ""
-            this.Write(">>> GetAll");
-            
-            #line default
-            #line hidden
-            
-            #line 23 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNamePlural ));
-            
-            #line default
-            #line hidden
-            
-            #line 23 ""
-            this.Write("()\n\t\t{\n\t\t    return Ok((await ");
+            #line 22 ""
+            this.Write("\n\n    [Parameter]\n    ");
             
             #line default
             #line hidden
             
             #line 25 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
+            this.Write(this.ToStringHelper.ToStringWithCulture( CreateEntityCallback(editMode) ));
             
             #line default
             #line hidden
             
             #line 25 ""
-            this.Write(".GetAllAsync()).ToList());\n\t\t}\n\t\t[HttpGet(\"{id}\")]\n\t\tpublic async Task<ActionResu" +
-                    "lt<");
-            
-            #line default
-            #line hidden
-            
-            #line 28 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
-            
-            #line default
-            #line hidden
-            
-            #line 28 ""
-            this.Write(">> Get(int id)\n\t\t{\n\t\t    return Ok(await ");
-            
-            #line default
-            #line hidden
-            
-            #line 30 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
-            
-            #line default
-            #line hidden
-            
-            #line 30 ""
-            this.Write(".GetAsync(id));\n\t\t}\n\t\t[HttpPost]\n\t\tpublic async Task<ActionResult<int>> Post(");
-            
-            #line default
-            #line hidden
-            
-            #line 33 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
-            
-            #line default
-            #line hidden
-            
-            #line 33 ""
-            this.Write(" entity)\n\t\t{\n\t\t    return Ok(await entity.StoreAsync());\n\t\t}\n\t\t[HttpPut(\"{id}\")]\n" +
-                    "\t\tpublic async Task<ActionResult> Put(int id, ");
-            
-            #line default
-            #line hidden
-            
-            #line 38 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
-            
-            #line default
-            #line hidden
-            
-            #line 38 ""
-            this.Write(" entity)\n\t\t{\n\t\t    return Ok(await entity.StoreAsync());\n\t\t}\n\t\t[HttpDelete(\"{id}\"" +
-                    ")]\n\t\tpublic async Task<ActionResult> Delete(");
-            
-            #line default
-            #line hidden
-            
-            #line 43 ""
-            this.Write(this.ToStringHelper.ToStringWithCulture( entityClassNameSingular ));
-            
-            #line default
-            #line hidden
-            
-            #line 43 ""
-            this.Write(" entity)\n\t\t{\n\t\t    return Ok(await entity.DropAsync());\n\t\t}\n\n    } \n}");
+            this.Write("\n\n}\n");
             
             #line default
             #line hidden
@@ -168,7 +79,7 @@ namespace LazormPageGenerator {
         }
     }
     
-    public class ControllerTemplateBase {
+    public class TableComponentTemplateBase {
         
         private global::System.Text.StringBuilder builder;
         

@@ -41,7 +41,8 @@ else
 {
     <EditForm id="<#= entityNameSingular #>Form" Model="@the<#= entityClassNameSingular #>" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
-        <#= CreateFormBody() #>
+        <#= CreateFormBody(mainContext) #>
+	    <#= CreateChildrenTables() #>
     </EditForm>
 	<button class="btn btn-secondary" @onclick="() => BackToShowPage()">Cancel</button>
     <button type="submit" form="<#= entityNameSingular #>Form" class="btn btn-primary" >Update</button>

@@ -7,6 +7,8 @@ using System.CodeDom;
 using System.CodeDom.Compiler;
 using Microsoft.CSharp;
 using System.Threading.Tasks;
+using MySqlX.XDevAPI.Relational;
+using System.Data.Common;
 
 namespace Lazorm
 {   
@@ -226,6 +228,23 @@ namespace Lazorm
                 cls.Members.Add(this.GenerateField(column));
                 cls.Members.Add(this.GenerateProperty(table, column));
             }
+            var isDeleting = "_isDeleting";
+            var field = new CodeMemberField();
+            field.Name = isDeleting; 
+            field.Type = new CodeTypeReference(typeof(bool));
+            field.Attributes = MemberAttributes.Private;
+            field.InitExpression = new CodeDefaultValueExpression(field.Type);
+            field.Comments.Add(new CodeCommentStatement("Lazorm deletion flag"));
+            cls.Members.Add(field);
+
+            var property = new CodeMemberProperty();
+            property.Name = this.GetPropertyName(table.Name, isDeleting);
+            property.Type = new CodeTypeReference(typeof(bool));
+            property.Attributes = MemberAttributes.Public;
+            property.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), isDeleting)));
+            property.SetStatements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), isDeleting), new CodePropertySetValueReferenceExpression()));
+            cls.Members.Add(property);
+
             cls.Members.Add( GenerateDefaultConstructor());
             cls.Members.Add( GenerateConstructorByEntity(table));
             cls.Members.Add( GenerateToEntityMethod(table));
@@ -265,13 +284,15 @@ namespace Lazorm
 
         private CodeMemberProperty GenerateProperty(TableDef table, ColumnDef column)
         {
-           var property = new CodeMemberProperty();
-           if (!column.Nullable)
+            var property = new CodeMemberProperty();
+            if (!column.Nullable && !column.IsAutoNumber )
             {
                 var requiredAttribute = new CodeAttributeDeclaration("Required");
+                var requiredColumn = column.Remarks ?? column.Name; 
+                
                 requiredAttribute.Arguments.Add(
                     new CodeAttributeArgument(
-                     "ErrorMessage", new CodePrimitiveExpression($"{column.Remarks}は必須項目です。")
+                     "ErrorMessage", new CodePrimitiveExpression($"{requiredColumn}は必須項目です。")
                        )); 
                 property.CustomAttributes.Add(requiredAttribute);
             }
