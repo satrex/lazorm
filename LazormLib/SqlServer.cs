@@ -117,35 +117,35 @@ ORDER BY c.colorder";
             #endregion
             var newSql =
             #region 2005 or newer
- string.Format(@"
+ @$"
 SELECT 
     c.name AS ColumnName,
-    TYPE_NAME(c.xusertype) AS TypeName,
-    CASE WHEN ik.colid IS NOT NULL THEN 1 ELSE 0 END AS IsPrimaryKey,
+    TYPE_NAME(c.user_type_id) AS TypeName,
+    CASE WHEN ik.column_id  IS NOT NULL THEN 1 ELSE 0 END AS IsPrimaryKey,
     CASE WHEN c.scale IS NOT NULL THEN c.scale ELSE 0 END AS DecimalPlace,
-    c.isnullable AS Nullable,
-    CASE WHEN c.autoval IS NOT NULL THEN 1 ELSE 0 END AS IsAutoNumber,
-    c.length AS Length,
+    c.is_nullable  AS Nullable,
+    c.is_identity  AS IsAutoNumber,
+    c.max_length  AS Length,
     p.value AS Remarks
-FROM 	sysobjects o
-JOIN 	syscolumns c ON c.id=o.id
-LEFT JOIN sysobjects pk ON 
-    pk.parent_obj=o.id and 
-    pk.xtype='PK'
-LEFT JOIN sysindexes ix ON 
+FROM 	sys.objects o
+JOIN 	sys.columns c ON c.object_id=o.object_id
+LEFT JOIN sys.objects pk ON 
+    pk.parent_object_id = o.object_id and 
+    pk.[type] ='PK'
+LEFT JOIN sys.indexes ix ON 
     ix.name=pk.name
-LEFT JOIN sysindexkeys ik ON 
-    ik.id=o.id and ik.indid=ix.indid and 
-    ik.colid=c.colid
+LEFT JOIN sys.index_columns ik ON 
+    ik.object_id=o.object_id and ik.index_id =ix.index_id  and 
+    ik.column_id =c.column_id 
 LEFT JOIN sys.extended_properties p ON
-	c.id = p.major_id AND
-	c.colid = p.minor_id AND
+	c.object_id  = p.major_id AND
+	c.column_id  = p.minor_id AND
 	p.name = 'MS_Description'
 WHERE 
     o.type='U' AND 
-    o.name = '{0}'
-ORDER BY c.colorder
-", tableName);
+    o.name = '{tableName}'
+ORDER BY c.column_id 
+";
             #endregion
 
             int majorVersion = int.Parse(this.DbVersion.Split(new string[]{"."}, StringSplitOptions.RemoveEmptyEntries)[0]);
