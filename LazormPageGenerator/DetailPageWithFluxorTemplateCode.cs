@@ -67,16 +67,32 @@ namespace LazormPageGenerator
             return td;
         }
 
+        public string CreateEditableTableBody(GeneratorContext context)
+        {
+            var td = string.Empty;
+            context.EntityProperties.ForEach(p =>
+            {
+                var str = $"{nameof(p.Name)}:{p.Name}, {nameof(p.Editable)}:{p.Editable}, {nameof(p.TypeName)}:{p.TypeName}";
+                Trace.WriteLine(str);
+                string input = PageGenerator.GenerateFormInput(p, $"the{context.EntityClassName}");
+                td += $"                <td>{input}</td>\n";
+            });
+            return td;
+        }
+
         public string CreateChildrenTables()
         {
             var table = string.Empty;
-            foreach(var child in childrenContexts)
+
+            foreach (var child in childrenContexts)
             {
                 var childClassNameSingular = child.EntityClassName;
                 var childClassNamePlural = child.EntityClassNamePlural;
                 var childNameSingular = entityClassNameSingular.Uncapitalize();
                 var childNamePlural = entityClassNamePlural.Uncapitalize();
-                table += $" <{childClassNameSingular}EditTableComponent {childClassNamePlural}=\"the{entityClassNameSingular}.{childClassNamePlural}\"></{childClassNameSingular}EditTableComponent>";
+                //table += $" <{childClassNameSingular}EditTableComponent {childClassNamePlural}=\"the{entityClassNameSingular}.{childClassNamePlural}\"></{childClassNameSingular}EditTableComponent>";
+                table += CreateTableHeader(child);
+
             }
 
             return table;
