@@ -552,7 +552,7 @@ namespace Lazorm
             property.Name = this.GetPropertyName(table.Name, column.Name);
             property.Type = new CodeTypeReference(this.db.GetProgramType(column));
             property.Attributes = MemberAttributes.Public;
-            property.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), this.GetFieldName(column))));
+            property.GetStatements.Add(GeneratePropertyGetStatement(column));
             property.SetStatements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), this.GetFieldName(column)), new CodePropertySetValueReferenceExpression()));
 
             var parentForeignKeys = this.ForeignKeys.FindAll(f => f.TableName == table.Name && f.ColumnName == column.Name);
@@ -567,6 +567,10 @@ namespace Lazorm
             }
 
             return property;
+        }
+
+        internal virtual CodeStatement GeneratePropertyGetStatement(ColumnDef column) {
+            return new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), this.GetFieldName(column)));
         }
 
         private CodeMemberMethod GenerateGetMethod(TableDef table, bool preserveTableName = false,  bool isAsync = false)
