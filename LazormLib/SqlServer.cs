@@ -144,7 +144,7 @@ LEFT JOIN sys.extended_properties p ON
 WHERE 
     o.type='U' AND 
     o.name = '{tableName}'
-ORDER BY c.column_id 
+ORDER BY c.key_ordinal 
 ";
             #endregion
 
