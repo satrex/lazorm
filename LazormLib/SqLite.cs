@@ -159,7 +159,7 @@ SELECT
         {
             var typenameWithoutLength = Regex.Replace(column.TypeName, "\\(.*\\)", string.Empty);
             //Console.WriteLine($"replacing : " + typenameWithoutLength);
-
+            var date = "date";
             switch (typenameWithoutLength.ToUpper())
             {
                 case "INTEGER":
@@ -169,13 +169,15 @@ SELECT
                 case "REAL":
                     return column.Nullable ? typeof(Nullable<double>) : typeof(double);
                 case "TEXT":
-                    return typeof(string);
+                    return column.Name.EndsWith(date, StringComparison.CurrentCultureIgnoreCase)? typeof(DateTime) : typeof(string);
                 case "BLOB":
                     return typeof(byte[]);
                 default:
                     throw new Exception("対応外の型を使用しています。" + column.TypeName);
             }
         }
+
+
 
         /// <summary>
         /// SQL Serverのカラムに使用するデータ型を取得します。
@@ -235,6 +237,6 @@ SELECT
             throw new NotImplementedException("SqLite provider does not support DataAdapter neither DataTable.");
         }
 
-        internal override string AutoNumberGetSql { get {return "; SELECT LAST_INSERT_ID();";} }
+        internal override string AutoNumberGetSql { get {return "; SELECT last_insert_rowid();"; } }
     }
 }
