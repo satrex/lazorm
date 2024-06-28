@@ -267,8 +267,21 @@ namespace Lazorm
             GetDatabase().Merge<T>(this);
             return (T)this;
         }
-
         public virtual async Task<T> StoreAsync() => await Task.Run(() => Store());
+
+        public virtual T Insert()
+        {
+            GetDatabase().Insert<T>(this);
+            return (T)this;
+        }
+        public virtual async Task<T> InsertAsync() => await Task.Run(() => Insert());
+
+        public virtual T Update()
+        {
+            GetDatabase().Update<T>(this);
+            return (T)this;
+        }
+        public virtual async Task<T> UpdateAsync() => await Task.Run(() => Update());
 
         /// <summary>
         /// オーバーライド不可メソッド
